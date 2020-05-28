@@ -1,0 +1,1880 @@
+==============================
+There are 22 models for hus.
+------------------------------
+Model AWI-CM-1-1-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-CSM2-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-ESM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CAMS-CSM1-0 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CanESM5 includes 2 ensemble member(s):
+r1i1p1f1 r1i1p2f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p2f1.
+------------------------------
+Model CESM2 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CESM2-WACCM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model GISS-E2-1-G includes 4 ensemble member(s):
+r102i1p1f1 r1i1p1f1 r1i1p1f3 r1i1p3f1.
+There is only 1 file in r102i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p1f3.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-1-H includes 2 ensemble member(s):
+r1i1p1f1 r1i1p3f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-2-G includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model HadGEM3-GC31-LL includes 1 ensemble member(s):
+r1i1p1f3.
+There is only 1 file in r1i1p1f3.
+------------------------------
+Model MCM-UA-1-0 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MIROC6 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MIROC-ES2L includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+------------------------------
+Model MPI-ESM1-2-HR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MRI-ESM2-0 includes 14 ensemble member(s):
+r10i1p1f1 r11i1p1f1 r12i1p1f1 r13i1p1f1 r1i1p1f1 r1i2p1f1 r2i1p1f1 r3i1p1f1 r4i1p1f1 r5i1p1f1 r6i1p1f1 r7i1p1f1 r8i1p1f1 r9i1p1f1.
+There is only 1 file in r10i1p1f1.
+There is only 1 file in r11i1p1f1.
+There is only 1 file in r12i1p1f1.
+There is only 1 file in r13i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i2p1f1.
+There is only 1 file in r2i1p1f1.
+There is only 1 file in r3i1p1f1.
+There is only 1 file in r4i1p1f1.
+There is only 1 file in r5i1p1f1.
+There is only 1 file in r6i1p1f1.
+There is only 1 file in r7i1p1f1.
+There is only 1 file in r8i1p1f1.
+There is only 1 file in r9i1p1f1.
+------------------------------
+Model NESM3 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorCPM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-LM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-MM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model SAM0-UNICON includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model UKESM1-0-LL includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+==============================
+There are 22 models for ta.
+------------------------------
+Model AWI-CM-1-1-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-CSM2-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-ESM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CAMS-CSM1-0 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CanESM5 includes 2 ensemble member(s):
+r1i1p1f1 r1i1p2f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p2f1.
+------------------------------
+Model CESM2 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CESM2-WACCM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model GISS-E2-1-G includes 4 ensemble member(s):
+r102i1p1f1 r1i1p1f1 r1i1p1f3 r1i1p3f1.
+There is only 1 file in r102i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p1f3.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-1-H includes 2 ensemble member(s):
+r1i1p1f1 r1i1p3f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-2-G includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model HadGEM3-GC31-LL includes 1 ensemble member(s):
+r1i1p1f3.
+There is only 1 file in r1i1p1f3.
+------------------------------
+Model MCM-UA-1-0 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MIROC6 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MIROC-ES2L includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+------------------------------
+Model MPI-ESM1-2-HR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MRI-ESM2-0 includes 14 ensemble member(s):
+r10i1p1f1 r11i1p1f1 r12i1p1f1 r13i1p1f1 r1i1p1f1 r1i2p1f1 r2i1p1f1 r3i1p1f1 r4i1p1f1 r5i1p1f1 r6i1p1f1 r7i1p1f1 r8i1p1f1 r9i1p1f1.
+There is only 1 file in r10i1p1f1.
+There is only 1 file in r11i1p1f1.
+There is only 1 file in r12i1p1f1.
+There is only 1 file in r13i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i2p1f1.
+There is only 1 file in r2i1p1f1.
+There is only 1 file in r3i1p1f1.
+There is only 1 file in r4i1p1f1.
+There is only 1 file in r5i1p1f1.
+There is only 1 file in r6i1p1f1.
+There is only 1 file in r7i1p1f1.
+There is only 1 file in r8i1p1f1.
+There is only 1 file in r9i1p1f1.
+------------------------------
+Model NESM3 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorCPM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-LM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-MM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model SAM0-UNICON includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model UKESM1-0-LL includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+==============================
+There are 22 models for ts.
+------------------------------
+Model AWI-CM-1-1-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-CSM2-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-ESM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CAMS-CSM1-0 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CanESM5 includes 2 ensemble member(s):
+r1i1p1f1 r1i1p2f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p2f1.
+------------------------------
+Model CESM2 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CESM2-WACCM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model GISS-E2-1-G includes 4 ensemble member(s):
+r102i1p1f1 r1i1p1f1 r1i1p1f3 r1i1p3f1.
+There is only 1 file in r102i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p1f3.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-1-H includes 2 ensemble member(s):
+r1i1p1f1 r1i1p3f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-2-G includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model HadGEM3-GC31-LL includes 1 ensemble member(s):
+r1i1p1f3.
+There is only 1 file in r1i1p1f3.
+------------------------------
+Model MCM-UA-1-0 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MIROC6 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MIROC-ES2L includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+------------------------------
+Model MPI-ESM1-2-HR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MRI-ESM2-0 includes 14 ensemble member(s):
+r10i1p1f1 r11i1p1f1 r12i1p1f1 r13i1p1f1 r1i1p1f1 r1i2p1f1 r2i1p1f1 r3i1p1f1 r4i1p1f1 r5i1p1f1 r6i1p1f1 r7i1p1f1 r8i1p1f1 r9i1p1f1.
+There is only 1 file in r10i1p1f1.
+There is only 1 file in r11i1p1f1.
+There is only 1 file in r12i1p1f1.
+There is only 1 file in r13i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i2p1f1.
+There is only 1 file in r2i1p1f1.
+There is only 1 file in r3i1p1f1.
+There is only 1 file in r4i1p1f1.
+There is only 1 file in r5i1p1f1.
+There is only 1 file in r6i1p1f1.
+There is only 1 file in r7i1p1f1.
+There is only 1 file in r8i1p1f1.
+There is only 1 file in r9i1p1f1.
+------------------------------
+Model NESM3 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorCPM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-LM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-MM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model SAM0-UNICON includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model UKESM1-0-LL includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+==============================
+There are 22 models for ps.
+------------------------------
+Model AWI-CM-1-1-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-CSM2-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-ESM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CAMS-CSM1-0 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CanESM5 includes 2 ensemble member(s):
+r1i1p1f1 r1i1p2f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p2f1.
+------------------------------
+Model CESM2 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CESM2-WACCM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model GISS-E2-1-G includes 4 ensemble member(s):
+r102i1p1f1 r1i1p1f1 r1i1p1f3 r1i1p3f1.
+There is only 1 file in r102i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p1f3.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-1-H includes 2 ensemble member(s):
+r1i1p1f1 r1i1p3f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-2-G includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model HadGEM3-GC31-LL includes 1 ensemble member(s):
+r1i1p1f3.
+There is only 1 file in r1i1p1f3.
+------------------------------
+Model MCM-UA-1-0 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MIROC6 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MIROC-ES2L includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+------------------------------
+Model MPI-ESM1-2-HR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MRI-ESM2-0 includes 14 ensemble member(s):
+r10i1p1f1 r11i1p1f1 r12i1p1f1 r13i1p1f1 r1i1p1f1 r1i2p1f1 r2i1p1f1 r3i1p1f1 r4i1p1f1 r5i1p1f1 r6i1p1f1 r7i1p1f1 r8i1p1f1 r9i1p1f1.
+There is only 1 file in r10i1p1f1.
+There is only 1 file in r11i1p1f1.
+There is only 1 file in r12i1p1f1.
+There is only 1 file in r13i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i2p1f1.
+There is only 1 file in r2i1p1f1.
+There is only 1 file in r3i1p1f1.
+There is only 1 file in r4i1p1f1.
+There is only 1 file in r5i1p1f1.
+There is only 1 file in r6i1p1f1.
+There is only 1 file in r7i1p1f1.
+There is only 1 file in r8i1p1f1.
+There is only 1 file in r9i1p1f1.
+------------------------------
+Model NESM3 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorCPM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-LM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-MM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model SAM0-UNICON includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model UKESM1-0-LL includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+==============================
+There are 22 models for hfls.
+------------------------------
+Model AWI-CM-1-1-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-CSM2-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-ESM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CAMS-CSM1-0 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CanESM5 includes 2 ensemble member(s):
+r1i1p1f1 r1i1p2f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p2f1.
+------------------------------
+Model CESM2 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CESM2-WACCM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model GISS-E2-1-G includes 4 ensemble member(s):
+r102i1p1f1 r1i1p1f1 r1i1p1f3 r1i1p3f1.
+There is only 1 file in r102i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p1f3.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-1-H includes 2 ensemble member(s):
+r1i1p1f1 r1i1p3f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-2-G includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model HadGEM3-GC31-LL includes 1 ensemble member(s):
+r1i1p1f3.
+There is only 1 file in r1i1p1f3.
+------------------------------
+Model MCM-UA-1-0 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MIROC6 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MIROC-ES2L includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+------------------------------
+Model MPI-ESM1-2-HR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MRI-ESM2-0 includes 14 ensemble member(s):
+r10i1p1f1 r11i1p1f1 r12i1p1f1 r13i1p1f1 r1i1p1f1 r1i2p1f1 r2i1p1f1 r3i1p1f1 r4i1p1f1 r5i1p1f1 r6i1p1f1 r7i1p1f1 r8i1p1f1 r9i1p1f1.
+There is only 1 file in r10i1p1f1.
+There is only 1 file in r11i1p1f1.
+There is only 1 file in r12i1p1f1.
+There is only 1 file in r13i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i2p1f1.
+There is only 1 file in r2i1p1f1.
+There is only 1 file in r3i1p1f1.
+There is only 1 file in r4i1p1f1.
+There is only 1 file in r5i1p1f1.
+There is only 1 file in r6i1p1f1.
+There is only 1 file in r7i1p1f1.
+There is only 1 file in r8i1p1f1.
+There is only 1 file in r9i1p1f1.
+------------------------------
+Model NESM3 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorCPM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-LM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-MM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model SAM0-UNICON includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model UKESM1-0-LL includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+==============================
+There are 22 models for hfss.
+------------------------------
+Model AWI-CM-1-1-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-CSM2-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-ESM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CAMS-CSM1-0 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CanESM5 includes 2 ensemble member(s):
+r1i1p1f1 r1i1p2f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p2f1.
+------------------------------
+Model CESM2 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CESM2-WACCM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model GISS-E2-1-G includes 4 ensemble member(s):
+r102i1p1f1 r1i1p1f1 r1i1p1f3 r1i1p3f1.
+There is only 1 file in r102i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p1f3.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-1-H includes 2 ensemble member(s):
+r1i1p1f1 r1i1p3f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-2-G includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model HadGEM3-GC31-LL includes 1 ensemble member(s):
+r1i1p1f3.
+There is only 1 file in r1i1p1f3.
+------------------------------
+Model MCM-UA-1-0 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MIROC6 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MIROC-ES2L includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+------------------------------
+Model MPI-ESM1-2-HR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MRI-ESM2-0 includes 14 ensemble member(s):
+r10i1p1f1 r11i1p1f1 r12i1p1f1 r13i1p1f1 r1i1p1f1 r1i2p1f1 r2i1p1f1 r3i1p1f1 r4i1p1f1 r5i1p1f1 r6i1p1f1 r7i1p1f1 r8i1p1f1 r9i1p1f1.
+There is only 1 file in r10i1p1f1.
+There is only 1 file in r11i1p1f1.
+There is only 1 file in r12i1p1f1.
+There is only 1 file in r13i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i2p1f1.
+There is only 1 file in r2i1p1f1.
+There is only 1 file in r3i1p1f1.
+There is only 1 file in r4i1p1f1.
+There is only 1 file in r5i1p1f1.
+There is only 1 file in r6i1p1f1.
+There is only 1 file in r7i1p1f1.
+There is only 1 file in r8i1p1f1.
+There is only 1 file in r9i1p1f1.
+------------------------------
+Model NESM3 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorCPM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-LM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-MM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model SAM0-UNICON includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model UKESM1-0-LL includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+==============================
+There are 21 models for rlus.
+------------------------------
+Model AWI-CM-1-1-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-CSM2-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-ESM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CAMS-CSM1-0 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CanESM5 includes 2 ensemble member(s):
+r1i1p1f1 r1i1p2f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p2f1.
+------------------------------
+Model CESM2 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CESM2-WACCM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model GISS-E2-1-G includes 4 ensemble member(s):
+r102i1p1f1 r1i1p1f1 r1i1p1f3 r1i1p3f1.
+There is only 1 file in r102i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p1f3.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-1-H includes 2 ensemble member(s):
+r1i1p1f1 r1i1p3f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-2-G includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model HadGEM3-GC31-LL includes 1 ensemble member(s):
+r1i1p1f3.
+There is only 1 file in r1i1p1f3.
+------------------------------
+Model MIROC6 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MIROC-ES2L includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+------------------------------
+Model MPI-ESM1-2-HR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MRI-ESM2-0 includes 14 ensemble member(s):
+r10i1p1f1 r11i1p1f1 r12i1p1f1 r13i1p1f1 r1i1p1f1 r1i2p1f1 r2i1p1f1 r3i1p1f1 r4i1p1f1 r5i1p1f1 r6i1p1f1 r7i1p1f1 r8i1p1f1 r9i1p1f1.
+There is only 1 file in r10i1p1f1.
+There is only 1 file in r11i1p1f1.
+There is only 1 file in r12i1p1f1.
+There is only 1 file in r13i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i2p1f1.
+There is only 1 file in r2i1p1f1.
+There is only 1 file in r3i1p1f1.
+There is only 1 file in r4i1p1f1.
+There is only 1 file in r5i1p1f1.
+There is only 1 file in r6i1p1f1.
+There is only 1 file in r7i1p1f1.
+There is only 1 file in r8i1p1f1.
+There is only 1 file in r9i1p1f1.
+------------------------------
+Model NESM3 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorCPM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-LM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-MM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model SAM0-UNICON includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model UKESM1-0-LL includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+==============================
+There are 21 models for rsus.
+------------------------------
+Model AWI-CM-1-1-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-CSM2-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-ESM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CAMS-CSM1-0 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CanESM5 includes 2 ensemble member(s):
+r1i1p1f1 r1i1p2f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p2f1.
+------------------------------
+Model CESM2 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CESM2-WACCM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model GISS-E2-1-G includes 4 ensemble member(s):
+r102i1p1f1 r1i1p1f1 r1i1p1f3 r1i1p3f1.
+There is only 1 file in r102i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p1f3.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-1-H includes 2 ensemble member(s):
+r1i1p1f1 r1i1p3f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-2-G includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model HadGEM3-GC31-LL includes 1 ensemble member(s):
+r1i1p1f3.
+There is only 1 file in r1i1p1f3.
+------------------------------
+Model MIROC6 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MIROC-ES2L includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+------------------------------
+Model MPI-ESM1-2-HR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MRI-ESM2-0 includes 14 ensemble member(s):
+r10i1p1f1 r11i1p1f1 r12i1p1f1 r13i1p1f1 r1i1p1f1 r1i2p1f1 r2i1p1f1 r3i1p1f1 r4i1p1f1 r5i1p1f1 r6i1p1f1 r7i1p1f1 r8i1p1f1 r9i1p1f1.
+There is only 1 file in r10i1p1f1.
+There is only 1 file in r11i1p1f1.
+There is only 1 file in r12i1p1f1.
+There is only 1 file in r13i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i2p1f1.
+There is only 1 file in r2i1p1f1.
+There is only 1 file in r3i1p1f1.
+There is only 1 file in r4i1p1f1.
+There is only 1 file in r5i1p1f1.
+There is only 1 file in r6i1p1f1.
+There is only 1 file in r7i1p1f1.
+There is only 1 file in r8i1p1f1.
+There is only 1 file in r9i1p1f1.
+------------------------------
+Model NESM3 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorCPM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-LM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-MM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model SAM0-UNICON includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model UKESM1-0-LL includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+==============================
+There are 21 models for rsds.
+------------------------------
+Model AWI-CM-1-1-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-CSM2-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-ESM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CAMS-CSM1-0 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CanESM5 includes 2 ensemble member(s):
+r1i1p1f1 r1i1p2f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p2f1.
+------------------------------
+Model CESM2 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CESM2-WACCM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model GISS-E2-1-G includes 4 ensemble member(s):
+r102i1p1f1 r1i1p1f1 r1i1p1f3 r1i1p3f1.
+There is only 1 file in r102i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p1f3.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-1-H includes 2 ensemble member(s):
+r1i1p1f1 r1i1p3f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-2-G includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model HadGEM3-GC31-LL includes 1 ensemble member(s):
+r1i1p1f3.
+There is only 1 file in r1i1p1f3.
+------------------------------
+Model MIROC6 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MIROC-ES2L includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+------------------------------
+Model MPI-ESM1-2-HR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MRI-ESM2-0 includes 14 ensemble member(s):
+r10i1p1f1 r11i1p1f1 r12i1p1f1 r13i1p1f1 r1i1p1f1 r1i2p1f1 r2i1p1f1 r3i1p1f1 r4i1p1f1 r5i1p1f1 r6i1p1f1 r7i1p1f1 r8i1p1f1 r9i1p1f1.
+There is only 1 file in r10i1p1f1.
+There is only 1 file in r11i1p1f1.
+There is only 1 file in r12i1p1f1.
+There is only 1 file in r13i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i2p1f1.
+There is only 1 file in r2i1p1f1.
+There is only 1 file in r3i1p1f1.
+There is only 1 file in r4i1p1f1.
+There is only 1 file in r5i1p1f1.
+There is only 1 file in r6i1p1f1.
+There is only 1 file in r7i1p1f1.
+There is only 1 file in r8i1p1f1.
+There is only 1 file in r9i1p1f1.
+------------------------------
+Model NESM3 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorCPM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-LM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-MM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model SAM0-UNICON includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model UKESM1-0-LL includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+==============================
+There are 21 models for rlds.
+------------------------------
+Model AWI-CM-1-1-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-CSM2-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-ESM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CAMS-CSM1-0 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CanESM5 includes 2 ensemble member(s):
+r1i1p1f1 r1i1p2f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p2f1.
+------------------------------
+Model CESM2 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CESM2-WACCM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model GISS-E2-1-G includes 4 ensemble member(s):
+r102i1p1f1 r1i1p1f1 r1i1p1f3 r1i1p3f1.
+There is only 1 file in r102i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p1f3.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-1-H includes 2 ensemble member(s):
+r1i1p1f1 r1i1p3f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-2-G includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model HadGEM3-GC31-LL includes 1 ensemble member(s):
+r1i1p1f3.
+There is only 1 file in r1i1p1f3.
+------------------------------
+Model MIROC6 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MIROC-ES2L includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+------------------------------
+Model MPI-ESM1-2-HR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MRI-ESM2-0 includes 14 ensemble member(s):
+r10i1p1f1 r11i1p1f1 r12i1p1f1 r13i1p1f1 r1i1p1f1 r1i2p1f1 r2i1p1f1 r3i1p1f1 r4i1p1f1 r5i1p1f1 r6i1p1f1 r7i1p1f1 r8i1p1f1 r9i1p1f1.
+There is only 1 file in r10i1p1f1.
+There is only 1 file in r11i1p1f1.
+There is only 1 file in r12i1p1f1.
+There is only 1 file in r13i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i2p1f1.
+There is only 1 file in r2i1p1f1.
+There is only 1 file in r3i1p1f1.
+There is only 1 file in r4i1p1f1.
+There is only 1 file in r5i1p1f1.
+There is only 1 file in r6i1p1f1.
+There is only 1 file in r7i1p1f1.
+There is only 1 file in r8i1p1f1.
+There is only 1 file in r9i1p1f1.
+------------------------------
+Model NESM3 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorCPM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-LM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-MM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model SAM0-UNICON includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model UKESM1-0-LL includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+==============================
+There are 20 models for rsuscs.
+------------------------------
+Model AWI-CM-1-1-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-CSM2-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-ESM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CanESM5 includes 2 ensemble member(s):
+r1i1p1f1 r1i1p2f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p2f1.
+------------------------------
+Model CESM2 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CESM2-WACCM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model GISS-E2-1-G includes 4 ensemble member(s):
+r102i1p1f1 r1i1p1f1 r1i1p1f3 r1i1p3f1.
+There is only 1 file in r102i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p1f3.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-1-H includes 2 ensemble member(s):
+r1i1p1f1 r1i1p3f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-2-G includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model HadGEM3-GC31-LL includes 1 ensemble member(s):
+r1i1p1f3.
+There is only 1 file in r1i1p1f3.
+------------------------------
+Model MIROC6 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MIROC-ES2L includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+------------------------------
+Model MPI-ESM1-2-HR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MRI-ESM2-0 includes 14 ensemble member(s):
+r10i1p1f1 r11i1p1f1 r12i1p1f1 r13i1p1f1 r1i1p1f1 r1i2p1f1 r2i1p1f1 r3i1p1f1 r4i1p1f1 r5i1p1f1 r6i1p1f1 r7i1p1f1 r8i1p1f1 r9i1p1f1.
+There is only 1 file in r10i1p1f1.
+There is only 1 file in r11i1p1f1.
+There is only 1 file in r12i1p1f1.
+There is only 1 file in r13i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i2p1f1.
+There is only 1 file in r2i1p1f1.
+There is only 1 file in r3i1p1f1.
+There is only 1 file in r4i1p1f1.
+There is only 1 file in r5i1p1f1.
+There is only 1 file in r6i1p1f1.
+There is only 1 file in r7i1p1f1.
+There is only 1 file in r8i1p1f1.
+There is only 1 file in r9i1p1f1.
+------------------------------
+Model NESM3 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorCPM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-LM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-MM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model SAM0-UNICON includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model UKESM1-0-LL includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+==============================
+There are 20 models for rsdscs.
+------------------------------
+Model AWI-CM-1-1-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-CSM2-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-ESM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CanESM5 includes 2 ensemble member(s):
+r1i1p1f1 r1i1p2f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p2f1.
+------------------------------
+Model CESM2 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CESM2-WACCM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model GISS-E2-1-G includes 4 ensemble member(s):
+r102i1p1f1 r1i1p1f1 r1i1p1f3 r1i1p3f1.
+There is only 1 file in r102i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p1f3.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-1-H includes 2 ensemble member(s):
+r1i1p1f1 r1i1p3f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-2-G includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model HadGEM3-GC31-LL includes 1 ensemble member(s):
+r1i1p1f3.
+There is only 1 file in r1i1p1f3.
+------------------------------
+Model MIROC6 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MIROC-ES2L includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+------------------------------
+Model MPI-ESM1-2-HR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MRI-ESM2-0 includes 14 ensemble member(s):
+r10i1p1f1 r11i1p1f1 r12i1p1f1 r13i1p1f1 r1i1p1f1 r1i2p1f1 r2i1p1f1 r3i1p1f1 r4i1p1f1 r5i1p1f1 r6i1p1f1 r7i1p1f1 r8i1p1f1 r9i1p1f1.
+There is only 1 file in r10i1p1f1.
+There is only 1 file in r11i1p1f1.
+There is only 1 file in r12i1p1f1.
+There is only 1 file in r13i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i2p1f1.
+There is only 1 file in r2i1p1f1.
+There is only 1 file in r3i1p1f1.
+There is only 1 file in r4i1p1f1.
+There is only 1 file in r5i1p1f1.
+There is only 1 file in r6i1p1f1.
+There is only 1 file in r7i1p1f1.
+There is only 1 file in r8i1p1f1.
+There is only 1 file in r9i1p1f1.
+------------------------------
+Model NESM3 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorCPM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-LM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-MM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model SAM0-UNICON includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model UKESM1-0-LL includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+==============================
+There are 18 models for rldscs.
+------------------------------
+Model AWI-CM-1-1-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-CSM2-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-ESM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CanESM5 includes 2 ensemble member(s):
+r1i1p1f1 r1i1p2f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p2f1.
+------------------------------
+Model CESM2 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CESM2-WACCM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model GISS-E2-1-G includes 4 ensemble member(s):
+r102i1p1f1 r1i1p1f1 r1i1p1f3 r1i1p3f1.
+There is only 1 file in r102i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p1f3.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-1-H includes 2 ensemble member(s):
+r1i1p1f1 r1i1p3f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-2-G includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model HadGEM3-GC31-LL includes 1 ensemble member(s):
+r1i1p1f3.
+There is only 1 file in r1i1p1f3.
+------------------------------
+Model MIROC6 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MIROC-ES2L includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+------------------------------
+Model MPI-ESM1-2-HR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MRI-ESM2-0 includes 14 ensemble member(s):
+r10i1p1f1 r11i1p1f1 r12i1p1f1 r13i1p1f1 r1i1p1f1 r1i2p1f1 r2i1p1f1 r3i1p1f1 r4i1p1f1 r5i1p1f1 r6i1p1f1 r7i1p1f1 r8i1p1f1 r9i1p1f1.
+There is only 1 file in r10i1p1f1.
+There is only 1 file in r11i1p1f1.
+There is only 1 file in r12i1p1f1.
+There is only 1 file in r13i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i2p1f1.
+There is only 1 file in r2i1p1f1.
+There is only 1 file in r3i1p1f1.
+There is only 1 file in r4i1p1f1.
+There is only 1 file in r5i1p1f1.
+There is only 1 file in r6i1p1f1.
+There is only 1 file in r7i1p1f1.
+There is only 1 file in r8i1p1f1.
+There is only 1 file in r9i1p1f1.
+------------------------------
+Model NESM3 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorCPM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model SAM0-UNICON includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model UKESM1-0-LL includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+==============================
+There are 22 models for rlut.
+------------------------------
+Model AWI-CM-1-1-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-CSM2-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-ESM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CAMS-CSM1-0 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CanESM5 includes 2 ensemble member(s):
+r1i1p1f1 r1i1p2f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p2f1.
+------------------------------
+Model CESM2 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CESM2-WACCM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model GISS-E2-1-G includes 4 ensemble member(s):
+r102i1p1f1 r1i1p1f1 r1i1p1f3 r1i1p3f1.
+There is only 1 file in r102i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p1f3.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-1-H includes 2 ensemble member(s):
+r1i1p1f1 r1i1p3f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-2-G includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model HadGEM3-GC31-LL includes 1 ensemble member(s):
+r1i1p1f3.
+There is only 1 file in r1i1p1f3.
+------------------------------
+Model MCM-UA-1-0 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MIROC6 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MIROC-ES2L includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+------------------------------
+Model MPI-ESM1-2-HR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MRI-ESM2-0 includes 14 ensemble member(s):
+r10i1p1f1 r11i1p1f1 r12i1p1f1 r13i1p1f1 r1i1p1f1 r1i2p1f1 r2i1p1f1 r3i1p1f1 r4i1p1f1 r5i1p1f1 r6i1p1f1 r7i1p1f1 r8i1p1f1 r9i1p1f1.
+There is only 1 file in r10i1p1f1.
+There is only 1 file in r11i1p1f1.
+There is only 1 file in r12i1p1f1.
+There is only 1 file in r13i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i2p1f1.
+There is only 1 file in r2i1p1f1.
+There is only 1 file in r3i1p1f1.
+There is only 1 file in r4i1p1f1.
+There is only 1 file in r5i1p1f1.
+There is only 1 file in r6i1p1f1.
+There is only 1 file in r7i1p1f1.
+There is only 1 file in r8i1p1f1.
+There is only 1 file in r9i1p1f1.
+------------------------------
+Model NESM3 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorCPM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-LM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-MM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model SAM0-UNICON includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model UKESM1-0-LL includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+==============================
+There are 21 models for rsut.
+------------------------------
+Model AWI-CM-1-1-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-CSM2-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-ESM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CAMS-CSM1-0 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CanESM5 includes 2 ensemble member(s):
+r1i1p1f1 r1i1p2f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p2f1.
+------------------------------
+Model CESM2 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CESM2-WACCM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model GISS-E2-1-G includes 4 ensemble member(s):
+r102i1p1f1 r1i1p1f1 r1i1p1f3 r1i1p3f1.
+There is only 1 file in r102i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p1f3.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-1-H includes 2 ensemble member(s):
+r1i1p1f1 r1i1p3f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-2-G includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model HadGEM3-GC31-LL includes 1 ensemble member(s):
+r1i1p1f3.
+There is only 1 file in r1i1p1f3.
+------------------------------
+Model MIROC6 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MIROC-ES2L includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+------------------------------
+Model MPI-ESM1-2-HR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MRI-ESM2-0 includes 14 ensemble member(s):
+r10i1p1f1 r11i1p1f1 r12i1p1f1 r13i1p1f1 r1i1p1f1 r1i2p1f1 r2i1p1f1 r3i1p1f1 r4i1p1f1 r5i1p1f1 r6i1p1f1 r7i1p1f1 r8i1p1f1 r9i1p1f1.
+There is only 1 file in r10i1p1f1.
+There is only 1 file in r11i1p1f1.
+There is only 1 file in r12i1p1f1.
+There is only 1 file in r13i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i2p1f1.
+There is only 1 file in r2i1p1f1.
+There is only 1 file in r3i1p1f1.
+There is only 1 file in r4i1p1f1.
+There is only 1 file in r5i1p1f1.
+There is only 1 file in r6i1p1f1.
+There is only 1 file in r7i1p1f1.
+There is only 1 file in r8i1p1f1.
+There is only 1 file in r9i1p1f1.
+------------------------------
+Model NESM3 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorCPM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-LM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-MM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model SAM0-UNICON includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model UKESM1-0-LL includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+==============================
+There are 21 models for rsdt.
+------------------------------
+Model AWI-CM-1-1-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-CSM2-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-ESM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CAMS-CSM1-0 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CanESM5 includes 2 ensemble member(s):
+r1i1p1f1 r1i1p2f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p2f1.
+------------------------------
+Model CESM2 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CESM2-WACCM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model GISS-E2-1-G includes 4 ensemble member(s):
+r102i1p1f1 r1i1p1f1 r1i1p1f3 r1i1p3f1.
+There is only 1 file in r102i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p1f3.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-1-H includes 2 ensemble member(s):
+r1i1p1f1 r1i1p3f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-2-G includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model HadGEM3-GC31-LL includes 1 ensemble member(s):
+r1i1p1f3.
+There is only 1 file in r1i1p1f3.
+------------------------------
+Model MIROC6 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MIROC-ES2L includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+------------------------------
+Model MPI-ESM1-2-HR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MRI-ESM2-0 includes 14 ensemble member(s):
+r10i1p1f1 r11i1p1f1 r12i1p1f1 r13i1p1f1 r1i1p1f1 r1i2p1f1 r2i1p1f1 r3i1p1f1 r4i1p1f1 r5i1p1f1 r6i1p1f1 r7i1p1f1 r8i1p1f1 r9i1p1f1.
+There is only 1 file in r10i1p1f1.
+There is only 1 file in r11i1p1f1.
+There is only 1 file in r12i1p1f1.
+There is only 1 file in r13i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i2p1f1.
+There is only 1 file in r2i1p1f1.
+There is only 1 file in r3i1p1f1.
+There is only 1 file in r4i1p1f1.
+There is only 1 file in r5i1p1f1.
+There is only 1 file in r6i1p1f1.
+There is only 1 file in r7i1p1f1.
+There is only 1 file in r8i1p1f1.
+There is only 1 file in r9i1p1f1.
+------------------------------
+Model NESM3 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorCPM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-LM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-MM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model SAM0-UNICON includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model UKESM1-0-LL includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+==============================
+There are 21 models for rlutcs.
+------------------------------
+Model AWI-CM-1-1-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-CSM2-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-ESM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CAMS-CSM1-0 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CanESM5 includes 2 ensemble member(s):
+r1i1p1f1 r1i1p2f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p2f1.
+------------------------------
+Model CESM2 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CESM2-WACCM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model GISS-E2-1-G includes 4 ensemble member(s):
+r102i1p1f1 r1i1p1f1 r1i1p1f3 r1i1p3f1.
+There is only 1 file in r102i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p1f3.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-1-H includes 2 ensemble member(s):
+r1i1p1f1 r1i1p3f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-2-G includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model HadGEM3-GC31-LL includes 1 ensemble member(s):
+r1i1p1f3.
+There is only 1 file in r1i1p1f3.
+------------------------------
+Model MIROC6 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MIROC-ES2L includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+------------------------------
+Model MPI-ESM1-2-HR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MRI-ESM2-0 includes 14 ensemble member(s):
+r10i1p1f1 r11i1p1f1 r12i1p1f1 r13i1p1f1 r1i1p1f1 r1i2p1f1 r2i1p1f1 r3i1p1f1 r4i1p1f1 r5i1p1f1 r6i1p1f1 r7i1p1f1 r8i1p1f1 r9i1p1f1.
+There is only 1 file in r10i1p1f1.
+There is only 1 file in r11i1p1f1.
+There is only 1 file in r12i1p1f1.
+There is only 1 file in r13i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i2p1f1.
+There is only 1 file in r2i1p1f1.
+There is only 1 file in r3i1p1f1.
+There is only 1 file in r4i1p1f1.
+There is only 1 file in r5i1p1f1.
+There is only 1 file in r6i1p1f1.
+There is only 1 file in r7i1p1f1.
+There is only 1 file in r8i1p1f1.
+There is only 1 file in r9i1p1f1.
+------------------------------
+Model NESM3 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorCPM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-LM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-MM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model SAM0-UNICON includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model UKESM1-0-LL includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+==============================
+There are 21 models for rsutcs.
+------------------------------
+Model AWI-CM-1-1-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-CSM2-MR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model BCC-ESM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CAMS-CSM1-0 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CanESM5 includes 2 ensemble member(s):
+r1i1p1f1 r1i1p2f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p2f1.
+------------------------------
+Model CESM2 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model CESM2-WACCM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model GISS-E2-1-G includes 4 ensemble member(s):
+r102i1p1f1 r1i1p1f1 r1i1p1f3 r1i1p3f1.
+There is only 1 file in r102i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p1f3.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-1-H includes 2 ensemble member(s):
+r1i1p1f1 r1i1p3f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i1p3f1.
+------------------------------
+Model GISS-E2-2-G includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model HadGEM3-GC31-LL includes 1 ensemble member(s):
+r1i1p1f3.
+There is only 1 file in r1i1p1f3.
+------------------------------
+Model MIROC6 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MIROC-ES2L includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
+------------------------------
+Model MPI-ESM1-2-HR includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model MRI-ESM2-0 includes 14 ensemble member(s):
+r10i1p1f1 r11i1p1f1 r12i1p1f1 r13i1p1f1 r1i1p1f1 r1i2p1f1 r2i1p1f1 r3i1p1f1 r4i1p1f1 r5i1p1f1 r6i1p1f1 r7i1p1f1 r8i1p1f1 r9i1p1f1.
+There is only 1 file in r10i1p1f1.
+There is only 1 file in r11i1p1f1.
+There is only 1 file in r12i1p1f1.
+There is only 1 file in r13i1p1f1.
+There is only 1 file in r1i1p1f1.
+There is only 1 file in r1i2p1f1.
+There is only 1 file in r2i1p1f1.
+There is only 1 file in r3i1p1f1.
+There is only 1 file in r4i1p1f1.
+There is only 1 file in r5i1p1f1.
+There is only 1 file in r6i1p1f1.
+There is only 1 file in r7i1p1f1.
+There is only 1 file in r8i1p1f1.
+There is only 1 file in r9i1p1f1.
+------------------------------
+Model NESM3 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorCPM1 includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-LM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model NorESM2-MM includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model SAM0-UNICON includes 1 ensemble member(s):
+r1i1p1f1.
+There is only 1 file in r1i1p1f1.
+------------------------------
+Model UKESM1-0-LL includes 1 ensemble member(s):
+r1i1p1f2.
+There is only 1 file in r1i1p1f2.
