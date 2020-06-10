@@ -1,0 +1,75 @@
+{
+    "folding": {
+        "matlab scrip": {
+            "begin": "%%",
+            "end": "%%"
+        },
+        "typescript": {
+            "begin": "#region",
+            "end": "#endregion"
+        },
+        "javascriptreact": [
+            {
+                "begin": "{/*",
+                "end": "*/}"
+            },
+            {
+                "begin": "<",
+                "end": "/>"
+            }
+        ]
+    },
+    "files.autoGuessEncoding": true,
+    "editor.mouseWheelZoom": true,
+    "editor.snippetSuggestions": "top",
+    "matlab.mlintpath": "//home//liuyc//usr//local//MATLAB//R2019a//bin//glnxa64//mlint",
+    "matlab.linterEncoding": "utf8",
+    "files.associations": {
+        "*.m": "matlab"
+    },
+    "[matlab]": {
+        "editor.defaultFormatter": "AffenWiesel.matlab-formatter"
+    },
+    "python.pythonPath": "/usr/local/anaconda3/bin/python3",
+    "workbench.sideBar.location": "left",
+    "bracket-pair-colorizer-2.colors": [
+        "gold",
+        "Orchid",
+        "LightSkyBlue"
+    ],
+    "workbench.iconTheme": "vscode-icons",
+    "window.zoomLevel": 0,
+    "sync.forceUpload": false,
+    "sync.gist": "996e536d80d1e9ab48240c9024b36f93",
+    "sync.autoUpload": true,
+    "fold.level": 0,
+    "window.menuBarVisibility": "visible",
+    "sync.quietSync": true,
+    "editor.foldingStrategy": "indentation",
+    "files.autoSave": "onFocusChange",
+    "explorer.sortOrder": "type",
+    "python.autoComplete.addBrackets": true,
+    "extensions.ignoreRecommendations": false,
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.python"
+    },
+    "editor.minimap.maxColumn": 60,
+    "workbench.tree.indent": 10,
+    "terminal.integrated.commandsToSkipShell": [
+        "psl.stepIn",
+        "psl.stepOut",
+        "psl.stepOver",
+        "psl.sendToHostTerminal"
+    ],
+    "remote.SSH.remotePlatform": {
+        "114.212.48.26": "linux",
+        "newService": "linux"
+    },
+    "codespaces.accountProvider": "Microsoft",
+    "vsicons.dontShowNewVersionMessage": true
+
+    // 看颜色搭配 (或者搜索rbg颜色对应英文)
+    //     "workbench.colorCustomizations": {
+    //     "editor.selectionHighlightBackground": "#0bd850"
+    // }
+}

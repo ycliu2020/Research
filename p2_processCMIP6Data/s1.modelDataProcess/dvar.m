@@ -1,3 +1,12 @@
+%%---------------------------------------------------------
+% Author       : LYC
+% Date         : 2020-06-09 15:52:00
+% LastEditTime : 2020-06-10 19:57:40
+% LastEditors  : LYC
+% Description  : 
+% FilePath     : /Research/p2_processCMIP6Data/s1.modelDataProcess/dvar.m
+%  
+%%---------------------------------------------------------
 %++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 % mothly data
 % cal the anomly
@@ -21,7 +30,7 @@ nowpath = pwd;
 
 % file structure
 % set time parameter
-for p_1 = 1:2%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 
+for p_1 = 3:4%1 mean amip 2000; 2 mean amip 1980; 4 means ssp245, 5 means ssp370, 6 abrupt-4xCO2_150years
     % model parameters
     [readme, Experiment, level, tLin, mPlev, vars] = modelParameters(p_1);
     % input and output path (tLin:1740)
@@ -35,7 +44,7 @@ for p_1 = 1:2%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
     filepath = filepath_all{p_1};
     outPath = '/data1/liuyincheng/cmip6-process/';
     var_state = {'d', 'clim_', 'trendm_d', 'trends_d', 'trendyr_d'}; % m,s,yr indicate that month, season, year
-    kernels_path = '/data/pub/kernels_YiH/toa/dp.nc';
+    kernels_path = '/data1/liuyincheng/y_kernels/kernels_YiH/toa/dp.nc';
     time2 = 1:tLin.inter{p_1};
     plevf = ncread(kernels_path, 'player'); % pay attention to plevf's range must smaller than plev's
     plevfnum = length(plevf);
@@ -169,5 +178,3 @@ end
 eval(['cd ', nowpath]);
 
 t = toc; disp(t)
-
-

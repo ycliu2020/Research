@@ -1,3 +1,12 @@
+%%---------------------------------------------------------
+% Author       : LYC
+% Date         : 2020-06-09 15:52:00
+% LastEditTime : 2020-06-10 15:16:50
+% LastEditors  : LYC
+% Description  : 
+% FilePath     : /Research/p2_processCMIP6Data/s3.radEffTrend/s1_calPsmonthMean.m
+%  
+%%---------------------------------------------------------
 %++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 % mothly data
 % cal month mean ps and thickness dps, dp
@@ -19,13 +28,13 @@
 clear; clc; tic;
 nowpath = pwd;
 % model settings
-for p_1 = 5:5%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     [readme, Experiment, level, tLin, mPlev, vars] = modelParameters(p_1);
     % inputPath
     inputPath = ['/data1/liuyincheng/cmip6-process/', level.time1{p_1}]; %~/data/cmip6/2000-2014/
 
     % read kernels data
-    kernelPaths = '/data1/liuyincheng/kernels/kernels_YiH/surface/';
+    kernelPaths = '/data1/liuyincheng/y_kernels/kernels_YiH/surface/';
     plevel = ncread([kernelPaths, 'dp.nc'], 'plevel');
     player = ncread([kernelPaths, 'dp.nc'], 'player');
     dp_raw = ncread([kernelPaths, 'dp.nc'], 'dp');

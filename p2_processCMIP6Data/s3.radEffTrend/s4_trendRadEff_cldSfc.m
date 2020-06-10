@@ -1,3 +1,12 @@
+%%---------------------------------------------------------
+% Author       : LYC
+% Date         : 2020-06-09 15:52:00
+% LastEditTime : 2020-06-10 19:36:41
+% LastEditors  : LYC
+% Description  : 
+% FilePath     : /Research/p2_processCMIP6Data/s3.radEffTrend/s4_trendRadEff_cldSfc.m
+%  
+%%---------------------------------------------------------
 %need to be edit
 %++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 % mothly data
@@ -16,7 +25,7 @@
 clear; clc; tic;
 nowpath = pwd;
 % model settings
-for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for p_1 = [2  4]%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     %CAMS-CSM1-0 didn't have sfc clear sky radiation, delete it
     [readme, Experiment, level, tLin, mPlev, vars] = modelParameters(p_1);
     % inputPath

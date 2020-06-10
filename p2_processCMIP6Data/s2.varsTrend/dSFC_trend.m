@@ -1,3 +1,12 @@
+%%---------------------------------------------------------
+% Author       : LYC
+% Date         : 2020-06-09 15:52:00
+% LastEditTime : 2020-06-10 15:18:19
+% LastEditors  : LYC
+% Description  : 
+% FilePath     : /Research/p2_processCMIP6Data/s2.varsTrend/dSFC_trend.m
+%  
+%%---------------------------------------------------------
 %++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 % mothly data
 % cal the anomly trend about any vars in CMIP6 as showed on script name
@@ -16,7 +25,7 @@
 clear; clc; tic;
 nowpath = pwd;
 
-for p_1 = 5:5 %1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for p_1 = 1:4 %1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
 % model parameters
 [~,modlist_Experiment,level,tLin, mPlev, vars] = modelParameters(p_1);
 % chose right month, very important !!! 

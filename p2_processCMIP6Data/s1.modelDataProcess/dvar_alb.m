@@ -16,7 +16,7 @@
 % check plev drection and unite: model plev disagree with kernels plev
 % ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 clear; clc; tic;
-
+nowpath = pwd;
 for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     % model parameters
     [readme, Experiment, level, tLin, mPlev, vars] = modelParameters(p_1);
@@ -32,7 +32,7 @@ for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
     outPath = '/data1/liuyincheng/cmip6-process/';
     alb_names = {'alb'};
     var_state = {'d', 'clim_', 'trendm_d', 'trends_d', 'trendyr_d'}; % m,s,yr indicate that month, season, year
-    kernels_path = '/data/pub/kernels_YiH/toa/dp.nc';
+    kernels_path = '/data1/liuyincheng/y_kernels/kernels_YiH/toa/dp.nc';
     time2 = 1:tLin.inter{p_1};
     plevf = ncread(kernels_path, 'player'); % pay attention to plevf's range must smaller than plev's
     plevfnum = length(plevf);
