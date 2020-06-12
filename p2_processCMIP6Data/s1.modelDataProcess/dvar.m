@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-06-10 19:57:40
+% LastEditTime : 2020-06-11 21:23:23
 % LastEditors  : LYC
 % Description  : 
 % FilePath     : /Research/p2_processCMIP6Data/s1.modelDataProcess/dvar.m

@@ -16,7 +16,7 @@
 clear; clc; tic;
 nowpath = pwd;
 % model settings
-for p_1 = 1:5%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     %CAMS-CSM1-0 didn't have sfc clear sky radiation, delete it
     [readme, Experiment, level, tLin, mPlev, vars] = modelParameters(p_1);
     % inputPath
