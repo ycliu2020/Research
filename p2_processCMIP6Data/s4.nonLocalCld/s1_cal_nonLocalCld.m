@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-06-12 08:56:02
+% LastEditTime : 2020-06-12 17:05:17
 % LastEditors  : LYC
 % Description  :
 % FilePath     : /Research/p2_processCMIP6Data/s4.radFeedbakIntensity/s1_calRadFeedIntens.m
@@ -41,18 +41,19 @@ for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
     periodDtsAssemble = zeros(length(level.model2), 2);
     lamda_globalAssemble = zeros(5, length(level.model2), 2); %(vars, model, toaSfc)
     lamda_gridAssemble = zeros(nlon, nlat, 5, length(level.model2), 2); %(lon,lat,vars,model,toaSfc)
+    dradFeedbackAssemblePath = [inputPath, 'z_assembleData/', level.process3{7}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/radEffect/
+    figTestPath = [inputPath, 'z_assembleData/figTest/']; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/radEffect/
+    rmdir([inputPath, 'z_assembleData'],'s')
+    auto_mkdir(dradFeedbackAssemblePath)
+    auto_mkdir(figTestPath)
 
     for level1 = 1:length(level.model2)
         % load dvars
         dvarsPath = [inputPath, level.model2{level1}, '/', level.process3{2}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/anomaly
         varsPath = [inputPath, level.model2{level1}, '/', level.process3{1}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/rawdata
         dradEffectPath = [inputPath, level.model2{level1}, '/', level.process3{6}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/radEffect/
-        dradFeedbackPath = [inputPath, level.model2{level1}, '/', level.process3{7}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/radEffect/
-        dradFeedbackAssemblePath = [inputPath, 'z_assembleData/', level.process3{7}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/radEffect/
-        figTestPath = [inputPath, 'z_assembleData/figTest']; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/radEffect/
+        dradFeedbackPath = [inputPath, level.model2{level1}, '/', level.process3{8}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/radEffect/
         auto_mkdir(dradFeedbackPath)
-        auto_mkdir(dradFeedbackAssemblePath)
-        auto_mkdir(figTestPath)
         % vars.lamda={'cloud','wv','ta','alb'};
         %% Part1: load data
         load([dvarsPath, 'global_vars.mat'])% latf lonf time plevf readme
@@ -196,10 +197,19 @@ for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
         save([dradFeedbackAssemblePath, ['k_cld_', maskLandSW, '_', toaSfc{skyLevel}, '.mat']], 'k1_cld', 'k2_cld')
         %plot
         k = polyfit(lamda_cld, periodDtsVs, 1); % 一元一次拟合
-        f = polyval(k, lamda_cld);
-        plot(lamda_cld, periodDtsVs, 'o', lamda_cld, f, '-')
-        title(['Experient:', level.time1{p_1}, ' level:', toaSfc{skyLevel}]);
-        figurename = [figTestPath, level.time1{p_1}, '_', toaSfc{skyLevel}, '.png'];
+        yfit = polyval(k, lamda_cld);
+        yresid = periodDtsVs - yfit; %将残差值计算为有符号数的向量：
+        SSresid = sum(yresid.^2); %计算残差的平方并相加，以获得残差平方和：
+        SStotal = (length(periodDtsVs) - 1) * var(periodDtsVs); %通过将观测次数减 1(自由度) 再乘以 y 的方差，计算 y 的总平方和：
+        rsq = 1 - SSresid / SStotal;%计算r2
+        
+        plot(lamda_cld, periodDtsVs, 'o', lamda_cld, yfit, '-')
+        xlabel('\lambda_{cloud}');
+        ylabel('\DeltaTsg');    
+        title(['Experient:', level.time1{p_1}(1:end-1), ' level:', toaSfc{skyLevel}],'Interpreter', 'none');
+        text(0.65, 0.95,['r2= ',num2str(rsq)],'units','normalized');    
+        text(0.65, 0.9,['y=',num2str(k1_cld),'x+',num2str(k2_cld)],'units','normalized');    
+        figurename = [figTestPath, level.time1{p_1}(1:end-1), '_', toaSfc{skyLevel}, '.png'];
         saveas(gcf, figurename)
         close gcf
 
@@ -207,7 +217,7 @@ for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
 
     disp([level.time1{p_1}, ' era is done!'])
     disp(' ')
-
+    clear varUsed
 end
 
 t = toc; disp(t)
