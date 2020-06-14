@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-06-14 19:55:26
+% LastEditTime : 2020-06-14 21:56:23
 % LastEditors  : LYC
 % Description  : 计算lamda_cloud 和 deltaTsg的线性关系(k1和k2)
-% FilePath     : /Research/p2_processCMIP6Data/s4.nonLocalCld/s1_calCloudTsg_k1k2..m
+% FilePath     : /Research/p2_processCMIP6Data/s4.nonLocalCld/s1_calCloudTsg_k1k2.m
 %
 %%---------------------------------------------------------
 % 云, 温度 水汽 反照率
@@ -33,8 +33,6 @@ for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
 
     % inputPath
     inputPath = ['/data1/liuyincheng/cmip6-process/', level.time1{p_1}]; %/data1/liuyincheng/cmip6-process/amip_2000-2014/
-
-    % model loop
     dvarsPath = [inputPath, level.model2{1}, '/', level.process3{2}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/anomaly
     load([dvarsPath, 'global_vars.mat'])% latf lonf time plevf readme
     lat = 88.75:-2.5:-88.75; nlat = length(lat);
@@ -45,6 +43,7 @@ for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
     dnonCloudAssemblePath = [inputPath, 'z_assembleData/', level.process3{8}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/non_localCld/
     auto_mkdir(dnonCloudAssemblePath)
     countm=1;
+    % model loop
     for level1 = 1:length(level.model2)
         % load data
         dvarsPath = [inputPath, level.model2{level1}, '/', level.process3{2}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/anomaly
@@ -86,7 +85,7 @@ for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
         end
 
         readmeDtsg = 'global Zonal weighted average surface temperture';
-        save([dvarsPath, ['dts_groble_', maskLandSW, '.mat']], 'dtsg', 'readmeDtsg')
+        save([dvarsPath, ['dtsg_', maskLandSW, '.mat']], 'dtsg', 'readmeDtsg')
 
         % 1.2 cal period DeltaTsg (whole time line)
         X = [ones(size(time)) time]; %dts
@@ -120,13 +119,14 @@ for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
     %% Part2: cal k1, k2 about lamda_cloud and DeltaTsAssemble(DeltaTsAssemble=k1*lamda_cloud+k2) and plot
     DeltaTsgVs = DeltaTsgAssemble(:, 1);
 
-    lamdaCloudAssemble=lamdaCloudAssemble(~isnan(lamdaCloudAssemble));
     DeltaTsgVs=DeltaTsgVs(~isnan(lamdaCloudAssemble));
+    lamdaCloudAssemble=lamdaCloudAssemble(~isnan(lamdaCloudAssemble));
     X = [ones(size(lamdaCloudAssemble)) lamdaCloudAssemble];
     [b, bint, r, rint, stats] = regress(DeltaTsgVs, X);
     k1_cld = b(2);
     k2_cld = b(1);
     save([dnonCloudAssemblePath, 'k_cld.mat'], 'k1_cld', 'k2_cld','existModelName')
+    clear existModelName
     %plot
     k = polyfit(lamdaCloudAssemble, DeltaTsgVs, 1); % 一元一次拟合
     yfit = polyval(k, lamdaCloudAssemble);
