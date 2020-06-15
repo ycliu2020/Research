@@ -4,7 +4,7 @@
 			"path": "."
 		},
 		{
-			"path": "../lib/tools/matlab/myTools"
+			"path": "../../../lib/tools/matlab/myTools"
 		}
 	],
 	"settings": {}
