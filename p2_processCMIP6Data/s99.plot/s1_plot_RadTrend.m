@@ -34,7 +34,7 @@ for p_1 = p1_left:p1_right
     % mPath.input:E:/data/cmip6-process/2000-2014/
     mPath.input = fullfile('/data1/liuyincheng/cmip6-process/', level.time1{p_1});
     % mPath.output:a_research/P02.Ts_change_research/figure/04.cmip6Result/2000-2014/
-    mPath.uniOutput = fullfile('/home/lyc/research/P02.Ts_change_research/figure/04.cmip6Result/1.4/',lower(mlabels.level),level.time1{p_1});
+    mPath.uniOutput = fullfile('/home/lyc/research/P02.Ts_change_research/figure/02.cmip6Result/1.4/',lower(mlabels.level),level.time1{p_1});
     mPath.Output = fullfile(mPath.uniOutput);
     auto_mkdir(mPath.Output)
 
