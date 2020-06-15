@@ -12,10 +12,10 @@
 clc; clear;
 nowpath = pwd;
 % load mask map
-load('/home/lyc/lib/tools/matlab/map/02.world_map/mat_file/mask/mask_cp144.mat')% load word land mask
-load('/home/lyc/lib/tools/matlab/map/02.world_map/mat_file/mask/mask_ce72.mat')% load word land mask
-load('/home/lyc/lib/tools/matlab/map/02.world_map/mat_file/correct_worldmap.mat')% ????????????????word_mapx(:),word_mapy(:)
-load('/home/lyc/lib/tools/matlab/map/01.china_map/mat_file/mask14472.mat')
+load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/mask/mask_cp144.mat')% load word land mask
+load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/mask/mask_ce72.mat')% load word land mask
+load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/correct_worldmap.mat')
+load('/home/liuyc/lib/tools/matlab/plot/myMap/01.china_map/mat_file/mask14472.mat')
 [mlabels, areaNum] = plotParameters('toa', 'land', 'cld-clr_nodp'); % plot parameters 
 
 %% global set
@@ -34,7 +34,7 @@ for p_1 = p1_left:p1_right
     % mPath.input:E:/data/cmip6-process/2000-2014/
     mPath.input = fullfile('/data1/liuyincheng/cmip6-process/', mlabels.algmPath, level.time1{p_1});
     % mPath.output:a_research/P02.Ts_change_research/figure/04.cmip6Result/2000-2014/
-    mPath.uniOutput = ['/home/lyc/research/P02.Ts_change_research/figure/04.cmip6Result/1.3/toa/', level.time1{p_1}];
+    mPath.uniOutput = ['/home/liuyc/research/P02.Ts_change_research/figure/04.cmip6Result/1.3/toa/', level.time1{p_1}];
     mPath.Output = fullfile(mPath.uniOutput, mlabels.fileN1);
     auto_mkdir(mPath.Output)
 

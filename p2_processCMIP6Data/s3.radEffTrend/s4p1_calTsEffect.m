@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-15 10:44:34
-% LastEditTime : 2020-06-15 13:36:22
+% LastEditTime : 2020-06-15 16:09:07
 % LastEditors  : LYC
 % Description  : cal dRvars effect on Ts : according Ts=dRx/Kts
 % FilePath     : /Research/p2_processCMIP6Data/s3.radEffTrend/s4p1_calTsEffect.m
