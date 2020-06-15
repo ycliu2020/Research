@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-06-14 21:56:23
+% LastEditTime : 2020-06-15 11:29:09
 % LastEditors  : LYC
 % Description  : 计算lamda_cloud 和 deltaTsg的线性关系(k1和k2)
 % FilePath     : /Research/p2_processCMIP6Data/s4.nonLocalCld/s1_calCloudTsg_k1k2.m
