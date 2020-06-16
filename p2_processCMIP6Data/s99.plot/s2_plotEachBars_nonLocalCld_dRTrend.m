@@ -1,12 +1,14 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-15 13:43:44
-% LastEditTime : 2020-06-16 14:05:52
+% LastEditTime : 2020-06-16 14:05:32
 % LastEditors  : LYC
-% Description  : 
-% FilePath     : /code/p2_processCMIP6Data/s99.plot/s2_plot_nonLocalCld_dTsTrend.m
-%  
+% Description  :
+% FilePath     : /code/p2_processCMIP6Data/s99.plot/s2_plotEachBars_nonLocalCld_dRTrend.m
+%
 %%---------------------------------------------------------
+%        title(['$k2\cdot \frac{\partial R}{\partial Tsg}$'],'Interpreter','latex','FontSize',20)
+
 clc; clear;
 nowpath = pwd;
 % load mask map
@@ -15,14 +17,13 @@ load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/mask/mask_ce
 load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/correct_worldmap.mat')
 load('/home/liuyc/lib/tools/matlab/plot/myMap/01.china_map/mat_file/mask14472.mat')
 
-[mlabels, areaNum] = plotParameters('sfc', 'land', 'nonLocalCld_Ts'); % plot parameters mlabels.level(SFC/TOA)
+[mlabels, areaNum] = plotParameters('toa', 'land', 'nonLocalCld_rad'); % plot parameters mlabels.level(SFC/TOA)
 
 %% global set
 % Experent ID
 p1_left = 3; p1_right = 4;
 % colorRange ={[-5 -5 -4 -4 -2 -2];[-5 -5 -4 -4 -1 -1];[-3 -4 -1 -2 -.5 -1];[-5 -7 -1.5 -3 -1 -1]};
-mmin = -2.5; %colorRange{p_1};
-mmax = -mmin;
+
 % Latitude range
 p_3 = 60;
 lon1 = [2.5 357.5]; lat1 = [-p_3 + 1 p_3 - 1]; % world area
@@ -34,7 +35,7 @@ for p_1 = p1_left:p1_right
 
     mPath.input = fullfile('/data1/liuyincheng/cmip6-process/', level.time1{p_1});
     % mPath.output:a_research/P02.Ts_change_research/figure/04.cmip6Result/2000-2014/
-    mPath.uniOutput = fullfile('/home/liuyc/Research/P02.Ts_change_research/figure/02.cmip6Result/nonLocalCld/',['dTs_',lower(mlabels.level)], level.time1{p_1});
+    mPath.uniOutput = fullfile('/home/liuyc/Research/P02.Ts_change_research/figure/02.cmip6Result/nonLocalCld/',['dR_',lower(mlabels.level)], level.time1{p_1});
     mPath.Output = fullfile(mPath.uniOutput);
     auto_mkdir(mPath.Output)
 
@@ -103,10 +104,9 @@ for p_1 = p1_left:p1_right
         [trendyr, yr_cc, yr_pp] = maskArea(trendyr, lat, p_3, -p_3, areaNum);
 
         set(0, 'DefaultFigureVisible', 'off')
-        ss = get(0, 'ScreenSize'); % ???????????
-        h = figure('Position', [ss(4) / 2 ss(3) / 35 ss(3) * 3/9.5 ss(4) * 4/5]); % ???????????????
+        ss = get(0, 'ScreenSize'); 
+        h = figure('Position', [ss(4) / 2 ss(3) / 35 ss(3) * 3/9.5 ss(4) * 4/5]); 
         % set(h,'visible','off');
-        % figure('Position',[ss(4)*2 ss(3)/35 ss(3)*3/9.5 ss(4)*4/5]);   % ???????????????
         % clf reset;
         set(h, 'Color', [1 1 1]);
         f_matrix = reshape(1:12, [3, 4])';
@@ -114,46 +114,41 @@ for p_1 = p1_left:p1_right
         for ii = 1:12
             trendz = squeeze(trendyr(:, :, ii));
             [i, j] = find(f_matrix == ii);
-            subplot_yc(4, 3, i, j); % ?????
+            subplot_yc(4, 3, i, j); 
             hold on
-            m_proj('Mercator', 'lon', lon1, 'lat', lat1); %?????????????Mercator,Equidistant cylindrical,lambert,Miller Cylindrical
+            m_proj('Mercator', 'lon', lon1, 'lat', lat1); %Mercator,Equidistant cylindrical,lambert,Miller Cylindrical
             m_pcolor(lon, lat, trendz');
             % [x, y]=find(trendz(:,:)<=0);
             % m_plot(lon(x),lat(y),'g.','markersize',5,'color','k');
             % [Xlon,Ylat] = meshgrid(lon,lat);
             % m_contourf(Xlon,Ylat,trendz',30,'LineStyle','none')
-            colormap(mycolor(18)); %mycolor(100)is soden color????????colormap(flipud(mycolor(13)));%colormap(jet(4))%????????????????????
+            colormap(mycolor(18)); %mycolor(100)is soden color????????colormap(flipud(mycolor(13)));%colormap(jet(4))
+            col_SeriesNum=10;
+            [colorbar_Series] = findSuit_colorInt(trendz, col_SeriesNum);
             % caxis([mmin(ii) mmax(ii)]);
-            caxis([mmin mmax]);
+            caxis([min(colorbar_Series) max(colorbar_Series)]);
             hold on
             m_line(world_mapx(:), world_mapy(:), 'color', [0 0 0], 'LineWidth', 0.5);
-            m_grid('linestyle', 'none', 'tickdir', 'out', 'yaxislocation', 'left', 'fontsize', 10, 'color', 'k'); %????????????
-            title({[mlabels.component{ii}, mlabels.unite{ii}]; ['year mean (cc = ', num2str(yr_cc{ii}), ')']},'Interpreter','latex'); % cc=',num2str(corr))
+            if j==1&&i==4
+                m_grid('linestyle', 'none', 'tickdir', 'out', 'yaxislocation', 'left', 'fontsize', 8, 'color', 'k'); 
+            elseif j==1&&i~=4
+                m_grid('linestyle', 'none', 'tickdir', 'out', 'xticklabels',[], 'yaxislocation', 'left', 'fontsize', 8, 'color', 'k');
+            elseif j~=1&&i==4 
+                m_grid('linestyle', 'none', 'tickdir', 'out', 'yticklabels',[], 'fontsize', 8, 'color', 'k');
+            elseif j~=1&&i~=4 
+                m_grid('linestyle', 'none', 'tickdir', 'out', 'xticklabels',[], 'yticklabels',[], 'fontsize', 8, 'color', 'k');
+            end
+            
+            title({[mlabels.component{ii}, mlabels.unite{ii}]; ['year mean (cc = ', num2str(yr_cc{ii}), ')']},'Interpreter','latex','fontsize', 10); % cc=',num2str(corr))
             % c=colorbar;
-            % % c.Limits=[mmin(ii) mmax(ii)];
+            % % c.Limits=[mmin(ii) mmax(ii)];% 
             % c.Box='off';
             hold on
-            pos = get(gca, 'Position');
-
+            c = colorbar;
+            % c.TickLength = 0.0245;
+            c.Ticks=colorbar_Series(2:end-1);
+            c.Limits = [min(colorbar_Series) max(colorbar_Series)];
         end
-
-        c = colorbar('southoutside', 'Position', [pos(1) - 0.467 pos(2) - 0.05 0.6 pos(4) / 8]);
-        c.TickLength = 0.0245;
-
-        if mmin == -5
-            c.Ticks = [-4, -3, -2, -1, 0, 1, 2, 3, 4];
-        elseif mmin == -4
-            c.Ticks = [-3.2, -2.4, -1.6, -.8, 0, .8, 1.6, 2.4, 3.2];
-        elseif mmin == -3
-            c.Ticks = [-2.5, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5];
-        elseif mmin == -2.5
-            c.Ticks = [-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2];
-        end
-
-        % c.LineWidth = 2;
-        c.Limits = [mmin mmax];
-        % c.LineWidth = 'white';
-        % c.Box='off';
 
         tt = ['Level:', mlabels.level, ', Era: ', level.time1{p_1}(1:end - 1), ', Model:', existModelName{level1}];
         sgtt = sgtitle(tt, 'Fontsize', 14, 'Interpreter', 'none');
