@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-06-15 11:29:09
+% LastEditTime : 2020-06-17 13:11:13
 % LastEditors  : LYC
 % Description  : 计算lamda_cloud 和 deltaTsg的线性关系(k1和k2)
-% FilePath     : /Research/p2_processCMIP6Data/s4.nonLocalCld/s1_calCloudTsg_k1k2.m
+% FilePath     : /code/p2_processCMIP6Data/s4.nonLocalCld/s1_cal_nonLocalCld1_Tsgk1k2.m
 %
 %%---------------------------------------------------------
 % 云, 温度 水汽 反照率
@@ -38,7 +38,7 @@ for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
     lat = 88.75:-2.5:-88.75; nlat = length(lat);
     lon = lonf; nlon = length(lon);
     nlonf = length(lonf); nlatf = length(latf); ntime = length(time);
-    DeltaTsgAssemble = zeros(length(level.model2), 2); % groabal mean temperture change during whole period
+    DeltaTsgAssemble = zeros(length(level.model2), 2); % global mean temperture change during whole period
     lamdaCloudAssemble = zeros(length(level.model2), 1);
     dnonCloudAssemblePath = [inputPath, 'z_assembleData/', level.process3{8}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/non_localCld/
     auto_mkdir(dnonCloudAssemblePath)
@@ -78,7 +78,7 @@ for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
         end
 
         tsUsed = dts .* wei;
-        dtsg = zeros(ntime, 1); % groabal mean temperture anomaly time series
+        dtsg = zeros(ntime, 1); % global mean temperture anomaly time series
 
         for timeNum = 1:ntime
             dtsg(timeNum) = nansum(nansum(tsUsed(:, :, timeNum))) / nansum(nansum(wei));
