@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-14 19:53:54
-% LastEditTime : 2020-06-15 16:57:55
+% LastEditTime : 2020-06-17 14:55:26
 % LastEditors  : LYC
-% Description  : 计算非局地云的辐射效应和温度贡献
-% FilePath     : /Research/p2_processCMIP6Data/s4.nonLocalCld/s2_cal_nonLocalCld.m
+% Description  : 计算非局地云的辐射效应和温度贡献(用lamd_c和dtsg的线性关系求)
+% FilePath     : /code/p2_processCMIP6Data/s4.nonLocalCld/s1p2_cal1_nonLocalCld1.m
 % Attention    : only ssp caled
 %%---------------------------------------------------------
 clear; clc; tic;
@@ -100,7 +100,7 @@ for p_1 = 3:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             ts_lwkernelSeries=repmat(ts_lwkernel,[1 1 nyear]);
             
             for varNum = 1:3
-                varKerUsed(:,:,:,varNum)=squeeze(varUsed(:,:,:,varNum))./ts_lwkernelSeries;
+                varKerUsed(:,:,:,varNum)=squeeze(varUsed(:,:,:,varNum))./-ts_lwkernelSeries;% note - didnt run 
             end
             
             for varNum = 1:3

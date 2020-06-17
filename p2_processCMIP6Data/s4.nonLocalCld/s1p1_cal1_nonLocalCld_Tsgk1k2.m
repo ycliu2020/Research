@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-06-17 13:11:13
+% LastEditTime : 2020-06-17 14:34:22
 % LastEditors  : LYC
 % Description  : 计算lamda_cloud 和 deltaTsg的线性关系(k1和k2)
-% FilePath     : /code/p2_processCMIP6Data/s4.nonLocalCld/s1_cal_nonLocalCld1_Tsgk1k2.m
+% FilePath     : /code/p2_processCMIP6Data/s4.nonLocalCld/s1p1_cal1_nonLocalCld_Tsgk1k2.m
 %
 %%---------------------------------------------------------
 % 云, 温度 水汽 反照率
