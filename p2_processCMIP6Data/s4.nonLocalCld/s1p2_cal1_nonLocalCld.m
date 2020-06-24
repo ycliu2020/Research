@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-14 19:53:54
-% LastEditTime : 2020-06-17 14:55:26
+% LastEditTime : 2020-06-18 14:37:12
 % LastEditors  : LYC
 % Description  : 计算非局地云的辐射效应和温度贡献(用lamd_c和dtsg的线性关系求)
-% FilePath     : /code/p2_processCMIP6Data/s4.nonLocalCld/s1p2_cal1_nonLocalCld1.m
+% FilePath     : /code/p2_processCMIP6Data/s4.nonLocalCld/s1p2_cal1_nonLocalCld.m
 % Attention    : only ssp caled
 %%---------------------------------------------------------
 clear; clc; tic;

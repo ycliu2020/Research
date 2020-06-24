@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-06-10 19:36:41
+% LastEditTime : 2020-06-24 10:59:09
 % LastEditors  : LYC
 % Description  : 
-% FilePath     : /Research/p2_processCMIP6Data/s3.radEffTrend/s4_trendRadEff_cldSfc.m
+% FilePath     : /code/p2_processCMIP6Data/s3.radEffTrend/s3p2_trendRadEff_cldSfc.m
 %  
 %%---------------------------------------------------------
 %need to be edit

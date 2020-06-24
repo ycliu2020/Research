@@ -76,7 +76,9 @@ for modelNum in `eval echo {0..$ii}`; do
                     echo "There is only 1 file in" ${nsm}.
                     continue
                 fi
-                                
+                
+                echo "There are" ${fl_nbr} "files in" ${nsm}.
+                
                 # If there is only 0 file, mean dont exist var continue to next loop
                 if [ ${fl_nbr} -le 0 ]
                 then

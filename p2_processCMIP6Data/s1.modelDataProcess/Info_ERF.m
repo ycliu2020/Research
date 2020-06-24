@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-06-13 20:58:49
+% LastEditTime : 2020-06-18 16:47:26
 % LastEditors  : LYC
 % Description  : Effective Radiative Forcing :1.historical 2. ssp245 and ssp370
-% FilePath     : /Research/p2_processCMIP6Data/s1.modelDataProcess/Info_ERF.m
+% FilePath     : /code/p2_processCMIP6Data/s1.modelDataProcess/Info_ERF.m
 %  
 %%---------------------------------------------------------
 % 
@@ -27,8 +27,10 @@ timeERF_ssp370_raw=[2005,2010.13,2015.03,2019.93,2024.84,2029.41,2033.99,2038.56
 ERF_ssp370_raw=[1.86381,2.09728,2.35019,2.60311,2.85603,3.1284,3.38132,3.63424,3.88716,4.12062,4.37354,4.62646,4.87938,5.15175,5.40467,5.63813,5.91051,6.16342,6.4358,6.68872,6.94163,6.98054];
 
 % interp, rec mean recommend
-ERF_rec.ssp245=interp1(timeERF_ssp245_raw,ERF_ssp245_raw,timeERF.ssp);
-ERF_rec.ssp370=interp1(timeERF_ssp370_raw,ERF_ssp370_raw,timeERF.ssp);
+ERF_rec.ssp245=interp1(timeERF_ssp245_raw,ERF_ssp245_raw,timeERF_rec.ssp);
+ERF_rec.ssp370=interp1(timeERF_ssp370_raw,ERF_ssp370_raw,timeERF_rec.ssp);
+
+
 ERF_rec.readme='recommend Effective Radiative Forcing, read /home/lyc/research/P02.Ts_change_research/p2_processCMIP6Data/s1.modelDataProcess/Info_ERF.m for more information';
 outPath='/data1/liuyincheng/cmip6-process/z_globalVar/';
 save([outPath, 'ERF_rec.mat'], 'ERF_rec','timeERF_rec');

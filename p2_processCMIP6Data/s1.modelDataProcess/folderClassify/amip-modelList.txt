@@ -1,0 +1,303 @@
+amip:
+Model: EC-Earth3-Veg
+ensemble member: ['r1i1p1f1']
+r1i1p1f1 have 3 vars
+!!!!!!!!!!!!!! r1i1p1f1 lack hus
+!!!!!!!!!!!!!! r1i1p1f1 lack ta
+!!!!!!!!!!!!!! r1i1p1f1 lack ts
+!!!!!!!!!!!!!! r1i1p1f1 lack ps
+!!!!!!!!!!!!!! r1i1p1f1 lack rlus
+!!!!!!!!!!!!!! r1i1p1f1 lack rsus
+!!!!!!!!!!!!!! r1i1p1f1 lack rsds
+!!!!!!!!!!!!!! r1i1p1f1 lack rlds
+!!!!!!!!!!!!!! r1i1p1f1 lack rsuscs
+!!!!!!!!!!!!!! r1i1p1f1 lack rsdscs
+!!!!!!!!!!!!!! r1i1p1f1 lack rldscs
+!!!!!!!!!!!!!! r1i1p1f1 lack rlut
+!!!!!!!!!!!!!! r1i1p1f1 lack rsut
+!!!!!!!!!!!!!! r1i1p1f1 lack rsdt
+!!!!!!!!!!!!!! r1i1p1f1 lack rlutcs
+!!!!!!!!!!!!!! r1i1p1f1 lack rsutcs
+Model: INM-CM5-0
+ensemble member: ['r1i1p1f1']
+r1i1p1f1 have 3 vars
+!!!!!!!!!!!!!! r1i1p1f1 lack hus
+!!!!!!!!!!!!!! r1i1p1f1 lack ta
+!!!!!!!!!!!!!! r1i1p1f1 lack ts
+!!!!!!!!!!!!!! r1i1p1f1 lack ps
+!!!!!!!!!!!!!! r1i1p1f1 lack rlus
+!!!!!!!!!!!!!! r1i1p1f1 lack rsus
+!!!!!!!!!!!!!! r1i1p1f1 lack rsds
+!!!!!!!!!!!!!! r1i1p1f1 lack rlds
+!!!!!!!!!!!!!! r1i1p1f1 lack rsuscs
+!!!!!!!!!!!!!! r1i1p1f1 lack rsdscs
+!!!!!!!!!!!!!! r1i1p1f1 lack rldscs
+!!!!!!!!!!!!!! r1i1p1f1 lack rlut
+!!!!!!!!!!!!!! r1i1p1f1 lack rsut
+!!!!!!!!!!!!!! r1i1p1f1 lack rsdt
+!!!!!!!!!!!!!! r1i1p1f1 lack rlutcs
+!!!!!!!!!!!!!! r1i1p1f1 lack rsutcs
+Model: INM-CM4-8
+ensemble member: ['r1i1p1f1']
+r1i1p1f1 have 3 vars
+!!!!!!!!!!!!!! r1i1p1f1 lack hus
+!!!!!!!!!!!!!! r1i1p1f1 lack ta
+!!!!!!!!!!!!!! r1i1p1f1 lack ts
+!!!!!!!!!!!!!! r1i1p1f1 lack ps
+!!!!!!!!!!!!!! r1i1p1f1 lack rlus
+!!!!!!!!!!!!!! r1i1p1f1 lack rsus
+!!!!!!!!!!!!!! r1i1p1f1 lack rsds
+!!!!!!!!!!!!!! r1i1p1f1 lack rlds
+!!!!!!!!!!!!!! r1i1p1f1 lack rsuscs
+!!!!!!!!!!!!!! r1i1p1f1 lack rsdscs
+!!!!!!!!!!!!!! r1i1p1f1 lack rldscs
+!!!!!!!!!!!!!! r1i1p1f1 lack rlut
+!!!!!!!!!!!!!! r1i1p1f1 lack rsut
+!!!!!!!!!!!!!! r1i1p1f1 lack rsdt
+!!!!!!!!!!!!!! r1i1p1f1 lack rlutcs
+!!!!!!!!!!!!!! r1i1p1f1 lack rsutcs
+Model: UKESM1-0-LL
+ensemble member: ['r1i1p1f4', 'r1i1p1f2']
+r1i1p1f4 have 21 vars
+r1i1p1f2 have 18 vars
+Model: BCC-ESM1
+ensemble member: ['r3i1p1f1', 'r2i1p1f1', 'r1i1p1f1']
+r3i1p1f1 have 21 vars
+r2i1p1f1 have 21 vars
+r1i1p1f1 have 21 vars
+Model: MIROC6
+ensemble member: ['r4i1p1f1', 'r6i1p1f1', 'r8i1p1f1', 'r3i1p1f1', 'r5i1p1f1', 'r9i1p1f1', 'r2i1p1f1', 'r7i1p1f1', 'r10i1p1f1', 'r1i1p1f1']
+r4i1p1f1 have 21 vars
+r6i1p1f1 have 21 vars
+r8i1p1f1 have 21 vars
+r3i1p1f1 have 21 vars
+r5i1p1f1 have 21 vars
+r9i1p1f1 have 21 vars
+r2i1p1f1 have 21 vars
+r7i1p1f1 have 21 vars
+r10i1p1f1 have 21 vars
+r1i1p1f1 have 21 vars
+Model: BCC-CSM2-MR
+ensemble member: ['r3i1p1f1', 'r2i1p1f1', 'r1i1p1f1']
+r3i1p1f1 have 21 vars
+r2i1p1f1 have 21 vars
+r1i1p1f1 have 21 vars
+Model: ACCESS-ESM1-5
+ensemble member: ['r3i1p1f1', 'r2i1p1f1', 'r1i1p1f1']
+r3i1p1f1 have 21 vars
+r2i1p1f1 have 21 vars
+r1i1p1f1 have 21 vars
+Model: CESM2-WACCM-FV2
+ensemble member: ['r3i1p1f1', 'r2i1p1f1', 'r1i1p1f1']
+r3i1p1f1 have 21 vars
+r2i1p1f1 have 21 vars
+r1i1p1f1 have 21 vars
+Model: NESM3
+ensemble member: ['r4i1p1f1', 'r3i1p1f1', 'r5i1p1f1', 'r2i1p1f1', 'r1i1p1f1']
+r4i1p1f1 have 21 vars
+r3i1p1f1 have 21 vars
+r5i1p1f1 have 20 vars
+!!!!!!!!!!!!!! r5i1p1f1 lack ps
+r2i1p1f1 have 21 vars
+r1i1p1f1 have 21 vars
+Model: FGOALS-g3
+ensemble member: ['r4i1p1f1', 'r3i1p1f1', 'r5i1p1f1', 'r2i1p1f1', 'r1i1p1f1']
+r4i1p1f1 have 21 vars
+r3i1p1f1 have 21 vars
+r5i1p1f1 have 21 vars
+r2i1p1f1 have 21 vars
+r1i1p1f1 have 21 vars
+Model: NorESM2-LM
+ensemble member: ['r1i1p1f1']
+r1i1p1f1 have 20 vars
+!!!!!!!!!!!!!! r1i1p1f1 lack rldscs
+Model: HadGEM3-GC31-LL
+ensemble member: ['r4i1p1f3', 'r1i1p1f3', 'r2i1p1f3', 'r3i1p1f3', 'r5i1p1f3']
+r4i1p1f3 have 21 vars
+r1i1p1f3 have 21 vars
+r2i1p1f3 have 21 vars
+r3i1p1f3 have 21 vars
+r5i1p1f3 have 21 vars
+Model: E3SM-1-0
+ensemble member: ['r1i1p1f1']
+r1i1p1f1 have 3 vars
+!!!!!!!!!!!!!! r1i1p1f1 lack hus
+!!!!!!!!!!!!!! r1i1p1f1 lack ta
+!!!!!!!!!!!!!! r1i1p1f1 lack ts
+!!!!!!!!!!!!!! r1i1p1f1 lack ps
+!!!!!!!!!!!!!! r1i1p1f1 lack rlus
+!!!!!!!!!!!!!! r1i1p1f1 lack rsus
+!!!!!!!!!!!!!! r1i1p1f1 lack rsds
+!!!!!!!!!!!!!! r1i1p1f1 lack rlds
+!!!!!!!!!!!!!! r1i1p1f1 lack rsuscs
+!!!!!!!!!!!!!! r1i1p1f1 lack rsdscs
+!!!!!!!!!!!!!! r1i1p1f1 lack rldscs
+!!!!!!!!!!!!!! r1i1p1f1 lack rlut
+!!!!!!!!!!!!!! r1i1p1f1 lack rsut
+!!!!!!!!!!!!!! r1i1p1f1 lack rsdt
+!!!!!!!!!!!!!! r1i1p1f1 lack rlutcs
+!!!!!!!!!!!!!! r1i1p1f1 lack rsutcs
+Model: MRI-ESM2-0
+ensemble member: ['r3i1p1f1', 'r2i1p1f1', 'r1i1p1f1']
+r3i1p1f1 have 21 vars
+r2i1p1f1 have 21 vars
+r1i1p1f1 have 21 vars
+Model: IPSL-CM6A-LR
+ensemble member: ['r1i1p1f1']
+r1i1p1f1 have 3 vars
+!!!!!!!!!!!!!! r1i1p1f1 lack hus
+!!!!!!!!!!!!!! r1i1p1f1 lack ta
+!!!!!!!!!!!!!! r1i1p1f1 lack ts
+!!!!!!!!!!!!!! r1i1p1f1 lack ps
+!!!!!!!!!!!!!! r1i1p1f1 lack rlus
+!!!!!!!!!!!!!! r1i1p1f1 lack rsus
+!!!!!!!!!!!!!! r1i1p1f1 lack rsds
+!!!!!!!!!!!!!! r1i1p1f1 lack rlds
+!!!!!!!!!!!!!! r1i1p1f1 lack rsuscs
+!!!!!!!!!!!!!! r1i1p1f1 lack rsdscs
+!!!!!!!!!!!!!! r1i1p1f1 lack rldscs
+!!!!!!!!!!!!!! r1i1p1f1 lack rlut
+!!!!!!!!!!!!!! r1i1p1f1 lack rsut
+!!!!!!!!!!!!!! r1i1p1f1 lack rsdt
+!!!!!!!!!!!!!! r1i1p1f1 lack rlutcs
+!!!!!!!!!!!!!! r1i1p1f1 lack rsutcs
+Model: MPI-ESM1-2-HR
+ensemble member: ['r3i1p1f1', 'r2i1p1f1', 'r1i1p1f1']
+r3i1p1f1 have 21 vars
+r2i1p1f1 have 21 vars
+r1i1p1f1 have 21 vars
+Model: CAS-ESM2-0
+ensemble member: ['r4i1p1f1', 'r3i1p1f1', 'r2i1p1f1', 'r1i1p1f1']
+r4i1p1f1 have 21 vars
+r3i1p1f1 have 21 vars
+r2i1p1f1 have 21 vars
+r1i1p1f1 have 21 vars
+Model: GISS-E2-2-G
+ensemble member: ['r2i1p3f1', 'r3i1p3f1', 'r1i1p3f1', 'r4i1p3f1', 'r5i1p3f1']
+r2i1p3f1 have 21 vars
+r3i1p3f1 have 21 vars
+r1i1p3f1 have 21 vars
+r4i1p3f1 have 21 vars
+r5i1p3f1 have 21 vars
+Model: HadGEM3-GC31-MM
+ensemble member: ['r4i1p1f3', 'r1i1p1f3', 'r2i1p1f3', 'r3i1p1f3']
+r4i1p1f3 have 21 vars
+r1i1p1f3 have 21 vars
+r2i1p1f3 have 21 vars
+r3i1p1f3 have 21 vars
+Model: NorCPM1
+ensemble member: ['r4i1p1f1', 'r6i1p1f1', 'r8i1p1f1', 'r3i1p1f1', 'r5i1p1f1', 'r9i1p1f1', 'r2i1p1f1', 'r7i1p1f1', 'r10i1p1f1', 'r1i1p1f1']
+r4i1p1f1 have 21 vars
+r6i1p1f1 have 21 vars
+r8i1p1f1 have 21 vars
+r3i1p1f1 have 21 vars
+r5i1p1f1 have 21 vars
+r9i1p1f1 have 21 vars
+r2i1p1f1 have 21 vars
+r7i1p1f1 have 21 vars
+r10i1p1f1 have 21 vars
+r1i1p1f1 have 21 vars
+Model: CESM2-FV2
+ensemble member: ['r3i1p1f1', 'r2i1p1f1', 'r1i1p1f1']
+r3i1p1f1 have 21 vars
+r2i1p1f1 have 21 vars
+r1i1p1f1 have 21 vars
+Model: CAMS-CSM1-0
+ensemble member: ['r3i1p1f1', 'r2i1p1f1', 'r1i1p1f1']
+r3i1p1f1 have 18 vars
+!!!!!!!!!!!!!! r3i1p1f1 lack rsuscs
+!!!!!!!!!!!!!! r3i1p1f1 lack rsdscs
+!!!!!!!!!!!!!! r3i1p1f1 lack rldscs
+r2i1p1f1 have 18 vars
+!!!!!!!!!!!!!! r2i1p1f1 lack rsuscs
+!!!!!!!!!!!!!! r2i1p1f1 lack rsdscs
+!!!!!!!!!!!!!! r2i1p1f1 lack rldscs
+r1i1p1f1 have 18 vars
+!!!!!!!!!!!!!! r1i1p1f1 lack rsuscs
+!!!!!!!!!!!!!! r1i1p1f1 lack rsdscs
+!!!!!!!!!!!!!! r1i1p1f1 lack rldscs
+Model: ACCESS-CM2
+ensemble member: ['r3i1p1f1', 'r2i1p1f1', 'r1i1p1f1']
+r3i1p1f1 have 21 vars
+r2i1p1f1 have 21 vars
+r1i1p1f1 have 21 vars
+Model: CESM2
+ensemble member: ['r4i1p1f1', 'r6i1p1f1', 'r8i1p1f1', 'r3i1p1f1', 'r5i1p1f1', 'r9i1p1f1', 'r2i1p1f1', 'r7i1p1f1', 'r10i1p1f1', 'r1i1p1f1']
+r4i1p1f1 have 21 vars
+r6i1p1f1 have 21 vars
+r8i1p1f1 have 21 vars
+r3i1p1f1 have 21 vars
+r5i1p1f1 have 21 vars
+r9i1p1f1 have 21 vars
+r2i1p1f1 have 21 vars
+r7i1p1f1 have 21 vars
+r10i1p1f1 have 21 vars
+r1i1p1f1 have 21 vars
+Model: SAM0-UNICON
+ensemble member: ['r1i1p1f1']
+r1i1p1f1 have 21 vars
+Model: CESM2-WACCM
+ensemble member: ['r3i1p1f1', 'r2i1p1f1', 'r1i1p1f1']
+r3i1p1f1 have 21 vars
+r2i1p1f1 have 21 vars
+r1i1p1f1 have 21 vars
+Model: GISS-E2-1-G
+ensemble member: ['r4i1p1f1', 'r1i1p5f1', 'r3i1p1f1', 'r2i1p5f1', 'r2i1p3f1', 'r5i1p1f1', 'r4i1p5f1', 'r4i1p1f2', 'r3i1p3f1', 'r2i1p1f2', 'r3i1p5f1', 'r2i1p1f1', 'r3i1p1f2', 'r1i1p3f1', 'r4i1p3f1', 'r1i1p1f1', 'r5i1p1f2', 'r1i1p1f2', 'r5i1p5f1', 'r5i1p3f1']
+r4i1p1f1 have 21 vars
+r1i1p5f1 have 21 vars
+r3i1p1f1 have 21 vars
+r2i1p5f1 have 21 vars
+r2i1p3f1 have 21 vars
+r5i1p1f1 have 21 vars
+r4i1p5f1 have 21 vars
+r4i1p1f2 have 21 vars
+r3i1p3f1 have 21 vars
+r2i1p1f2 have 21 vars
+r3i1p5f1 have 21 vars
+r2i1p1f1 have 21 vars
+r3i1p1f2 have 21 vars
+r1i1p3f1 have 21 vars
+r4i1p3f1 have 21 vars
+r1i1p1f1 have 20 vars
+r5i1p1f2 have 21 vars
+r1i1p1f2 have 21 vars
+r5i1p5f1 have 21 vars
+r5i1p3f1 have 21 vars
+Model: TaiESM1
+ensemble member: ['r1i1p1f1']
+r1i1p1f1 have 19 vars
+!!!!!!!!!!!!!! r1i1p1f1 lack rldscs
+!!!!!!!!!!!!!! r1i1p1f1 lack rlutcs
+Model: CanESM5
+ensemble member: ['r4i1p2f1', 'r2i1p2f1', 'r2i1p1f1', 'r1i1p2f1', 'r3i1p2f1', 'r1i1p1f1', 'r5i1p2f1']
+r4i1p2f1 have 21 vars
+r2i1p2f1 have 21 vars
+r2i1p1f1 have 21 vars
+r1i1p2f1 have 21 vars
+r3i1p2f1 have 21 vars
+r1i1p1f1 have 21 vars
+r5i1p2f1 have 21 vars
+Model: EC-Earth3
+ensemble member: ['r1i1p1f1']
+r1i1p1f1 have 3 vars
+!!!!!!!!!!!!!! r1i1p1f1 lack hus
+!!!!!!!!!!!!!! r1i1p1f1 lack ta
+!!!!!!!!!!!!!! r1i1p1f1 lack ts
+!!!!!!!!!!!!!! r1i1p1f1 lack ps
+!!!!!!!!!!!!!! r1i1p1f1 lack rlus
+!!!!!!!!!!!!!! r1i1p1f1 lack rsus
+!!!!!!!!!!!!!! r1i1p1f1 lack rsds
+!!!!!!!!!!!!!! r1i1p1f1 lack rlds
+!!!!!!!!!!!!!! r1i1p1f1 lack rsuscs
+!!!!!!!!!!!!!! r1i1p1f1 lack rsdscs
+!!!!!!!!!!!!!! r1i1p1f1 lack rldscs
+!!!!!!!!!!!!!! r1i1p1f1 lack rlut
+!!!!!!!!!!!!!! r1i1p1f1 lack rsut
+!!!!!!!!!!!!!! r1i1p1f1 lack rsdt
+!!!!!!!!!!!!!! r1i1p1f1 lack rlutcs
+!!!!!!!!!!!!!! r1i1p1f1 lack rsutcs
+Model: MIROC-ES2L
+ensemble member: ['r2i1p1f2', 'r3i1p1f2', 'r1i1p1f2']
+r2i1p1f2 have 21 vars
+r3i1p1f2 have 21 vars
+r1i1p1f2 have 21 vars

@@ -63,13 +63,13 @@ echo "Model Experiment:" ${xpt}.
 # fi
 var=("hus" "ta" "ts" "ps" "hfls" "hfss"\
     "rlus" "rsus" "rsds" "rlds" "rsuscs" "rsdscs" "rldscs" \
-"rlut" "rsut" "rsdt" "rlutcs" "rsutcs" ) # 18 variables
+"rlut" "rsut" "rsdt" "rlutcs" "rsutcs" "clisccp" "ua" "va" "wap") # 22 variables
 rlm='Amon'                         # Realm
 nsm1='r1i1p1f1'
 echo "Model realm:" ${rlm}.
 echo "This model list mean contain " ${nsm1} "ensemble member".
 
-for var_id in {0..17}; do            # Loop over two variables
+for var_id in {0..21}; do            # Loop over N variables
     # Names of all the models (ls [get file names];
     #  cut [get model names];
     #  sort; uniq [remove duplicates]; awk [print])
@@ -95,11 +95,11 @@ for var_id in {0..17}; do            # Loop over two variables
             continue
         fi
         
-        # If var_id greater than loop 1 , continue to next loop
-        if [ ${var_id} -gt 0 ]
-        then
-            continue
-        fi
+        # # If var_id greater than loop 1 , continue to next loop
+        # if [ ${var_id} -gt 0 ]
+        # then
+        #     continue
+        # fi
 
         echo "------------------------------"
         echo "Model" ${mdl} "includes" ${nsm_nbr} "ensemble member(s):"

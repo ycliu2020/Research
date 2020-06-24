@@ -69,12 +69,12 @@ for p_1 = p1_left:p1_right
         load([dnonLocalCldPath, ['trendyr_dTsk2_',lower(mlabels.level),'.mat']])% trendyr_dTsk2
         load([vsTsEffectTrendPath, ['trend_dTs_x_',lower(mlabels.level),'.mat']])% trendm_dTs_alb, trendm_dTs_cld, trendm_dTs_hus, trendm_dTs_ta, trends_dTs_alb, trends_dTs_cld, trends_dTs_hus, trends_dTs_ta, trendyr_dTs_alb, trendyr_dTs_cld, trendyr_dTs_hus, trendyr_dTs_ta
         nlon = length(lon); nlat = length(lat); 
-        trendyr_dTsnonLocalCld=-trendyr_dTsnonLocalCld;
-        trendyr_dTs_cld=-trendyr_dTs_cld;
-        trendyr_dTs_alb=-trendyr_dTs_alb;
-        trendyr_dTs_hus=-trendyr_dTs_hus;
-        trendyr_dTs_ta=-trendyr_dTs_ta;
-        trendyr_dTs_ta=-trendyr_dTs_ta;
+        % trendyr_dTsnonLocalCld=-trendyr_dTsnonLocalCld;
+        % trendyr_dTs_cld=-trendyr_dTs_cld;
+        % trendyr_dTs_alb=-trendyr_dTs_alb;
+        % trendyr_dTs_hus=-trendyr_dTs_hus;
+        % trendyr_dTs_ta=-trendyr_dTs_ta;
+        % trendyr_dTs_ta=-trendyr_dTs_ta;
         % cal dRsumNonlocalCldK2 and dRsumNonlocalCld, rad effect
         if strcmp(mlabels.level,'SFC')==1
             trendyr_dRsumNonlocalCld=trendyr_dRsfc_cloud+trendyr_dRnonLocalCld;

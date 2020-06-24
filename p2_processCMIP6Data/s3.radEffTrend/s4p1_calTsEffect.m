@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-15 10:44:34
-% LastEditTime : 2020-06-15 16:09:07
+% LastEditTime : 2020-06-17 15:17:26
 % LastEditors  : LYC
 % Description  : cal dRvars effect on Ts : according Ts=dRx/Kts
-% FilePath     : /Research/p2_processCMIP6Data/s3.radEffTrend/s4p1_calTsEffect.m
+% FilePath     : /code/p2_processCMIP6Data/s3.radEffTrend/s4p1_calTsEffect.m
 % Note         : only cal cloud, hus, ta, alb on sfc/toa, if need more vars, add later.
 %%---------------------------------------------------------
 clear; clc; tic;
@@ -77,7 +77,7 @@ for p_1 = [2 4]%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp37
             ts_lwkernelSeries = repmat(ts_lwkernel, [1 1 nyear]);
             % cal dRs/kernel_ts
             for varNum = 1:varUsedNum
-                varKerUsed(:, :, :, varNum) = squeeze(varUsed(:, :, :, varNum)) ./ ts_lwkernelSeries;
+                varKerUsed(:, :, :, varNum) = squeeze(varUsed(:, :, :, varNum)) ./ -ts_lwkernelSeries;
             end
 
             % save...

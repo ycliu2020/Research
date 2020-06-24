@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-17 13:16:32
-% LastEditTime : 2020-06-17 15:02:09
+% LastEditTime : 2020-06-18 14:04:55
 % LastEditors  : LYC
 % Description  : 计算非局地云的辐射效应和温度贡献(用云辐射贡献的ts变化求)
 % FilePath     : /code/p2_processCMIP6Data/s4.nonLocalCld/s2p1_cal2_nonLocalCld.m
@@ -13,7 +13,7 @@ p_3 = 88.75; % Latitude range
 lon1 = [2.5 357.5]; lat1 = [-p_3 + 1 p_3 - 1]; % world area
 toaSfc = {'toa', 'sfc'};
 
-for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     nowpath = pwd;
     [readme, Experiment, level, tLin, mPlev, vars] = modelParameters(p_1);
     % inputPath
@@ -76,7 +76,7 @@ for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
         % cal DeltaTsg_cld
         DeltaTsg_cld = Heat_cldAverage / Heat_totAverage * DeltaTsg;
         % save
-        save([dradEffectPath, 'DeltaTsg_cld.mat'], 'DeltaTsg_cld')
+        save([dradEffectPath, 'DeltaTsg_cld.mat'], 'DeltaTsg_cld','Heat_totAverage','Heat_cldAverage','DeltaTsg')
 
         %% Step2: cal dRnonLocalCld2 and trendyr_dRnonLocalCld2(unite: per day)
         load([dradEffectPath, 'dradEfect_sfc_cld.mat'])%albEffect, husEffect, taEffect, mainEffect, totalEffect, tsEffect, talwEffect, taswEffect

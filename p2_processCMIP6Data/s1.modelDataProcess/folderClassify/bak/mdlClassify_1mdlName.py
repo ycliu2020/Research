@@ -44,7 +44,7 @@ def file_process(main_path, allIn1):
         if not op.exists(myDst):
             os.mkdir(myDst)
         for name in names:  # 遍历所有的文件夹
-            if '{0}'.format(myIn)+'_' in name and '{0}'.format(mdl_nsm) in name and '{0}'.format(mdl_rlm) in name:
+            if '{0}'.format(myIn)+'_' in name and '{0}'.format(mdl_rlm) in name:
                 # 将上一级路径与文件名组合，得到文件的绝对路径，os.path.join(path,path)
                 myScr = op.join(main_path, name)
                 shutil.move(myScr, myDst)  # 进行文件移动 原来的路径--> 目标路径
@@ -73,7 +73,7 @@ def antifile_process(main_path):
 mdl_xpt = ['abrupt-4xCO2', 'ssp370', 'ssp245',
            'amip/CMIP', 'amip-hist', 'piControl']  # experiment
 
-mdl_nsm = 'r1i1p1f1'  # ensemble member
+# mdl_nsm = 'r1i1p1f1'  # ensemble member
 mdl_rlm = 'Amon'  # model realm
 data_path = '/data1/liuyincheng/CMIP6-mirror/'
 
@@ -89,7 +89,8 @@ allIn[1] = ['ACCESS-CM2', 'ACCESS-ESM1-5', 'AWI-CM-1-1-MR', 'BCC-CSM2-MR', 'BCC-
 allIn[2] = ['ACCESS-CM2', 'ACCESS-ESM1-5', 'AWI-CM-1-1-MR', 'BCC-CSM2-MR', 'CanESM5', 'CESM2', 'CESM2-WACCM', 'FGOALS-g3', 'MIROC6', 'MPI-ESM1-2-HR', 'MPI-ESM1-2-LR', 'MRI-ESM2-0', 'NESM3']
 
 # amip-cmip
-allIn[3] = ['ACCESS-CM2', 'ACCESS-ESM1-5', 'BCC-CSM2-MR', 'BCC-ESM1', 'CanESM5', 'CESM2', 'CESM2-WACCM', 'FGOALS-g3', 'GISS-E2-1-G', 'MIROC6', 'MPI-ESM1-2-HR', 'MRI-ESM2-0', 'NESM3', 'NorCPM1', 'SAM0-UNICON'] 
+allIn[3] = ['CAS-ESM2-0', 'MIROC6', 'ACCESS-CM2', 'MIROC-ES2L', 'FGOALS-g3', 'FIO-ESM-2-0', 'EC-Earth3', 'IPSL-CM6A-LR', 'EC-Earth3-Veg', 'NorESM2-LM', 'CESM2-WACCM-FV2', 'BCC-CSM2-MR', 'BCC-ESM1', 'GISS-E2-2-G', 'CIESM', 'GISS-E2-1-G', 'HadGEM3-GC31-LL', 'CESM2', 'UKESM1-0-LL', 'INM-CM5-0', 'ACCESS-ESM1-5', 'HadGEM3-GC31-MM', 'CAMS-CSM1-0', 'NESM3', 'CESM2-FV2', 'MRI-ESM2-0', 'KACE-1-0-G', 'NorCPM1', 'INM-CM4-8', 'MPI-ESM1-2-HR', 'CESM2-WACCM', 'CanESM5', 'SAM0-UNICON', 'E3SM-1-0', 'TaiESM1', 'FGOALS-f3-L']
+# ['ACCESS-CM2', 'ACCESS-ESM1-5', 'BCC-CSM2-MR', 'BCC-ESM1', 'CanESM5', 'CESM2', 'CESM2-WACCM', 'FGOALS-g3', 'GISS-E2-1-G', 'MIROC6', 'MPI-ESM1-2-HR', 'MRI-ESM2-0', 'NESM3', 'NorCPM1', 'SAM0-UNICON'] 
 
 # amip-hist
 allIn[4] = ['BCC-CSM2-MR', 'CESM2', 'MIROC6', 'MRI-ESM2-0']

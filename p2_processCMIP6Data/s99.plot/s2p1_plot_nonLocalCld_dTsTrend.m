@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-15 13:43:44
-% LastEditTime : 2020-06-16 14:05:52
+% LastEditTime : 2020-06-17 15:19:48
 % LastEditors  : LYC
 % Description  : 
-% FilePath     : /code/p2_processCMIP6Data/s99.plot/s2_plot_nonLocalCld_dTsTrend.m
+% FilePath     : /code/p2_processCMIP6Data/s99.plot/s2p1_plot_nonLocalCld_dTsTrend.m
 %  
 %%---------------------------------------------------------
 clc; clear;
@@ -68,12 +68,12 @@ for p_1 = p1_left:p1_right
         load([dnonLocalCldPath, ['trendyr_dTsk2_',lower(mlabels.level),'.mat']])% trendyr_dTsk2
         load([vsTsEffectTrendPath, ['trend_dTs_x_',lower(mlabels.level),'.mat']])% trendm_dTs_alb, trendm_dTs_cld, trendm_dTs_hus, trendm_dTs_ta, trends_dTs_alb, trends_dTs_cld, trends_dTs_hus, trends_dTs_ta, trendyr_dTs_alb, trendyr_dTs_cld, trendyr_dTs_hus, trendyr_dTs_ta
         nlon = length(lon); nlat = length(lat); 
-        trendyr_dTsnonLocalCld=-trendyr_dTsnonLocalCld;
-        trendyr_dTs_cld=-trendyr_dTs_cld;
-        trendyr_dTs_alb=-trendyr_dTs_alb;
-        trendyr_dTs_hus=-trendyr_dTs_hus;
-        trendyr_dTs_ta=-trendyr_dTs_ta;
-        trendyr_dTs_ta=-trendyr_dTs_ta;
+        % trendyr_dTsnonLocalCld=-trendyr_dTsnonLocalCld;
+        % trendyr_dTs_cld=-trendyr_dTs_cld;
+        % trendyr_dTs_alb=-trendyr_dTs_alb;
+        % trendyr_dTs_hus=-trendyr_dTs_hus;
+        % trendyr_dTs_ta=-trendyr_dTs_ta;
+        % trendyr_dTs_ta=-trendyr_dTs_ta;
         % cal dRsumNonlocalCldK2 and dRsumNonlocalCld, rad effect
         if strcmp(mlabels.level,'SFC')==1
             trendyr_dRsumNonlocalCld=trendyr_dRsfc_cloud+trendyr_dRnonLocalCld;

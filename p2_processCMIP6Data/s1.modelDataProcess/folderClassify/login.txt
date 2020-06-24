@@ -1,0 +1,75 @@
+开始分类还是反分类?(Y/N)：====================================================
+amip/CMIP Done
+there are ['EC-Earth3-Veg', 'INM-CM5-0', 'INM-CM4-8', 'UKESM1-0-LL', 'BCC-ESM1', 'FGOALS-f3-L', 'MIROC6', 'BCC-CSM2-MR', 'ACCESS-ESM1-5', 'CESM2-WACCM-FV2', 'NESM3', 'FGOALS-g3', 'NorESM2-LM', 'HadGEM3-GC31-LL', 'E3SM-1-0', 'MRI-ESM2-0', 'IPSL-CM6A-LR', 'MPI-ESM1-2-HR', 'CAS-ESM2-0', 'GISS-E2-2-G', 'HadGEM3-GC31-MM', 'NorCPM1', 'CESM2-FV2', 'CAMS-CSM1-0', 'ACCESS-CM2', 'CESM2', 'SAM0-UNICON', 'CESM2-WACCM', 'GISS-E2-1-G', 'FIO-ESM-2-0', 'KACE-1-0-G', 'TaiESM1', 'CanESM5', 'EC-Earth3', 'MIROC-ES2L', 'CIESM'] models
+EC-Earth3-Veg Done
+there are ['r1i1p1f1'] ensemble members
+INM-CM5-0 Done
+there are ['r1i1p1f1'] ensemble members
+INM-CM4-8 Done
+there are ['r1i1p1f1'] ensemble members
+UKESM1-0-LL Done
+there are ['r1i1p1f4', 'r1i1p1f2'] ensemble members
+BCC-ESM1 Done
+there are ['r3i1p1f1', 'r2i1p1f1', 'r1i1p1f1'] ensemble members
+FGOALS-f3-L Done
+there are ['r1i1p1f1'] ensemble members
+MIROC6 Done
+there are ['r4i1p1f1', 'r6i1p1f1', 'r8i1p1f1', 'r3i1p1f1', 'r5i1p1f1', 'r9i1p1f1', 'r2i1p1f1', 'r7i1p1f1', 'r10i1p1f1', 'r1i1p1f1'] ensemble members
+BCC-CSM2-MR Done
+there are ['r3i1p1f1', 'r2i1p1f1', 'r1i1p1f1'] ensemble members
+ACCESS-ESM1-5 Done
+there are ['r3i1p1f1', 'r2i1p1f1', 'r1i1p1f1'] ensemble members
+CESM2-WACCM-FV2 Done
+there are ['r3i1p1f1', 'r2i1p1f1', 'r1i1p1f1'] ensemble members
+NESM3 Done
+there are ['r4i1p1f1', 'r3i1p1f1', 'r5i1p1f1', 'r2i1p1f1', 'r1i1p1f1'] ensemble members
+FGOALS-g3 Done
+there are ['r4i1p1f1', 'r3i1p1f1', 'r5i1p1f1', 'r2i1p1f1', 'r1i1p1f1'] ensemble members
+NorESM2-LM Done
+there are ['r1i1p1f1'] ensemble members
+HadGEM3-GC31-LL Done
+there are ['r4i1p1f3', 'r1i1p1f3', 'r2i1p1f3', 'r3i1p1f3', 'r5i1p1f3'] ensemble members
+E3SM-1-0 Done
+there are ['r1i1p1f1'] ensemble members
+MRI-ESM2-0 Done
+there are ['r3i1p1f1', 'r2i1p1f1', 'r1i1p1f1'] ensemble members
+IPSL-CM6A-LR Done
+there are ['r1i1p1f1'] ensemble members
+MPI-ESM1-2-HR Done
+there are ['r3i1p1f1', 'r2i1p1f1', 'r1i1p1f1'] ensemble members
+CAS-ESM2-0 Done
+there are ['r4i1p1f1', 'r3i1p1f1', 'r2i1p1f1', 'r1i1p1f1'] ensemble members
+GISS-E2-2-G Done
+there are ['r2i1p3f1', 'r3i1p3f1', 'r1i1p3f1', 'r4i1p3f1', 'r5i1p3f1'] ensemble members
+HadGEM3-GC31-MM Done
+there are ['r4i1p1f3', 'r1i1p1f3', 'r2i1p1f3', 'r3i1p1f3'] ensemble members
+NorCPM1 Done
+there are ['r4i1p1f1', 'r6i1p1f1', 'r8i1p1f1', 'r3i1p1f1', 'r5i1p1f1', 'r9i1p1f1', 'r2i1p1f1', 'r7i1p1f1', 'r10i1p1f1', 'r1i1p1f1'] ensemble members
+CESM2-FV2 Done
+there are ['r3i1p1f1', 'r2i1p1f1', 'r1i1p1f1'] ensemble members
+CAMS-CSM1-0 Done
+there are ['r3i1p1f1', 'r2i1p1f1', 'r1i1p1f1'] ensemble members
+ACCESS-CM2 Done
+there are ['r3i1p1f1', 'r2i1p1f1', 'r1i1p1f1'] ensemble members
+CESM2 Done
+there are ['r4i1p1f1', 'r6i1p1f1', 'r8i1p1f1', 'r3i1p1f1', 'r5i1p1f1', 'r9i1p1f1', 'r2i1p1f1', 'r7i1p1f1', 'r10i1p1f1', 'r1i1p1f1'] ensemble members
+SAM0-UNICON Done
+there are ['r1i1p1f1'] ensemble members
+CESM2-WACCM Done
+there are ['r3i1p1f1', 'r2i1p1f1', 'r1i1p1f1'] ensemble members
+GISS-E2-1-G Done
+there are ['r4i1p1f1', 'r1i1p5f1', 'r3i1p1f1', 'r2i1p5f1', 'r2i1p3f1', 'r5i1p1f1', 'r4i1p5f1', 'r4i1p1f2', 'r3i1p3f1', 'r2i1p1f2', 'r3i1p5f1', 'r2i1p1f1', 'r3i1p1f2', 'r1i1p3f1', 'r4i1p3f1', 'r1i1p1f1', 'r5i1p1f2', 'r1i1p1f2', 'r5i1p5f1', 'r5i1p3f1'] ensemble members
+FIO-ESM-2-0 Done
+there are ['r1i1p1f1'] ensemble members
+KACE-1-0-G Done
+there are ['r1i1p1f1'] ensemble members
+TaiESM1 Done
+there are ['r1i1p1f1'] ensemble members
+CanESM5 Done
+there are ['r4i1p2f1', 'r2i1p2f1', 'r2i1p1f1', 'r1i1p2f1', 'r3i1p2f1', 'r1i1p1f1', 'r5i1p2f1'] ensemble members
+EC-Earth3 Done
+there are ['r1i1p1f1'] ensemble members
+MIROC-ES2L Done
+there are ['r2i1p1f2', 'r3i1p1f2', 'r1i1p1f2'] ensemble members
+CIESM Done
+there are ['r1i1p1f1'] ensemble members
