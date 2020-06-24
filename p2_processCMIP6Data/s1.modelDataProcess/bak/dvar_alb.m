@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-06-24 16:28:49
+% LastEditTime : 2020-06-24 16:20:32
 % LastEditors  : LYC
 % Description  : cal mainly alb include 1.regrid vars, 2.vars anomly
 %                CMIP6 mothly data
@@ -63,21 +63,25 @@ for p_1 = 1:2%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             auto_mkdir(outPathName{1})
             auto_mkdir(outPathName{2})
 
-            %% check1:  Time line
+            %% check Time line
             % locate first year
-            temp = dir(fullfile(esmPath,[vars.D3{1}, '_Amon*.nc']));
+            temp = dir([mdlPath, vars.D3{1}, '_Amon*.nc']);
             formatOut = 'yyyy-mm';
             startT = cdftime2loc(temp, formatOut, tLin.start{p_1});
             % read time
             startLoc = startT; count = tLin.inter{p_1}; stride = 1;
-            time = cmipTimeRead(temp.name,startLoc,count,stride); %date, Units, Calendar, length 
+            time = ncread(temp.name, 'time', startLoc, count, stride); %unite:day
+            timeUnits = ncreadatt(temp.name, 'time', 'units');
+            timeCalendar = ncreadatt(temp.name, 'time', 'calendar');
+            time = cdfdate2num(timeUnits, timeCalendar, time);
             % test time line consistence
             startYear = str2num(tLin.time{p_1}(1:4)); endYear = str2num(tLin.time{p_1}(end - 3:end));
+            ntime = length(time);
             disp('Time line check:')
-            testTime(time.date, startYear, endYear, 1)
+            testTime(time, startYear, endYear, 1)
 
-            %% check2:  plev
-            temp = dir(fullfile(esmPath,[vars.D4{1}, '_Amon*.nc']));
+            %% check plev
+            temp = dir([mdlPath, vars.D4{1}, '_Amon*.nc']);
             % test plev consistence
             testPlev(temp, mPlev, p_1)
 
@@ -88,7 +92,7 @@ for p_1 = 1:2%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             var2Num = find(strcmp(vars.all, 'rsuscs'));
 
             for ii = [var1Num var2Num]% only 'rsds', 'rsus',
-                temp = dir([esmPath,'/', vars.all{ii}, '_Amon*.nc']);
+                temp = dir([mdlPath, vars.all{ii}, '_Amon*.nc']);
                 tt = size(temp);
 
                 if tt(1) == 0
@@ -105,13 +109,13 @@ for p_1 = 1:2%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
 
             %% read 'rsds' and 'rsus',
             startLoc = [1 1 startT]; count = [inf inf tLin.inter{p_1}]; stride = [1 1 1];
-            temp = dir([esmPath,'/', v_names{1}, '_Amon*.nc']);
+            temp = dir([mdlPath, v_names{1}, '_Amon*.nc']);
             lon_v = ncread(temp.name, 'lon'); lat_v = ncread(temp.name, 'lat');
             lat_v = lat_v(end:-1:1);
             temp_v3 = zeros(length(v_names), length(lon_v), length(lat_v), tLin.inter{p_1});
 
             for i1 = 1:length(v_names)%1.'rsds', 2.'rsus',
-                temp = dir([esmPath,'/', v_names{i1}, '_Amon*.nc']);
+                temp = dir([mdlPath, v_names{i1}, '_Amon*.nc']);
                 temp_v3(i1, :, :, :) = ncread(temp.name, v_names{i1}, startLoc, count, stride);
             end
 
@@ -151,9 +155,12 @@ for p_1 = 1:2%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             [pp] = testLonlat(temp);
             [pp, lon_v, lat_v, temp_alb] = fixLonlat(pp, p_2, lon_v, lat_v, temp_alb, temp);
 
-            albeo_regrid = autoRegrid3(lat_v, lon_v, time2, temp_alb, latf, lonf, time2);
+            [Xlon, Ylat, Ttime] = meshgrid(lat_v, lon_v, time2);
+            [Xlonf, Ylatf, Ttimef] = meshgrid(latf, lonf, time2);
+            albeo_regrid = interp3(Xlon, Ylat, Ttime, temp_alb, Xlonf, Ylatf, Ttimef);
+
             % now we finished, next we cal the anomaly.
-            [alb_anom, alb_clim] = monthlyAnomaly3D(144, 73, time.date, albeo_regrid, 1);
+            [alb_anom, alb_clim] = monthlyAnomaly3D(144, 73, time, albeo_regrid, 1);
 
             %% save sfc albeo
             eval([alb_names{1}, '= albeo_regrid;']); %
@@ -166,8 +173,7 @@ for p_1 = 1:2%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             modelname = level.model2{level1}(1:end);
             save([outPathName{1}, 'global_vars.mat'], 'lonf', 'latf', 'time', 'plevf', 'readme', 'timeseries', 'modelname')
             save([outPathName{2}, 'global_vars.mat'], 'lonf', 'latf', 'time', 'plevf', 'readme', 'timeseries', 'modelname')
-            
-            disp([esmName{esmNum,1}, ' ensemble is done!'])
+
         end
 
         disp([level.model2{level1}, ' model is done!'])

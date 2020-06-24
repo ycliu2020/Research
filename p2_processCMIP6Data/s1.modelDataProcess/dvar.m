@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-06-24 15:58:30
+% LastEditTime : 2020-06-24 16:39:04
 % LastEditors  : LYC
 % Description  : cal mainly include 1.regrid vars, 2.vars anomly
 %                CMIP6 mothly data
@@ -24,7 +24,7 @@ latf = 90:-2.5:-90; nlatf = length(latf);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % experiment
-for p_1 = 2:2%1 mean amip 2000; 2 mean amip 1980; 4 means ssp245, 5 means ssp370, 6 abrupt-4xCO2_150years
+for p_1 = 1:1%1 mean amip 2000; 2 mean amip 1980; 4 means ssp245, 5 means ssp370, 6 abrupt-4xCO2_150years
     % model parameters
     [readme, Experiment, level, tLin, mPlev, vars] = modelParameters(p_1);
     % experiment path (tLin:1740)
@@ -42,7 +42,7 @@ for p_1 = 2:2%1 mean amip 2000; 2 mean amip 1980; 4 means ssp245, 5 means ssp370
     readme.timeseries = tLin.read{p_1};
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % model
-    for level1 = 1:length(level.model2)% model number
+    for level1 = 10:length(level.model2)% model number
         % model path
         mdlPath = fullfile(exmPath, level.model2{level1});
         eval(['cd ', mdlPath]);
@@ -153,7 +153,7 @@ for p_1 = 2:2%1 mean amip 2000; 2 mean amip 1980; 4 means ssp245, 5 means ssp370
             save([outPathName{1}, 'global_vars.mat'], 'lonf', 'latf', 'time', 'plevf', 'readme', 'timeseries', 'modelname')
             save([outPathName{2}, 'global_vars.mat'], 'lonf', 'latf', 'time', 'plevf', 'readme', 'timeseries', 'modelname')
             
-            disp([esmName{esmNum,1}, 'ensemble is done!'])
+            disp([esmName{esmNum,1}, ' ensemble is done!'])
         end
 
         disp([level.model2{level1}, ' model is done!'])
