@@ -1,15 +1,15 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-06-24 16:51:20
+% LastEditTime : 2020-06-25 16:59:05
 % LastEditors  : LYC
 % Description  : cal mainly include 1.regrid vars, 2.vars anomly
 %                CMIP6 mothly data
 %                PS: m mean month, s mean season, yr mean year
-%                time:2000.01-2014.12(interval:15*12);1980.01-2014.12(interval:35*12); 2015.01-2099.12(interval:85*12)
-%                initial time in amip(432 total): 253 of 432(2000.03);13 of 432(1980.01);
-%                initial time in futrue(1032 total): 1 of 1032(2015.01);
-%                initial time in amip-hist(1740 total): 1,561 of 1740(2000.03);1,321 of 1740(1980.01);
+%                time.date:2000.01-2014.12(interval:15*12);1980.01-2014.12(interval:35*12); 2015.01-2099.12(interval:85*12)
+%                initial time.date in amip(432 total): 253 of 432(2000.03);13 of 432(1980.01);
+%                initial time.date in futrue(1032 total): 1 of 1032(2015.01);
+%                initial time.date in amip-hist(1740 total): 1,561 of 1740(2000.03);1,321 of 1740(1980.01);
 % exmPath     : /Research/p2_processCMIP6Data/s2.varsTrend/dTOA_trend.m
 % Attention!!!
 % check lat: model lat disagree with kernels lat (Opposite direction)
@@ -58,9 +58,9 @@ for p_1 = 1:2%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             lat = 88.75:-2.5:-88.75; nlat = length(lat);
             lon = lonf; nlon = length(lon);
             nlonf = length(lonf); nlatf = length(latf);
-            dnetTOA = autoRegrid3(latf, lonf, time, dnetTOA, lat, lon, time);
+            dnetTOA = autoRegrid3(latf, lonf, time.date, dnetTOA, lat, lon, time.date);
             % cal the trend
-            [trendm_dnetTOA, trends_dnetTOA, trendyr_dnetTOA, p_dnetTOA, cons_dnetTOA] = autoCalTrend(dnetTOA, nlon, nlat, time, startmonth);
+            [trendm_dnetTOA, trends_dnetTOA, trendyr_dnetTOA, p_dnetTOA, cons_dnetTOA] = autoCalTrend(dnetTOA, nlon, nlat, time.date, startmonth);
             % now we done all the job, now save and output.
             save([outpathname, 'trend_dnetTOA.mat'], 'trendm_dnetTOA', 'cons_dnetTOA', 'p_dnetTOA', 'trends_dnetTOA', 'trendyr_dnetTOA');
             

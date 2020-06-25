@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-06-24 16:39:04
+% LastEditTime : 2020-06-25 20:33:24
 % LastEditors  : LYC
 % Description  : cal mainly include 1.regrid vars, 2.vars anomly
 %                CMIP6 mothly data
@@ -13,7 +13,6 @@
 % Attention!!!
 % check lat: model lat disagree with kernels lat (Opposite direction)
 %%---------------------------------------------------------
-
 clear; clc; tic;
 nowpath = pwd;
 outPath = '/data1/liuyincheng/cmip6-process/';
@@ -42,7 +41,7 @@ for p_1 = 1:1%1 mean amip 2000; 2 mean amip 1980; 4 means ssp245, 5 means ssp370
     readme.timeseries = tLin.read{p_1};
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % model
-    for level1 = 10:length(level.model2)% model number
+    for level1 = 1:length(level.model2)% model number
         % model path
         mdlPath = fullfile(exmPath, level.model2{level1});
         eval(['cd ', mdlPath]);
