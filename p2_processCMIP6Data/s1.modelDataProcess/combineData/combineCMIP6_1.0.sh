@@ -32,7 +32,7 @@ shopt -s extglob # enable extended globbing
 # fi
 # 2) amip(CMIP)
 locAll='/data1/liuyincheng/CMIP6-mirror/' # Directory of input files
-xptAll=( 'amip' )                # Experiment ( could be more )
+xptAll=( 'ssp245' 'ssp370')                # Experiment ( could be more )
 rlm='Amon'                         # Realm
 var=("hus" "ta" "ts" "ps" "hfls" "hfss"\
     "rlus" "rsus" "rsds" "rlds" "rsuscs" "rsdscs" "rldscs" \

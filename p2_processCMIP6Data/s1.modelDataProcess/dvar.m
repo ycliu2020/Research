@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-06-25 20:33:24
+% LastEditTime : 2020-06-26 10:30:26
 % LastEditors  : LYC
 % Description  : cal mainly include 1.regrid vars, 2.vars anomly
 %                CMIP6 mothly data
@@ -154,11 +154,9 @@ for p_1 = 1:1%1 mean amip 2000; 2 mean amip 1980; 4 means ssp245, 5 means ssp370
             
             disp([esmName{esmNum,1}, ' ensemble is done!'])
         end
-
         disp([level.model2{level1}, ' model is done!'])
         disp(' ')
     end
-
     disp([level.time1{p_1}, ' era is done!'])
     disp(' ')
 end

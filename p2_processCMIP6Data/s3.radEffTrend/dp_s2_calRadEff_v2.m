@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-06-25 21:00:44
+% LastEditTime : 2020-06-26 11:02:16
 % LastEditors  : LYC
 % Description  : cal mainly include 1.regrid vars, 2.vars anomly
 %                CMIP6 mothly data
@@ -20,9 +20,6 @@ nowpath = pwd;
 %%% constant
 Rv = 487.5;
 Lv = 2.5e6;
-lat = 88.75:-2.5:-88.75; nlat = length(lat);
-lon = lonf; nlon = length(lon);
-nlonf = length(lonf); nlatf = length(latf);
 %%% kernels in differnt conditions
 kernelsHightLabel = {'sfc', 'toa'}; kernelsLevel2_sky = {'cld', 'clr'};
 kernelsName = cell(1, 4);
@@ -46,7 +43,7 @@ load('/data1/liuyincheng/cmip6-process/z_globalVar/ERF_rec.mat')% 'ERF_rec', 'ti
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % experiment
-for p_1 = 1:2%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for p_1 = 2:2%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     %CAMS-CSM1-0 didn't have sfc clear sky radiation, delete it
     [readme, Experiment, level, tLin, mPlev, vars] = modelParameters(p_1);
     % exmPath
@@ -85,21 +82,25 @@ for p_1 = 1:2%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % ensemble member
         for esmNum = 1:length(esmName)
+            esmPath = fullfile(mdlPath, esmName{esmNum, 1});
             % path
             dvarsPath = fullfile(esmPath, level.process3{2}); %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/essember/anomaly
             varsPath = fullfile(esmPath, level.process3{1}); %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/essember/rawdata
             radEfectOutPath = fullfile(esmPath, level.process3{6}); %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/essember/radEffect/
             auto_mkdir(radEfectOutPath)
             % load dvars
-            load([varsPath, 'hus.mat'])
             load([dvarsPath, 'global_vars.mat'])% latf lonf time plevf readme
+            load([varsPath, 'hus.mat'])
             load([dvarsPath, 'dhus.mat'])% dhus and clim_hus
             load([dvarsPath, 'dalb.mat'])%
             load([dvarsPath, 'dta.mat'])%
             load([dvarsPath, 'dts.mat'])%
             dta(isnan(dta)) = 0;
             dalb(isnan(dalb)) = 0; dts(isnan(dts)) = 0;
-            ntime=length(time.date);
+            ntime = length(time.date);
+            lat = 88.75:-2.5:-88.75; nlat = length(lat);
+            lon = lonf; nlon = length(lon);
+            nlonf = length(lonf); nlatf = length(latf);
             % load real rad dvars
             % 1.sfc dvars(includ cld and clr sky)
             load([dvarsPath, 'drlus.mat'])% surface_upwelling_longwave_flux_in_air
@@ -112,9 +113,9 @@ for p_1 = 1:2%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             load([dvarsPath, 'drlut.mat']); load([dvarsPath, 'drlutcs.mat'])% toa_outgoing_longwave_flux
 
             % cal the fixed moisture because kernel q's unit is W/m2/K/100mb
-            dhus2 = zeros(144, 73, 24, ntimme);
+            dhus2 = zeros(144, 73, 24, ntime);
 
-            for kk = 1:ntimme
+            for kk = 1:ntime
                 dhus2(:, :, :, kk) = (log(hus(:, :, :, kk)) - log(clim_hus(:, :, :, mod(kk - 1, 12) + 1))) .* clim_ta(:, :, :, mod(kk - 1, 12) + 1).^2 * Rv / Lv;
             end
 
@@ -122,40 +123,40 @@ for p_1 = 1:2%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             save([dvarsPath, 'dhus2.mat'], 'dhus2');
 
             % loop kernels in differnt conditions( 1sfc cld,2sfc clr,3toa cld,4toa clr)
-            kernelPath = [exmPath, level.model2{level1}, '/', level.process3{5}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/kernelsCal
-            dR_hus = zeros(144, 72, ntimme, 4);
+            kernelPath = fullfile(esmPath,level.process3{5}); %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/kernelsCal
+            dR_hus = zeros(144, 72, ntime, 4);
             dR_alb = dR_hus; dR_ts = dR_hus; dR_ta = dR_hus; dR_total = dR_hus; dR_main = dR_hus;
-            % dR_tas=zeros(144,72,ntimme,2);dR_taOnly=dR_tas;
+            % dR_tas=zeros(144,72,ntime,2);dR_taOnly=dR_tas;
 
             for ii = 1:4%( 1sfc cld,2sfc clr,3toa cld,4toa clr)
                 load([kernelPath, kernelsName{ii}])% read kernel
                 %%%%% step1: cal dReffect
                 % prepare zero mixre
-                wvlwEffect = zeros(144, 73, plevel, ntimme);
-                wvswEffect = zeros(144, 73, plevel, ntimme);
-                tsEffect = zeros(144, 73, ntimme);
-                albEffect = zeros(144, 73, ntimme);
+                wvlwEffect = zeros(144, 73, plevel, ntime);
+                wvswEffect = zeros(144, 73, plevel, ntime);
+                tsEffect = zeros(144, 73, ntime);
+                albEffect = zeros(144, 73, ntime);
 
                 if ii <= 2% sfc
-                    taEffect = zeros(144, 73, t_scflevel, ntimme);
+                    taEffect = zeros(144, 73, t_scflevel, ntime);
                     % consider 1 levels near sfc
-                    tasEffect = zeros(144, 73, ntimme);
-                    taOnlyEffect = zeros(144, 73, plevel, ntimme);
+                    tasEffect = zeros(144, 73, ntime);
+                    taOnlyEffect = zeros(144, 73, plevel, ntime);
                     % consider 2 levels near sfc
                     tasEffect2 = taEffect;
-                    % taOnlyEffect2 = zeros(144, 73, plevel-2, ntimme);
-                    % t0Effect = zeros(144, 73, ntimme);% mean sfc ta radeffect
+                    % taOnlyEffect2 = zeros(144, 73, plevel-2, ntime);
+                    % t0Effect = zeros(144, 73, ntime);% mean sfc ta radeffect
                 else
-                    taEffect = zeros(144, 73, plevel, ntimme);
+                    taEffect = zeros(144, 73, plevel, ntime);
                     % consider 2 levels near sfc
                     tasEffect2 = taEffect;
-                    % taOnlyEffect2 = zeros(144, 73, plevel - 2, ntimme);
+                    % taOnlyEffect2 = zeros(144, 73, plevel - 2, ntime);
                 end
 
                 % Kernels and mat data are both from bottom to top
                 % mod function used to process the data starts from 1 and should be consist with kernel(start from 1)
 
-                for kk = 1:ntimme
+                for kk = 1:ntime
                     wvlwEffect(:, :, :, kk) = wv_lwkernel(:, :, :, mod(kk - 1, 12) + 1) .* dhus2(:, :, :, kk);
                     wvswEffect(:, :, :, kk) = wv_swkernel(:, :, :, mod(kk - 1, 12) + 1) .* dhus2(:, :, :, kk);
                     tsEffect(:, :, kk) = ts_lwkernel(:, :, mod(kk - 1, 12) + 1) .* dts(:, :, kk);
@@ -233,7 +234,7 @@ for p_1 = 1:2%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
 
             readme_radEfect = 'final column: 1sfc cld,2sfc clr,3toa cld,4toa clr, note that dR_tas and dR_taOnly shouldnt have value in toa';
             save([radEfectOutPath, 'dradEfect_union.mat'], 'dR_hus', 'dR_alb', 'dR_ts', 'dR_ta', 'dR_total', 'readme_radEfect');
-            
+
             %%%%% step2: cal cloud effect(definen down is postive)
             % real rad( 1sfc cld,2sfc clr,3toa cld,4toa clr)
             ll_rad(:, :, :, 1) = drlds - drlus; % Sfc_cld net thermal radiation,
@@ -277,11 +278,12 @@ for p_1 = 1:2%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             % add ERF (G0-G)/G~0.16 according soden paper
             if length(ERForcing) ~= 1
 
-                for timeLine = 1:ntimme
+                for timeLine = 1:ntime
                     dR_cloud(:, :, timeLine, 2) = dR_cloud(:, :, timeLine, 2) + ERForcing(timeLine) .* 0.16;
                 end
 
             end
+
             %method 2
             dR_residual_clr = dR_clr - dR_total(:, :, :, [2 4]);
             dR_residual_cld1 = dR_allsky - dR_total(:, :, :, [1 3]); % r terms, indicate cloud feedback and co2/aerosol forcing
@@ -307,7 +309,7 @@ for p_1 = 1:2%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             save([radEfectOutPath, 'dR_residual_clr_toa.mat'], 'dR_residual_clr_toa');
             save([radEfectOutPath, 'dR_ObsTotal.mat'], 'dR_ObsTotal_cld_sfc', 'dR_ObsTotal_cld_toa', ...
                 'dR_ObsTotal_clr_sfc', 'dR_ObsTotal_clr_toa');
-            
+
             %%%%% step3: cal The effect of Ts on the atmosphere(dR_tstoa-dR_tssfc) (note effect on atoms is positive, but effect on earth is nagetive)
             % and main Effect (ta+alb+q+clod effect)
             %( 1sfc cld,2sfc clr,3toa cld,4toa clr)
@@ -321,9 +323,11 @@ for p_1 = 1:2%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             save([radEfectOutPath, 'dR_mainEffect_toa.mat'], 'dR_mainEffect_toa');
             disp([esmName{esmNum, 1}, ' ensemble is done!'])
         end
+
         disp([level.model2{level1}, ' model is done!'])
         disp(' ')
     end
+
     disp([level.time1{p_1}, ' era is done!'])
     clear
 end
