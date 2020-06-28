@@ -22,11 +22,8 @@ shopt -s extglob # enable extended globbing
 #
 # Execute this script: bash cmb_fl.sh
 #===========================================================================
-# Attention
-# 1.dont change this script during runing
-# 2.dont break the run during runing, if break, please rm the temp file first
-# 3.amip: first move /amip/CMIP/*.nc to /amip, then run the script
-# 
+# # Determine whether the directory already exists. If it doesn't, create it. If it does, output "dir exist".
+#
 # Name statement
 # exp: Experiment
 # mdl: model
