@@ -1,3 +1,12 @@
+%%---------------------------------------------------------
+% Author       : LYC
+% Date         : 2020-06-09 15:52:00
+% LastEditTime : 2020-07-02 20:14:43
+% LastEditors  : LYC
+% Description  : 
+% FilePath     : /code/p1_processObserveData/s1.obersveDataProcess/ERAi/s1_dvars_ERAi.m
+%  
+%%---------------------------------------------------------
 %% Combine the ERAi climatological data from 2000-03 to 2018-02
 clc; clear; tic;
 %modify path first

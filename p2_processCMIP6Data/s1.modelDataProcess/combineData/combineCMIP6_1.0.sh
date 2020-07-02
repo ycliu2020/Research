@@ -34,18 +34,16 @@ shopt -s extglob # enable extended globbing
 # grd: grid_label
 
 locPath='/data1/liuyincheng/CMIP6-mirror/' # Directory of input files
-exp_set=('ssp245' 'ssp370')                # Experiment ( could be more )
+exp_set='ssp245 ssp370'               # Experiment ( could be more )
 tab='Amon'                               # table_ID
 var_set=("hus" "ta" "ts" "ps" "hfls" "hfss"\
     "rlus" "rsus" "rsds" "rlds" "rsuscs" "rsdscs" "rldscs" \
 "rlut" "rsut" "rsdt" "rlutcs" "rsutcs" "clisccp" "ua" "va" "wap") # 22 variables
 
-ii=$((${#exp_set}-1))
-
 for exp in ${exp_set}; do
     loc=$locPath$exp"/"
     jj=$((${#var_set[@]} - 1))
-    echo $jj
+    echo $exp "start: there are " $jj "vars"
     for var_id in `eval echo {0..$jj}`; do            # Loop over two variables
         # Names of all the models (ls [get file names];
         #  cut [get model names];

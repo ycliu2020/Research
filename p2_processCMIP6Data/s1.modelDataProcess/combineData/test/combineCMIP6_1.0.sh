@@ -22,8 +22,11 @@ shopt -s extglob # enable extended globbing
 #
 # Execute this script: bash cmb_fl.sh
 #===========================================================================
-# # Determine whether the directory already exists. If it doesn't, create it. If it does, output "dir exist".
-#
+# Attention
+# 1.dont change this script during runing
+# 2.dont break the run during runing, if break, please rm the temp file first
+# 3.amip: first move /amip/CMIP/*.nc to /amip, then run the script
+# 
 # Name statement
 # exp: Experiment
 # mdl: model
@@ -31,13 +34,11 @@ shopt -s extglob # enable extended globbing
 # grd: grid_label
 
 locPath='/data1/liuyincheng/CMIP6-mirror/' # Directory of input files
-exp_set=('ssp245' 'ssp370')                # Experiment ( could be more )
+exp_set='ssp245 ssp370'               # Experiment ( could be more )
 tab='Amon'                               # table_ID
 var_set=("hus" "ta" "ts" "ps" "hfls" "hfss"\
     "rlus" "rsus" "rsds" "rlds" "rsuscs" "rsdscs" "rldscs" \
 "rlut" "rsut" "rsdt" "rlutcs" "rsutcs" "clisccp" "ua" "va" "wap") # 22 variables
-
-ii=$((${#exp_set}-1))
 
 for exp in ${exp_set}; do
     loc=$locPath$exp"/"

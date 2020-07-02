@@ -112,7 +112,7 @@ def autoGet_esmName(main_path):
     return mdlNames
 
 
-mdl_xpt = ['amip/CMIP']
+mdl_xpt = ['amip/CMIP', 'ssp245', 'ssp370']
 # ['abrupt-4xCO2', 'ssp370', 'ssp245',
 #            'amip/CMIP', 'amip-hist', 'piControl']  # experiment
 

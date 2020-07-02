@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-06-26 10:30:26
+% LastEditTime : 2020-07-02 19:50:55
 % LastEditors  : LYC
 % Description  : cal mainly include 1.regrid vars, 2.vars anomly
 %                CMIP6 mothly data
@@ -23,7 +23,7 @@ latf = 90:-2.5:-90; nlatf = length(latf);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % experiment
-for p_1 = 1:1%1 mean amip 2000; 2 mean amip 1980; 4 means ssp245, 5 means ssp370, 6 abrupt-4xCO2_150years
+for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980; 3 means ssp245, 4 means ssp370, 6 abrupt-4xCO2_150years
     % model parameters
     [readme, Experiment, level, tLin, mPlev, vars] = modelParameters(p_1);
     % experiment path (tLin:1740)

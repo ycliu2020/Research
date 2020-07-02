@@ -1,7 +1,7 @@
 '''
 @Author       : LYC
 @Date         : 2020-06-23 11:17:58
-@LastEditTime : 2020-06-23 20:52:50
+@LastEditTime : 2020-06-29 10:39:34
 @LastEditors  : LYC
 @Description  : find all model mdlNames in a specical path
 @FilePath     : /code/p2_processCMIP6Data/s1.modelDataProcess/folderClassify/modelList.py
@@ -10,13 +10,14 @@
 import os
 import shutil
 import os.path as op
+exp = 'ssp370'#'amip/CMIP' 'ssp245'
 mdl_vars = ['hus', 'ta', 'ts', 'ps',\
             'rlus', 'rsus', 'rsds', 'rlds', 'rsuscs', 'rsdscs', 'rldscs',\
             'rlut', 'rsut', 'rsdt', 'rlutcs', 'rsutcs']
-mdl_rlm = 'Amon'  # model realm
+mdl_tab = 'Amon'  # model table
 mdl_grid = 'gn'  # model realm
 
-locPath = '/data1/liuyincheng/CMIP6-mirror/amip/CMIP/'
+locPath = '/data1/liuyincheng/CMIP6-mirror/'+exp+'/'
 os.chdir('{0}'.format(str(locPath)))  # 将解释器的工作路径切换到要处理的文件夹的路径
 names = os.listdir('{0}'.format(locPath))   # 获取当前目录下所有要批量处理的文件名namesAll
 # 获取所有文件夹名字(模式名)

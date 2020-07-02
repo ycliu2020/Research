@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-06-25 20:37:48
+% LastEditTime : 2020-07-01 18:52:58
 % LastEditors  : LYC
 % Description  : cal month mean ps and thickness dps, dp
 %                this script mainly include:ps and dps, dp
@@ -13,7 +13,7 @@
 %                time:2000.01-2014.12(interval:15*12);1980.01-2014.12(interval:35*12); 2015.01-2099.12(interval:85*12)
 %                initial time in hist(1740 total): 1,561 of 1740(2000.03);1,321 of 1740(1980.01)
 %                initial time in futrue(1032 total): 1 of 1032(2015.01);
-% FilePath     : /code/p2_processCMIP6Data/s3.radEffTrend/s1_kernelAccumulate.m
+% FilePath     : /code/p2_processCMIP6Data/s3.radEffTrend/dp_s1_kernelAccumulate.m
 %
 %%---------------------------------------------------------
 clear; clc; tic;
@@ -73,7 +73,7 @@ dp_raw = ncread([exampKernelPath, 'dp.nc'], 'dp');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % experiment
-for p_1 = 1:2%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     % model parameters
     [readme, Experiment, level, tLin, mPlev, vars] = modelParameters(p_1);
     % exmPath
