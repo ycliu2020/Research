@@ -28,8 +28,8 @@ for p_1 = 1:2
     %because kernel q's unit is W/m2/K/100mb
     dhus2 = zeros(144, 73, 24, ntime);
     p_hus=tLin.startmonth{p_1}-2;% the first month cal hus 
-    for kk = 1:ntime
-        dhus2(:, :, :, kk) = (log(q(:, :, :, kk)) - log(Clim_q(:, :, :, mod(kk + p_hus, 12) + 1))) .* Clim_ta(:, :, :, mod(kk + p_hus, 12) + 1).^2 * Rv / Lv;
+    for monNum = 1:ntime
+        dhus2(:, :, :, monNum) = (log(q(:, :, :, monNum)) - log(Clim_q(:, :, :, mod(monNum + p_hus, 12) + 1))) .* Clim_ta(:, :, :, mod(monNum + p_hus, 12) + 1).^2 * Rv / Lv;
     end
 
     dhus2(isnan(dhus2)) = 0;
@@ -40,6 +40,7 @@ for p_1 = 1:2
     % kernelAccum_path = '/home/lyc/repeat_Kernel_experiment/testdata/kernels_cal/kernel_accumulate_'; %kernel's path
     level = 24;
     t_scflevel = 25;
+    startMonth = tLin.startmonth{p_1};
 
     for ii = 1:2
         var1 = char(varLevel1{ii}); % 1.toa, 2.sfc
@@ -62,16 +63,17 @@ for p_1 = 1:2
                 tsEffect = zeros(144, 73, ntime);
                 albEffect = zeros(144, 73, ntime);
                 %need loop because Kernels are from bottom to top and nc data is from top to bottom also the mod function is like that because the data starts in March thus it goes in a cycle from 1-12 starting at 3
-                for kk = 1:ntime
+                startMonth = tLin.startmonth{p_1};
+                for monNum = 1:ntime
 
                     for ll = 1:level
-                        wvlwEffect(:, :, ll, kk) = wv_lwkernel(:, :, 25 - ll, mod(kk + 1, 12) + 1) .* dhus2(:, :, ll, kk);
-                        wvswEffect(:, :, ll, kk) = wv_swkernel(:, :, 25 - ll, mod(kk + 1, 12) + 1) .* dhus2(:, :, ll, kk);
-                        taEffect(:, :, ll, kk) = t_lwkernel(:, :, 25 - ll, mod(kk + 1, 12) + 1) .* dta(:, :, ll, kk);
+                        wvlwEffect(:, :, ll, monNum) = wv_lwkernel(:, :, 25 - ll, mod(monNum + startMonth -2, 12) + 1) .* dhus2(:, :, ll, monNum);
+                        wvswEffect(:, :, ll, monNum) = wv_swkernel(:, :, 25 - ll, mod(monNum + startMonth -2, 12) + 1) .* dhus2(:, :, ll, monNum);
+                        taEffect(:, :, ll, monNum) = t_lwkernel(:, :, 25 - ll, mod(monNum + startMonth -2, 12) + 1) .* dta(:, :, ll, monNum);
                     end
 
-                    tsEffect(:, :, kk) = ts_lwkernel(:, :, mod(kk + 1, 12) + 1) .* dts(:, :, kk);
-                    albEffect(:, :, kk) = alb_swkernel(:, :, mod(kk + 1, 12) + 1) .* dalb(:, :, kk) * 100;
+                    tsEffect(:, :, monNum) = ts_lwkernel(:, :, mod(monNum + startMonth -2, 12) + 1) .* dts(:, :, monNum);
+                    albEffect(:, :, monNum) = alb_swkernel(:, :, mod(monNum + startMonth -2, 12) + 1) .* dalb(:, :, monNum) * 100;
                 end
 
                 %sum over all the pressure levels to get the total radiative effect for each individual month.
@@ -87,17 +89,17 @@ for p_1 = 1:2
                 tsEffect = zeros(144, 73, ntime);
                 albEffect = zeros(144, 73, ntime);
                 %need loop because Kernels are from bottom to top and ncl data is from top to bottom also the mod function is like that because the data starts in March thus it goes in a cycle from 1-12 starting at 3
-                for kk = 1:ntime
+                for monNum = 1:ntime
 
                     for ll = 1:level
-                        wvlwEffect(:, :, ll, kk) = wv_lwkernel(:, :, 25 - ll, mod(kk + 1, 12) + 1) .* dhus2(:, :, ll, kk);
-                        wvswEffect(:, :, ll, kk) = wv_swkernel(:, :, 25 - ll, mod(kk + 1, 12) + 1) .* dhus2(:, :, ll, kk);
-                        taEffect(:, :, ll, kk) = t_lwkernel(:, :, 26 - ll, mod(kk + 1, 12) + 1) .* dta(:, :, ll, kk);
+                        wvlwEffect(:, :, ll, monNum) = wv_lwkernel(:, :, 25 - ll, mod(monNum + startMonth -2, 12) + 1) .* dhus2(:, :, ll, monNum);
+                        wvswEffect(:, :, ll, monNum) = wv_swkernel(:, :, 25 - ll, mod(monNum + startMonth -2, 12) + 1) .* dhus2(:, :, ll, monNum);
+                        taEffect(:, :, ll, monNum) = t_lwkernel(:, :, 26 - ll, mod(monNum + startMonth -2, 12) + 1) .* dta(:, :, ll, monNum);
                     end
 
-                    t0Effect(:, :, kk) = squeeze(t_lwkernel(:, :, 1, mod(kk + 1, 12) + 1)) .* dts(:, :, kk);
-                    tsEffect(:, :, kk) = ts_lwkernel(:, :, mod(kk + 1, 12) + 1) .* dts(:, :, kk);
-                    albEffect(:, :, kk) = alb_swkernel(:, :, mod(kk + 1, 12) + 1) .* dalb(:, :, kk) * 100;
+                    t0Effect(:, :, monNum) = squeeze(t_lwkernel(:, :, 1, mod(monNum + startMonth -2, 12) + 1)) .* dts(:, :, monNum);
+                    tsEffect(:, :, monNum) = ts_lwkernel(:, :, mod(monNum + startMonth -2, 12) + 1) .* dts(:, :, monNum);
+                    albEffect(:, :, monNum) = alb_swkernel(:, :, mod(monNum + startMonth -2, 12) + 1) .* dalb(:, :, monNum) * 100;
                 end
 
                 %sum over cld the pressure levels to get the total radiative effect for each individual month.

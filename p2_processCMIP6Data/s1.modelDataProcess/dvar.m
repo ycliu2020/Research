@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-07-02 19:50:55
+% LastEditTime : 2020-07-06 09:56:38
 % LastEditors  : LYC
 % Description  : cal mainly include 1.regrid vars, 2.vars anomly
 %                CMIP6 mothly data
@@ -56,10 +56,10 @@ for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980; 3 means ssp245, 4 means ssp370
             esmPath=fullfile(mdlPath,esmName{esmNum,1});
             eval(['cd ', esmPath]);
             % outputpath and make it
-            outPathName{1} = fullfile(outPath, level.time1{p_1}, level.model2{level1}, esmName{esmNum,1}, level.process3{1}); %'model/ensemble member/rawdata_regrid/'
-            outPathName{2} = fullfile(outPath, level.time1{p_1}, level.model2{level1}, esmName{esmNum,1}, level.process3{2}); %'model/ensemble member/anomaly/'
-            auto_mkdir(outPathName{1})
-            auto_mkdir(outPathName{2})
+            varsPath = fullfile(outPath, level.time1{p_1}, level.model2{level1}, esmName{esmNum,1}, level.process3{1}); %'model/ensemble member/rawdata_regrid/'
+            dvarsPath = fullfile(outPath, level.time1{p_1}, level.model2{level1}, esmName{esmNum,1}, level.process3{2}); %'model/ensemble member/anomaly/'
+            auto_mkdir(varsPath)
+            auto_mkdir(dvarsPath)
 
             %% check1:  Time line
             % locate first year
@@ -126,13 +126,13 @@ for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980; 3 means ssp245, 4 means ssp370
                     [pp] = testLonlat(temp);
                     [pp, lon_v, lat_v, temp_v] = fixLonlat(pp, p_2, lon_v, lat_v, temp_v, temp);
                     % regrid to unite axis
-                    v_regrid = autoRegrid3(lat_v, lon_v, time2, temp_v, latf, lonf, time2);
+                    v_regrid = autoRegrid3(lon_v, lat_v, time2, temp_v, lonf, latf, time2);
                     clear temp_v
                 end
 
                 % save and release space
                 eval([v_names{ii}, '= v_regrid;']); %
-                save([outPathName{1}, v_names{ii}], v_names{ii});
+                save([varsPath, v_names{ii}], v_names{ii});
                 eval(['clear ', v_names{ii}])
                 %% now we finished, next we cal the anomaly.
                 [v_anom, v_clim] = monthlyAnomaly(144, 73, plevfnum, time.date, v_regrid, 1); %[nlongitude,nlatitude,time,var,startmonth]
@@ -140,7 +140,7 @@ for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980; 3 means ssp245, 4 means ssp370
                 % save and release space
                 eval([dv_names{ii}, '= v_anom;']); %
                 eval([clim_v_names{ii}, '= v_clim;']); %
-                save([outPathName{2}, dv_names{ii}], dv_names{ii}, clim_v_names{ii});
+                save([dvarsPath, dv_names{ii}], dv_names{ii}, clim_v_names{ii});
                 eval(['clear ', dv_names{ii}, ' ', clim_v_names{ii}])
                 clear v_anom v_clim
 
@@ -149,8 +149,8 @@ for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980; 3 means ssp245, 4 means ssp370
             % save grobal vars
             timeseries = tLin.time{p_1};
             modelname = level.model2{level1}(1:end);
-            save([outPathName{1}, 'global_vars.mat'], 'lonf', 'latf', 'time', 'plevf', 'readme', 'timeseries', 'modelname')
-            save([outPathName{2}, 'global_vars.mat'], 'lonf', 'latf', 'time', 'plevf', 'readme', 'timeseries', 'modelname')
+            save([varsPath, 'global_vars.mat'], 'lonf', 'latf', 'time', 'plevf', 'readme', 'timeseries', 'modelname')
+            save([dvarsPath, 'global_vars.mat'], 'lonf', 'latf', 'time', 'plevf', 'readme', 'timeseries', 'modelname')
             
             disp([esmName{esmNum,1}, ' ensemble is done!'])
         end

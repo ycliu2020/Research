@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-06-25 16:59:05
+% LastEditTime : 2020-07-05 17:16:15
 % LastEditors  : LYC
 % Description  : cal mainly include 1.regrid vars, 2.vars anomly
 %                CMIP6 mothly data
@@ -12,7 +12,7 @@
 %                initial time.date in amip-hist(1740 total): 1,561 of 1740(2000.03);1,321 of 1740(1980.01);
 % exmPath     : /Research/p2_processCMIP6Data/s2.varsTrend/dTOA_trend.m
 % Attention!!!
-% check lat: model lat disagree with kernels lat (Opposite direction)
+% check lat_f: model lat_f disagree with kernels lat_f (Opposite direction)
 %%---------------------------------------------------------
 % note that TOA use net rad flux
 clear; clc; tic;
@@ -45,8 +45,8 @@ for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             % input and output Path
             esmPath=fullfile(mdlPath,esmName{esmNum,1});
             inputPath = [esmPath, '/', level.process3{2}]; %~/data/cmip6/2000-2014/MRI-ESM2-0/ensemble member/anomaly
-            outpathname = [esmPath, '/', level.process3{3}]; %/home/lyc/data/cmip6/2000-2014/MIROC6/anomaly_trend
-            auto_mkdir(outpathname)
+            anomTrendPath = [esmPath, '/', level.process3{3}]; %/home/lyc/data/cmip6/2000-2014/MIROC6/anomaly_trend
+            auto_mkdir(anomTrendPath)
             % load
             load([inputPath, 'global_vars.mat'])
             load([inputPath, 'drlut.mat'])% toa_outgoing_longwave_flux
@@ -55,14 +55,14 @@ for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             % unite define a vector component which is positive when directed downward
             dnetTOA = drsdt - drlut - drsut; % net radiation in toa
             %regrid 144x72(unite grids)
-            lat = 88.75:-2.5:-88.75; nlat = length(lat);
-            lon = lonf; nlon = length(lon);
-            nlonf = length(lonf); nlatf = length(latf);
-            dnetTOA = autoRegrid3(latf, lonf, time.date, dnetTOA, lat, lon, time.date);
+            lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f);
+            lon_f = lon_k; nlonf = length(lon_f);
+            nlonk = length(lon_k); nlatk = length(lat_k);
+            dnetTOA = autoRegrid3(lon_k, lat_k, time.date, dnetTOA, lon_f, lat_f, time.date);
             % cal the trend
-            [trendm_dnetTOA, trends_dnetTOA, trendyr_dnetTOA, p_dnetTOA, cons_dnetTOA] = autoCalTrend(dnetTOA, nlon, nlat, time.date, startmonth);
+            [trendm_dnetTOA, trends_dnetTOA, trendyr_dnetTOA, p_dnetTOA, cons_dnetTOA] = autoCalTrend(dnetTOA, nlonf, nlatf, time.date, startmonth);
             % now we done all the job, now save and output.
-            save([outpathname, 'trend_dnetTOA.mat'], 'trendm_dnetTOA', 'cons_dnetTOA', 'p_dnetTOA', 'trends_dnetTOA', 'trendyr_dnetTOA');
+            save([anomTrendPath, 'trend_dnetTOA.mat'], 'trendm_dnetTOA', 'cons_dnetTOA', 'p_dnetTOA', 'trends_dnetTOA', 'trendyr_dnetTOA');
             
             disp([esmName{esmNum,1}, ' ensemble is done!'])
         end

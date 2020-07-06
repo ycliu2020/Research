@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-06-24 16:28:49
+% LastEditTime : 2020-07-05 12:50:57
 % LastEditors  : LYC
 % Description  : cal mainly alb include 1.regrid vars, 2.vars anomly
 %                CMIP6 mothly data
@@ -151,7 +151,7 @@ for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             [pp] = testLonlat(temp);
             [pp, lon_v, lat_v, temp_alb] = fixLonlat(pp, p_2, lon_v, lat_v, temp_alb, temp);
 
-            albeo_regrid = autoRegrid3(lat_v, lon_v, time2, temp_alb, latf, lonf, time2);
+            albeo_regrid = autoRegrid3(lon_v, lat_v, time2, temp_alb, lonf, latf, time2);
             % now we finished, next we cal the anomaly.
             [alb_anom, alb_clim] = monthlyAnomaly3D(144, 73, time.date, albeo_regrid, 1);
 

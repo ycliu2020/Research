@@ -113,8 +113,8 @@ for p_1 = 1:2
     %% Regrid to 2.5*2.5
     lon = 0:359;
     lat = 90:-1:-90;
-    lonPlot = 0:2.5:357.5; nlonf = length(lonPlot); %144
-    latPlot = 88.75:-2.5:-88.75; nlatf = length(latPlot); %72 is plot, 73 is kernel
+    lonPlot = 0:2.5:357.5; nlonk = length(lonPlot); %144
+    latPlot = 88.75:-2.5:-88.75; nlatk = length(latPlot); %72 is plot, 73 is kernel
     time2 = 1:ntime;
 
     [Xlon, Ylat, Ttime] = meshgrid(lat, lon, time2);
@@ -137,26 +137,26 @@ for p_1 = 1:2
 
     % Deseasonalized(var-mean)
     startmonth = tLin.startmonth{p_1};
-    [dR_lw_toa_all, ClimdR_lw_toa_all] = monthlyAnomaly3D(nlonf, nlatf, time, dR_lw_toa_all, startmonth);
-    [dR_sw_toa_all, ClimdR_sw_toa_all] = monthlyAnomaly3D(nlonf, nlatf, time, dR_sw_toa_all, startmonth);
-    [dR_lw_sfc_all, ClimdR_lw_sfc_all] = monthlyAnomaly3D(nlonf, nlatf, time, dR_lw_sfc_all, startmonth);
-    [dR_sw_sfc_all, ClimdR_sw_sfc_all] = monthlyAnomaly3D(nlonf, nlatf, time, dR_sw_sfc_all, startmonth);
-    [dR_lw_toa_clr, ClimdR_lw_toa_clr] = monthlyAnomaly3D(nlonf, nlatf, time, dR_lw_toa_clr, startmonth);
-    [dR_sw_toa_clr, ClimdR_sw_toa_clr] = monthlyAnomaly3D(nlonf, nlatf, time, dR_sw_toa_clr, startmonth);
-    [dR_lw_sfc_clr, ClimdR_lw_sfc_clr] = monthlyAnomaly3D(nlonf, nlatf, time, dR_lw_sfc_clr, startmonth);
-    [dR_sw_sfc_clr, ClimdR_sw_sfc_clr] = monthlyAnomaly3D(nlonf, nlatf, time, dR_sw_sfc_clr, startmonth);
+    [dR_lw_toa_all, climdR_lw_toa_all] = monthlyAnomaly3D(nlonk, nlatk, time, dR_lw_toa_all, startmonth);
+    [dR_sw_toa_all, climdR_sw_toa_all] = monthlyAnomaly3D(nlonk, nlatk, time, dR_sw_toa_all, startmonth);
+    [dR_lw_sfc_all, climdR_lw_sfc_all] = monthlyAnomaly3D(nlonk, nlatk, time, dR_lw_sfc_all, startmonth);
+    [dR_sw_sfc_all, climdR_sw_sfc_all] = monthlyAnomaly3D(nlonk, nlatk, time, dR_sw_sfc_all, startmonth);
+    [dR_lw_toa_clr, climdR_lw_toa_clr] = monthlyAnomaly3D(nlonk, nlatk, time, dR_lw_toa_clr, startmonth);
+    [dR_sw_toa_clr, climdR_sw_toa_clr] = monthlyAnomaly3D(nlonk, nlatk, time, dR_sw_toa_clr, startmonth);
+    [dR_lw_sfc_clr, climdR_lw_sfc_clr] = monthlyAnomaly3D(nlonk, nlatk, time, dR_lw_sfc_clr, startmonth);
+    [dR_sw_sfc_clr, climdR_sw_sfc_clr] = monthlyAnomaly3D(nlonk, nlatk, time, dR_sw_sfc_clr, startmonth);
 
-    [dlahf, Clim_dlahf] = monthlyAnomaly3D(nlonf, nlatf, time, dlahf, startmonth);
-    [dsehf, Clim_dsehf] = monthlyAnomaly3D(nlonf, nlatf, time, dsehf, startmonth);
-    [dslwr, Clim_dslwr] = monthlyAnomaly3D(nlonf, nlatf, time, dslwr, startmonth);
-    [dslwrd, Clim_dslwrd] = monthlyAnomaly3D(nlonf, nlatf, time, dslwrd, startmonth);
-    [dslwru, Clim_dslwru] = monthlyAnomaly3D(nlonf, nlatf, time, dslwru, startmonth);
+    [dlahf, Clim_dlahf] = monthlyAnomaly3D(nlonk, nlatk, time, dlahf, startmonth);
+    [dsehf, Clim_dsehf] = monthlyAnomaly3D(nlonk, nlatk, time, dsehf, startmonth);
+    [dslwr, Clim_dslwr] = monthlyAnomaly3D(nlonk, nlatk, time, dslwr, startmonth);
+    [dslwrd, Clim_dslwrd] = monthlyAnomaly3D(nlonk, nlatk, time, dslwrd, startmonth);
+    [dslwru, Clim_dslwru] = monthlyAnomaly3D(nlonk, nlatk, time, dslwru, startmonth);
     %% Save to mat
     % outpath = '/data1/liuyincheng/Observe-process/ERAi-process/';
     save([outpath, 'drad.mat'], 'dR_lw_toa_all', 'dR_sw_toa_all', 'dR_lw_sfc_all', 'dR_sw_sfc_all'...
         , 'dR_lw_toa_clr', 'dR_sw_toa_clr', 'dR_lw_sfc_clr', 'dR_sw_sfc_clr'...
-        , 'ClimdR_lw_toa_all', 'ClimdR_sw_toa_all', 'ClimdR_lw_sfc_all', 'ClimdR_sw_sfc_all'...
-        , 'ClimdR_lw_toa_clr', 'ClimdR_sw_toa_clr', 'ClimdR_lw_sfc_clr', 'ClimdR_sw_sfc_clr'...
+        , 'climdR_lw_toa_all', 'climdR_sw_toa_all', 'climdR_lw_sfc_all', 'climdR_sw_sfc_all'...
+        , 'climdR_lw_toa_clr', 'climdR_sw_toa_clr', 'climdR_lw_sfc_clr', 'climdR_sw_sfc_clr'...
         , 'lonPlot', 'latPlot', 'time', 'readme')
     save([outpath, 'dheatFlux.mat'], 'dlahf', 'dsehf', 'dslwr', 'dslwrd', 'dslwru'...
         , 'Clim_dlahf', 'Clim_dsehf', 'Clim_dslwr', 'Clim_dslwrd', 'Clim_dslwru'...

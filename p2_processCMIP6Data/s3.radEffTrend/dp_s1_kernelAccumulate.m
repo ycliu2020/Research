@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-07-01 18:52:58
+% LastEditTime : 2020-07-05 20:41:51
 % LastEditors  : LYC
 % Description  : cal month mean ps and thickness dps, dp
 %                this script mainly include:ps and dps, dp

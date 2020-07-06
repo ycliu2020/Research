@@ -18,7 +18,7 @@ inputpath3 = '/data1/liuyincheng/Observe-rawdata/ERAi/Ts/';
 
 %% read raw data. 228 mean raw date 19yrs time line
 dR_downlw_sfc_cld0 = zeros(360, 181, 228);
-dts_sfc0 = zeros(360, 181, 228);
+dts0 = zeros(360, 181, 228);
 dR_netsw_sfc_cld0 = zeros(360, 181, 228);
 time0 = zeros(228, 1);
 for ii = 0:18
@@ -32,7 +32,7 @@ for ii = 0:18
     temp4 = ncread(filename1, 'time'); % hours since 1900-01-01 00:00:00.0
     % sum up the cumulative radiation of time step 0-12 and 12-24
     dR_downlw_sfc_cld0(:, :, ii * 12 + 1:(ii + 1) * 12) = temp1(:, :, 1:2:23);
-    dts_sfc0(:, :, ii * 12 + 1:(ii + 1) * 12) = temp2(:, :, :);
+    dts0(:, :, ii * 12 + 1:(ii + 1) * 12) = temp2(:, :, :);
     dR_netsw_sfc_cld0(:, :, ii * 12 + 1:(ii + 1) * 12) = temp3(:, :, 1:2:23);
     time0(ii * 12 + 1:(ii + 1) * 12, 1) = temp4(1:2:23);
 end
@@ -46,8 +46,8 @@ time0 = cdfdate2num(timeUnits, timeCalendar, time0);
 %% different time series, 1mean 2000-03 to 2018-02(18*12). 2 mean 200207-201706(15*12)
 for p_1 = 1:2
     [readme, tLin] = observeParameters(p_1); % fuction% readme,  tLin,
-    outpath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi/anomaly/');
-    auto_mkdir(outpath)
+    anomPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi/anomaly/');
+    auto_mkdir(anomPath)
 
     % find start and end month
     timeSpec = tLin.start{p_1};
@@ -58,7 +58,7 @@ for p_1 = 1:2
 
     % read specific time series
     dRdownlw_sfcAll = dR_downlw_sfc_cld0(:, :, startT:endT);
-    dts_sfc = dts_sfc0(:, :, startT:endT);
+    dts = dts0(:, :, startT:endT);
     dRnetsw_sfcAll = dR_netsw_sfc_cld0(:, :, startT:endT);
     time = time0(startT:endT, 1);
     ntime = length(time);
@@ -66,44 +66,44 @@ for p_1 = 1:2
     dRdownlw_sfcAll = dRdownlw_sfcAll ./ (3600 * 24);
     dRnetsw_sfcAll = dRnetsw_sfcAll ./ (3600 * 24);
     %% Regrid to 2.5*2.5
-    lon = 0:359;
-    lat = 90:-1:-90;
-    lonPlot = 0:2.5:357.5; nlonf = length(lonPlot);
-    latPlot = 88.75:-2.5:-88.75; nlatf = length(latPlot);
+    lon_ori = 0:359;
+    lat_ori = 90:-1:-90;
+    lon_f = 0:2.5:357.5; nlonf = length(lon_f);
+    lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f);
     time2 = 1:ntime;
 
-    [Xlon, Ylat, Ttime] = meshgrid(lat, lon, time2);
-    [Xlonf, Ylatf, Ttimef] = meshgrid(latPlot, lonPlot, time2);
+    [Xlon, Ylat, Ttime] = meshgrid(lat_ori, lon_ori, time2);
+    [Xlonf, Ylatf, Ttimef] = meshgrid(lat_f, lon_f, time2);
 
     dRdownlw_sfcAll = interp3(Xlon, Ylat, Ttime, dRdownlw_sfcAll, Xlonf, Ylatf, Ttimef);
-    dts_sfc = interp3(Xlon, Ylat, Ttime, dts_sfc, Xlonf, Ylatf, Ttimef);
+    dts = interp3(Xlon, Ylat, Ttime, dts, Xlonf, Ylatf, Ttimef);
     dRnetsw_sfcAll = interp3(Xlon, Ylat, Ttime, dRnetsw_sfcAll, Xlonf, Ylatf, Ttimef);
 
     % Deseasonalized
     startmonth = tLin.startmonth{p_1};
     [dRdownlw_sfcAll, ClimdRdownlw_sfcAll] = monthlyAnomaly3D(144, 72, time, dRdownlw_sfcAll, startmonth);
-    [dts_sfc, Climdts_sfc] = monthlyAnomaly3D(144, 72, time, dts_sfc, startmonth);
+    [dts, Climdts_sfc] = monthlyAnomaly3D(144, 72, time, dts, startmonth);
     [dRnetsw_sfcAll, ClimdRnetsw_sfcAll] = monthlyAnomaly3D(144, 72, time, dRnetsw_sfcAll, startmonth);
     month = 1:12;
     % cal the deltaE(4*epis*T^3^delatT)
     epis=1;% emissivity
     pnum=startmonth-2;
     dDeltaE=zeros(nlonf,nlatf,ntime);
-    for ii = 1:length(dts_sfc)
-        dDeltaE(:,:,ii)=4*epis*sigma*squeeze(Climdts_sfc(:,:,mod(ii+pnum,12)+1)).^3.*dts_sfc(:,:,ii);
+    for ii = 1:length(dts)
+        dDeltaE(:,:,ii)=4*epis*sigma*squeeze(Climdts_sfc(:,:,mod(ii+pnum,12)+1)).^3.*dts(:,:,ii);
     end
-    outpath1 = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi/radEffect/');
-    save([outpath1, 'dDeltaE.mat'], 'dDeltaE', 'lonPlot', 'latPlot', 'time', 'readme')
+    anomPath1 = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi/radEffect/');
+    save([anomPath1, 'dDeltaE.mat'], 'dDeltaE', 'lon_f', 'lat_f', 'time', 'readme')
     
     [trendm_dDeltaE, trends_dDeltaE, trendyr_dDeltaE, ~, ~] = autoCalTrend(dDeltaE, nlonf, nlatf, time, startmonth);
-    outpath2 = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi/radEffect_trend/');
+    anomPath2 = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi/radEffect_trend/');
 
-    save([outpath2, 'trend_dDeltaE.mat'], 'lonPlot', 'latPlot', 'time', 'readme',...
+    save([anomPath2, 'trend_dDeltaE.mat'], 'lon_f', 'lat_f', 'time', 'readme',...
     'trendm_dDeltaE', 'trends_dDeltaE', 'trendyr_dDeltaE')
 
 
     %% Save to nc
-    saveto = strcat(outpath, 'dts_dradAll_ERAi.nc');
+    saveto = strcat(anomPath, 'dts_dradAll_ERAi.nc');
     ncid = netcdf.create(saveto, 'NC_WRITE');
 
     %Define the dimensions
@@ -127,7 +127,7 @@ for p_1 = 1:2
 
     %Define the main variable ()
     dR_downlw_sfc_cld_ID = netcdf.defVar(ncid, 'dRdownlw_sfcAll', 'double', [dimidlon dimidlat dimidtime]);
-    dTs_sfc_ID = netcdf.defVar(ncid, 'dts_sfc', 'double', [dimidlon dimidlat dimidtime]);
+    dTs_sfc_ID = netcdf.defVar(ncid, 'dts', 'double', [dimidlon dimidlat dimidtime]);
     dR_netsw_sfc_cld_ID = netcdf.defVar(ncid, 'dRnetsw_sfcAll', 'double', [dimidlon dimidlat dimidtime]);
 
     ClimdR_downlw_sfc_cld_ID = netcdf.defVar(ncid, 'ClimdRdownlw_sfcAll', 'double', [dimidlon dimidlat dimidmonth]);
@@ -151,14 +151,14 @@ for p_1 = 1:2
     netcdf.endDef(ncid);
 
     %Then store the dimension variables in
-    netcdf.putVar(ncid, longitude_ID, lonPlot);
-    netcdf.putVar(ncid, latitude_ID, latPlot);
+    netcdf.putVar(ncid, longitude_ID, lon_f);
+    netcdf.putVar(ncid, latitude_ID, lat_f);
     netcdf.putVar(ncid, time_ID, time);
     netcdf.putVar(ncid, month_ID, month);
 
     %Then store my main variable
     netcdf.putVar(ncid, dR_downlw_sfc_cld_ID, dRdownlw_sfcAll);
-    netcdf.putVar(ncid, dTs_sfc_ID, dts_sfc);
+    netcdf.putVar(ncid, dTs_sfc_ID, dts);
     netcdf.putVar(ncid, dR_netsw_sfc_cld_ID, dRnetsw_sfcAll);
 
     netcdf.putVar(ncid, ClimdR_downlw_sfc_cld_ID, ClimdRdownlw_sfcAll);

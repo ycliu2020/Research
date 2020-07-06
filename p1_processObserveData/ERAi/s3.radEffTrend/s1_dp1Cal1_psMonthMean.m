@@ -1,3 +1,12 @@
+%%---------------------------------------------------------
+% Author       : LYC
+% Date         : 2020-06-09 15:52:00
+% LastEditTime : 2020-07-03 13:52:55
+% LastEditors  : LYC
+% Description  : 
+% FilePath     : /code/p1_processObserveData/ERAi/s3.radEffTrend/s1_dp1Cal1_psMonthMean.m
+%  
+%%---------------------------------------------------------
 %% calculate surface pressure from 2008-01 to 2012-12(5 years)
 clc; clear;
 %modify path first

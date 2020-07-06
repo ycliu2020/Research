@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-07-02 20:14:43
+% LastEditTime : 2020-07-05 20:24:38
 % LastEditors  : LYC
 % Description  : 
-% FilePath     : /code/p1_processObserveData/s1.obersveDataProcess/ERAi/s1_dvars_ERAi.m
+% FilePath     : /code/p1_processObserveData/ERAi/s1.obersveDataProcess/s1_dvars_ERAi.m
 %  
 %%---------------------------------------------------------
 %% Combine the ERAi climatological data from 2000-03 to 2018-02
@@ -45,24 +45,24 @@ time0 = cdfdate2num(timeUnits, timeCalendar, time0);
 %% different time series
 for p_1 = 1:2% 1mean 2000-03 to 2018-02(18*12). 2 mean 200207-201706(15*12)
     [readme, tLin] = observeParameters(p_1); % fuction% readme,  tLin,
-    outpath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi/anomaly/');
-    outpath1 = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi/rawdata_regrid/');
-    auto_mkdir(outpath)
-    auto_mkdir(outpath1)
+    anomPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi/anomaly/');
+    regridPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi/rawdata_regrid/');
+    auto_mkdir(anomPath)
+    auto_mkdir(regridPath)
 
     % find start and end month
     timeSpec = tLin.start{p_1};
     formatOut = 'yyyy-mm';
     timeStr = string(datestr(time0, formatOut));
-    startT = find(timeStr == timeSpec);
-    endT = startT + tLin.inter{p_1} - 1;
+    startMon = find(timeStr == timeSpec);
+    endMon = startMon + tLin.inter{p_1} - 1;
     
     % read specific time series
-    alb = a0(:, :, startT:endT);
-    ts = ts0(:, :, startT:endT);
-    q = q0(:, :, :, startT:endT);
-    ta = t0(:, :, :, startT:endT);
-    time = time0(startT:endT, 1);
+    alb = a0(:, :, startMon:endMon);
+    ts = ts0(:, :, startMon:endMon);
+    q = q0(:, :, :, startMon:endMon);
+    ta = t0(:, :, :, startMon:endMon);
+    time = time0(startMon:endMon, 1);
     ntime = length(time);
 
     %% Regrid to 2.5*2.5
@@ -71,35 +71,35 @@ for p_1 = 1:2% 1mean 2000-03 to 2018-02(18*12). 2 mean 200207-201706(15*12)
     plev = double(plev);
     time2 = 1:ntime; %
     [Xlon, Ylat, Zplev, Ttime] = ndgrid(lon, lat, plev, time2);
-    lonf = 0:2.5:357.5; nlonf = length(lonf); %144
-    latf = 90:-2.5:-90; nlatf = length(latf); %73 is kernels
-    plevf1 = ncread('/data/pub/kernels_YiH/toa/dp.nc', 'player'); % pay attention to plevf's range must smaller than plev's
+    lon_k = 0:2.5:357.5; nlonk = length(lon_k); %144
+    lat_k = 90:-2.5:-90; nlatk = length(lat_k); %73 is kernels
+    plevf1 = ncread('/data/pub/kernels_YiH/toa/dp.nc', 'player'); % pay attention to plev_k's range must smaller than plev's
 
     % kernel question contact McGill University Prof.Yi Huang Email: yi.huang@mcgill.ca
-    plevf = plevf1(end:-1:1);
-    plevfnum = length(plevf);
-    [Xlonf, Ylatf, Zplevf, Ttimef] = ndgrid(lonf, latf, plevf, time2);
+    plev_k = plevf1(end:-1:1);
+    nplevk = length(plev_k);
+    [Xlonf, Ylatf, Zplevf, Ttimef] = ndgrid(lon_k, lat_k, plev_k, time2);
     q = interpn(Xlon, Ylat, Zplev, Ttime, q, Xlonf, Ylatf, Zplevf, Ttimef);
     ta = interpn(Xlon, Ylat, Zplev, Ttime, ta, Xlonf, Ylatf, Zplevf, Ttimef);
 
     [Xlon, Ylat, Ttime] = meshgrid(lat, lon, time2);
-    [Xlonf, Ylatf, Ttimef] = meshgrid(latf, lonf, time2);
+    [Xlonf, Ylatf, Ttimef] = meshgrid(lat_k, lon_k, time2);
     ts = interp3(Xlon, Ylat, Ttime, ts, Xlonf, Ylatf, Ttimef);
     alb = interp3(Xlon, Ylat, Ttime, alb, Xlonf, Ylatf, Ttimef);
 
     startmonth = tLin.startmonth{p_1};
     %% Deseasonalize
-    [dalb, Clim_alb] = monthlyAnomaly3D(nlonf, nlatf, time, alb, startmonth);
-    [dts, Clim_ts] = monthlyAnomaly3D(nlonf, nlatf, time, ts, startmonth);
-    [dq, Clim_q] = monthlyAnomaly4D(nlonf, nlatf, plevfnum, time, q, startmonth);
-    [dta, Clim_ta] = monthlyAnomaly4D(nlonf, nlatf, plevfnum, time, ta, startmonth);
+    [dalb, clim_alb] = monthlyAnomaly3D(nlonk, nlatk, time, alb, startmonth);
+    [dts, clim_ts] = monthlyAnomaly3D(nlonk, nlatk, time, ts, startmonth);
+    [dq, clim_q] = monthlyAnomaly4D(nlonk, nlatk, nplevk, time, q, startmonth);
+    [dta, clim_ta] = monthlyAnomaly4D(nlonk, nlatk, nplevk, time, ta, startmonth);
 
     %% Save to mat
-    save([outpath, 'dvars.mat'], 'dalb', 'dts', 'dq', 'dta'...
-        , 'Clim_alb', 'Clim_ts', 'Clim_q', 'Clim_ta'...
-        , 'lonf', 'latf', 'plevf', 'time', 'readme')
+    save([anomPath, 'dvars.mat'], 'dalb', 'dts', 'dq', 'dta'...
+        , 'clim_alb', 'clim_ts', 'clim_q', 'clim_ta'...
+        , 'lon_k', 'lat_k', 'plev_k', 'time', 'readme')
 
-    save([outpath1, 'vars.mat'], 'alb', 'ts', 'q', 'ta'...
-        , 'lonf', 'latf', 'plevf', 'time', 'readme')
+    save([regridPath, 'vars.mat'], 'alb', 'ts', 'q', 'ta'...
+        , 'lon_k', 'lat_k', 'plev_k', 'time', 'readme')
 end
 t=toc;disp(t)
