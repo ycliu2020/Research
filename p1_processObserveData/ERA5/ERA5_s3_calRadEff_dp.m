@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-06 08:55:44
-% LastEditTime : 2020-07-06 13:09:51
+% LastEditTime : 2020-07-06 17:11:08
 % LastEditors  : LYC
 % Description  :
-% FilePath     : /code/p1_processObserveData/ERA5/s3_calRadEff_dp.m
+% FilePath     : /code/p1_processObserveData/ERA5/ERA5_s3_calRadEff_dp.m
 %
 %%---------------------------------------------------------
 clear; clc; tic;
@@ -32,7 +32,7 @@ saveTrend_radEfectName = {'trend_dradEfect_sfc_cld.mat', 'trend_dradEfect_toa_cl
 plevel = 24; % wv_lwkernel and wv_swkernel level;
 t_scflevel = 25; % sfc t_lwkernel level;
 
-[readme, level, tLin, vars] = observeParameters;
+[readme, level, tLin, vars] = obsParameters;
 
 for p_1 = 1:2
     varsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{1}); %rawdata
@@ -43,12 +43,13 @@ for p_1 = 1:2
     % load dvars
     load([dvarsPath, 'global_vars.mat'])% lat_k lon_k time plev_k
     load([dvarsPath, 'meto_dvars.mat'])% dhus and clim_hus...
-    load([varsPath, 'meto_vars.mat'], 'q')%
+    load([varsPath, 'meto_vars.mat'], 'hus')%
     dta(isnan(dta)) = 0;
     dalb(isnan(dalb)) = 0; dts(isnan(dts)) = 0;
     ntime = length(time);
     lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f);
     lon_f = lon_k; nlonf = length(lon_f);
+    startMonth = tLin.startMonth{p_1};
 
     %%%%% step1: cal dReffect
     % cal the fixed moisture because kernel q's unit is W/m2/K/100mb
@@ -89,7 +90,6 @@ for p_1 = 1:2
 
         % Kernels and mat data are both from bottom to top
         % mod function used to process the data starts from 1 and should be consist with kernel(start from 1)
-        startMonth = tLin.startmonth{p_1};
 
         for monNum = 1:ntime
             wvlwEffect(:, :, :, monNum) = wv_lwkernel(:, :, :, mod(monNum + startMonth - 2, 12) + 1) .* dhus2(:, :, :, monNum);
@@ -150,8 +150,8 @@ for p_1 = 1:2
             save([radEfectPath, saveradEfectName{ii}], 'wvlwEffect', 'wvswEffect', 'tsEffect', 'albEffect', 'husEffect', ...
                 'taEffect', 'taOnlyEffect', 'tasEffect', 'tasEffect2', 'taOnlyEffect2', 'totalEffect', 'mainEffect');
         else
-            taOnlyEffect2 = interp3(Xlonf, Ylatf, Ttimef, taOnlyEffect2, Xlon, Ylat, Ttime);
-            tasEffect2 = interp3(Xlonf, Ylatf, Ttimef, tasEffect2, Xlon, Ylat, Ttime);
+            taOnlyEffect2 = autoRegrid3(lon_k, lat_k, time, taOnlyEffect2, lon_f, lat_f, time);
+            tasEffect2 = autoRegrid3(lon_k, lat_k, time, tasEffect2, lon_f, lat_f, time);
             % save the radEffect: dradEfect_sfc_cld.mat
             save([radEfectPath, 'global_vars.mat'], 'lon_f', 'lat_f', 'lon_k', 'lat_k', 'plev_k', 'time')
             save([radEfectPath, saveradEfectName{ii}], 'wvlwEffect', 'wvswEffect', 'tsEffect', 'albEffect', 'husEffect', ...
@@ -195,21 +195,18 @@ for p_1 = 1:2
     ss_rad(isnan(ss_rad)) = 0;
 
     %regrid 144x72(unite grids)
-
-    [Xlon, Ylat, Ttime] = meshgrid(lat, lon, time.date);
-    [Xlonf, Ylatf, Ttimef] = meshgrid(latf, lonf, time.date);
-
     for ii = 1:4
         l_rad(:, :, :, ii) = autoRegrid3(lon_k, lat_k, time, squeeze(ll_rad(:, :, :, ii)), lon_f, lat_f, time);
         s_rad(:, :, :, ii) = autoRegrid3(lon_k, lat_k, time, squeeze(ss_rad(:, :, :, ii)), lon_f, lat_f, time);
     end
-
+    
     % 1.sfc, 2.toa( 1sfc cld,2sfc clr,3toa cld,4toa clr)
     dR_allsky = l_rad(:, :, :, [1 3]) + s_rad(:, :, :, [1 3]); % real net rad
     dR_clr = l_rad(:, :, :, [2 4]) + s_rad(:, :, :, [2 4]);
     % save real radEffect: eg:real_dradEfect.mat
     readme_realradEfect = {'final row: 1sfc cld,2sfc clr,3toa cld,4toa clr', 'dR_allsky,dR_clr:1.sfc, 2.toa'};
     save([radEfectPath, 'real_dradEfect.mat'], 'l_rad', 's_rad', 'dR_allsky', 'dR_clr', 'readme_realradEfect');
+    clear ll_rad ss_rad l_rad s_rad
     %% cal the dRcloud and dR_co2(144,72,time,2)(final row means contain sfc and toa)
     % note that residual includ( 1sfc cld,2sfc clr,3toa cld,4toa clr)
     % dCRF=dR_allsky-dR_clr;%(1sfc 2toa)
@@ -243,6 +240,7 @@ for p_1 = 1:2
     save([radEfectPath, 'dR_residual_clr_toa.mat'], 'dR_residual_clr_toa');
     save([radEfectPath, 'dR_ObsTotal.mat'], 'dR_ObsTotal_cld_sfc', 'dR_ObsTotal_cld_toa', ...
         'dR_ObsTotal_clr_sfc', 'dR_ObsTotal_clr_toa');
+    clear dCRF dCRF_sfc dCRF_toa
         
     %%%%% step3: cal The effect of Ts on the atmosphere(dR_tstoa-dR_tssfc) (note effect on atoms is positive, but effect on earth is nagetive)
     % and main Effect (ta+alb+q+clod effect)

@@ -64,7 +64,7 @@ lon_k = ncread('/data1/liuyincheng/y_kernels/kernels_YiH/toa/RRTMG_wv_lw_toa_cld
 lat_k = ncread('/data1/liuyincheng/y_kernels/kernels_YiH/toa/RRTMG_wv_lw_toa_cld_highR.nc', 'lat'); nlatk = length(lat_k);
 
 %% different time series, 1mean 2000-03 to 2018-02(18*12). 2 mean 200207-201706(15*12)
-[readme, level, tLin, vars] = observeParameters();
+[readme, level, tLin, vars] = obsParameters();
 for p_1 = 1:2
     kernelCalPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{4});
     auto_mkdir(kernelCalPath)
@@ -106,7 +106,6 @@ for p_1 = 1:2
 
         % save([kernelsOutPath,'global_vars.mat'], 'lonf', 'latf', 'time','plevf','readme','timeseries','modelname')
         save([kernelCalPath, saveName{sfcToa}], 'alb_swkernel', 'ts_lwkernel', 't_lwkernel', 't_level2_lwkernel', 'wv_lwkernel', 'wv_swkernel');
-        clear dp dps dp_level2
     end
-
+    clear dp dps dp_level2
 end

@@ -106,10 +106,10 @@ for toaSfc = 1:2
             tt = ['Level:', mlabels.level, ', Era: ', tLin.time{p_1}];
             sgtt = sgtitle(tt, 'Fontsize', 14, 'Interpreter', 'none');
             % save file
-            f_tt = ['observe_', tLin.time{p_1}, '_varsTrend', '_', mlabels.area];
-            figurename = [mPath.Output, '/', f_tt, '.png'];
-            saveas(gcf, figurename)
-            % save_png(figurename)%high resolution
+            figureName = ['observe_', tLin.time{p_1}, '_varsTrend', '_', mlabels.area];
+            saveFileName = [mPath.Output, '/', figureName, '.png'];
+            saveas(gcf, saveFileName)
+            % save_png(saveFileName)%high resolution
             close gcf
         end
 

@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-15 13:43:44
-% LastEditTime : 2020-06-17 15:19:35
+% LastEditTime : 2020-07-07 09:22:39
 % LastEditors  : LYC
 % Description  :
 % FilePath     : /code/p2_processCMIP6Data/s99.plot/s2p1_plotEachBars_nonLocalCld_dRTrend.m
@@ -109,12 +109,13 @@ for p_1 = p1_left:p1_right
         % set(h,'visible','off');
         % clf reset;
         set(h, 'Color', [1 1 1]);
-        f_matrix = reshape(1:12, [3, 4])';
+        f_row=4; f_col=3;% 设置画图的行列
+        f_matrix = reshape(1:f_row*f_col, [f_col, f_row])';
         % figure
-        for ii = 1:12
-            trendz = squeeze(trendyr(:, :, ii));
-            [i, j] = find(f_matrix == ii);
-            subplot_yc(4, 3, i, j); 
+        for varNum = 1:f_row*f_col
+            trendz = squeeze(trendyr(:, :, varNum));
+            [plotRow, plotCol] = find(f_matrix == varNum);
+            subplot_yc(4, 3, plotRow, plotCol); 
             hold on
             m_proj('Mercator', 'lon', lon1, 'lat', lat1); %Mercator,Equidistant cylindrical,lambert,Miller Cylindrical
             m_pcolor(lon, lat, trendz');
@@ -125,23 +126,23 @@ for p_1 = p1_left:p1_right
             colormap(mycolor(18)); %mycolor(100)is soden color????????colormap(flipud(mycolor(13)));%colormap(jet(4))
             col_SeriesNum=10;
             [colorbar_Series] = findSuit_colorInt(trendz, col_SeriesNum);
-            % caxis([mmin(ii) mmax(ii)]);
+            % caxis([mmin(varNum) mmax(varNum)]);
             caxis([min(colorbar_Series) max(colorbar_Series)]);
             hold on
             m_line(world_mapx(:), world_mapy(:), 'color', [0 0 0], 'LineWidth', 0.5);
-            if j==1&&i==4
+            if plotCol==1&&plotRow==f_row
                 m_grid('linestyle', 'none', 'tickdir', 'out', 'yaxislocation', 'left', 'fontsize', 8, 'color', 'k'); 
-            elseif j==1&&i~=4
+            elseif plotCol==1&&plotRow~=f_row
                 m_grid('linestyle', 'none', 'tickdir', 'out', 'xticklabels',[], 'yaxislocation', 'left', 'fontsize', 8, 'color', 'k');
-            elseif j~=1&&i==4 
+            elseif plotCol~=1&&plotRow==f_row 
                 m_grid('linestyle', 'none', 'tickdir', 'out', 'yticklabels',[], 'fontsize', 8, 'color', 'k');
-            elseif j~=1&&i~=4 
+            elseif plotCol~=1&&plotRow~=f_row 
                 m_grid('linestyle', 'none', 'tickdir', 'out', 'xticklabels',[], 'yticklabels',[], 'fontsize', 8, 'color', 'k');
             end
             
-            title({[mlabels.component{ii}, mlabels.unite{ii}]; ['year mean (cc = ', num2str(yr_cc{ii}), ')']},'Interpreter','latex','fontsize', 10); % cc=',num2str(corr))
+            title({[mlabels.component{varNum}, mlabels.unite{varNum}]; ['year mean (cc = ', num2str(yr_cc{varNum}), ')']},'Interpreter','latex','fontsize', 10); % cc=',num2str(corr))
             % c=colorbar;
-            % % c.Limits=[mmin(ii) mmax(ii)];% 
+            % % c.Limits=[mmin(varNum) mmax(varNum)];% 
             % c.Box='off';
             hold on
             c = colorbar;
@@ -150,7 +151,7 @@ for p_1 = p1_left:p1_right
             c.Limits = [min(colorbar_Series) max(colorbar_Series)];
         end
 
-        tt = ['Level:', mlabels.level, ', Era: ', level.time1{p_1}(1:end - 1), ', Model:', existModelName{level1}];
+        tt = ['Level:', mlabels.level, ', Era: ', level.time1{p_1}(1:end - 1), ', Model:', existModelName{level1}, ' Trend(year mean)'];
         sgtt = sgtitle(tt, 'Fontsize', 14, 'Interpreter', 'none');
         f_tt = [level.time1{p_1}(1:end - 1), '_', existModelName{level1}, '_', mlabels.fileN1];
         figurename = [mPath.Output, '/', f_tt, '.png'];
