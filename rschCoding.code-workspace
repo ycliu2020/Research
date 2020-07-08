@@ -7,7 +7,7 @@
 			"path": "../../../lib/tools/matlab/myTools"
 		},
 		{
-			"path": "../../../../../data1/liuyincheng/Observe-rawdata/ERA/ERA5"
+			"path": "../../../../../data1/liuyincheng/Observe-rawdata/ERA"
 		}
 	],
 	"settings": {}

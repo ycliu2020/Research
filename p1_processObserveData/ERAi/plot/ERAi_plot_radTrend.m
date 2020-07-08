@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-06 15:05:35
-% LastEditTime : 2020-07-08 10:12:46
+% LastEditTime : 2020-07-08 10:10:51
 % LastEditors  : LYC
 % Description  :
-% FilePath     : /code/p1_processObserveData/ERA5/plot/ERA5_plot_radTrend.m
+% FilePath     : /code/p1_processObserveData/ERAi/plot/ERAi_plot_radTrend.m
 %
 %%---------------------------------------------------------
 clc; clear;
@@ -14,24 +14,24 @@ load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/mask/mask_cp
 load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/mask/mask_ce72.mat')% load word land mask
 load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/correct_worldmap.mat')
 load('/home/liuyc/lib/tools/matlab/plot/myMap/01.china_map/mat_file/mask14472.mat')
-[mlabels, areaNum] = obsPlotParameters('SFC', 'land', 'ERA5-radEffect-tsRad');
-[readme, level, tLin, vars] = obsParameters('ERA5');
+[mlabels, areaNum] = obsPlotParameters('SFC', 'land', 'ERAi-radEffect-tsRad');
+[readme, level, tLin, vars] = obsParameters();
 % Latitude range
 p_3 = 60;
 lon1 = [2.5 357.5]; lat1 = [-p_3 + 1 p_3 - 1]; % world area
 set(0, 'defaultfigurecolor', 'w')
 
 %% different time series, 1mean 2000-03 to 2018-02(18*12). 2 mean 200207-201706(15*12)
-for p_1 = 1:1
+for p_1 = 1:2
     %%%%%%%%%%%%%%%%%%%%%%%%%%%
     %read data
-    varsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{1}); %rawdata
-    dvarsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{2}); %anomaly
-    dvarsTrendPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{3}); %anomaly_trend
-    kernelCalPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{4}); % kernelCal
-    radEfectPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{5}); %radEffect
-    dradTrendPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{6}); %/data1/liuyincheng/cmip6-proces/aimp_2000-2014/MRI-ESM2-0/ensemble/radEffect_trend/
-    outPutPath = fullfile('/home/liuyc/Research/P02.Ts_change_research/figure/01.observe/1.3/', tLin.time{p_1}, 'ERA5', 'radEffect');
+    varsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{1}); %rawdata
+    dvarsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{2}); %anomaly
+    dvarsTrendPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{3}); %anomaly_trend
+    kernelCalPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{4}); % kernelCal
+    radEfectPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{5}); %radEffect
+    dradTrendPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{6}); %/data1/liuyincheng/cmip6-proces/aimp_2000-2014/MRI-ESM2-0/ensemble/radEffect_trend/
+    outPutPath = fullfile('/home/liuyc/Research/P02.Ts_change_research/figure/01.observe/1.3/', tLin.time{p_1}, 'ERAi', 'radEffect');
     auto_mkdir(outPutPath)
 
     load([dvarsTrendPath, 'global_vars.mat'])%% 'lon_f', 'lat_f', 'lon_k', 'lat_k', 'plev_k', 'time'
@@ -112,9 +112,9 @@ for p_1 = 1:1
     tt = {['Level:', mlabels.level, ', Era: ', tLin.time{p_1}], ['Data:', mlabels.dataName{1}, ', Trend(year mean)']};
     sgtt = sgtitle(tt, 'Fontsize', 14, 'Interpreter', 'none');
     figureName = [mlabels.dataName{1}, '_', tLin.time{p_1}, '_radEffect', '_', mlabels.area,'_',mlabels.level];
-    % saveFileName = [outPutPath, '/', figureName, '.png'];
-    % saveas(gcf, saveFileName)
-    % % save_png(saveFileName)%high resolution
-    % close gcf
+    saveFileName = [outPutPath, '/', figureName, '.png'];
+    saveas(gcf, saveFileName)
+    % save_png(saveFileName)%high resolution
+    close gcf
 
 end

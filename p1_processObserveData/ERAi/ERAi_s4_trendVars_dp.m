@@ -1,19 +1,19 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-06 13:27:23
-% LastEditTime : 2020-07-08 10:03:08
+% LastEditTime : 2020-07-08 10:01:46
 % LastEditors  : LYC
 % Description  :
-% FilePath     : /code/p1_processObserveData/ERA5/ERA5_s4_trendVars_dp.m
+% FilePath     : /code/p1_processObserveData/ERAi/ERAi_s4_trendVars_dp.m
 %
 %%---------------------------------------------------------
-[readme, level, tLin, vars] = obsParameters('ERA5');
+[readme, level, tLin, vars] = obsParameters('ERAi');
 for p_1 = 1:2
-    varsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{1}); %rawdata
-    dvarsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{2}); %anomaly
-    kernelCalPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{4}); % kernelCal
-    radEfectPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{5}); %radEffect
-    trend_radEfectPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{6});; %/data1/liuyincheng/cmip6-proces/aimp_2000-2014/MRI-ESM2-0/ensemble/radEffect_trend/
+    varsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{1}); %rawdata
+    dvarsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{2}); %anomaly
+    kernelCalPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{4}); % kernelCal
+    radEfectPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{5}); %radEffect
+    trend_radEfectPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{6});; %/data1/liuyincheng/cmip6-proces/aimp_2000-2014/MRI-ESM2-0/ensemble/radEffect_trend/
     auto_mkdir(trend_radEfectPath)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Part1: SFC vars

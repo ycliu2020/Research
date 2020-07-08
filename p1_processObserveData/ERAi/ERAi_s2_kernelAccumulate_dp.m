@@ -64,9 +64,9 @@ lon_k = ncread('/data1/liuyincheng/y_kernels/kernels_YiH/toa/RRTMG_wv_lw_toa_cld
 lat_k = ncread('/data1/liuyincheng/y_kernels/kernels_YiH/toa/RRTMG_wv_lw_toa_cld_highR.nc', 'lat'); nlatk = length(lat_k);
 
 %% different time series, 1mean 2000-03 to 2018-02(18*12). 2 mean 200207-201706(15*12)
-[readme, level, tLin, vars] = obsParameters('ERA5');
+[readme, level, tLin, vars] = obsParameters('ERAi');
 for p_1 = 1:2
-    kernelCalPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{4});
+    kernelCalPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{4});
     auto_mkdir(kernelCalPath)
     %%%%% Part1 read dps
     load([kernelCalPath, 'kernel_dp.mat']) % 'dps', 'dp', 'dp_level2'

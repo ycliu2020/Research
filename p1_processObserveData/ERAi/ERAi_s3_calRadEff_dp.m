@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-06 08:55:44
-% LastEditTime : 2020-07-08 10:02:59
+% LastEditTime : 2020-07-08 10:01:37
 % LastEditors  : LYC
 % Description  :
-% FilePath     : /code/p1_processObserveData/ERA5/ERA5_s3_calRadEff_dp.m
+% FilePath     : /code/p1_processObserveData/ERAi/ERAi_s3_calRadEff_dp.m
 %
 %%---------------------------------------------------------
 clear; clc; tic;
@@ -32,12 +32,12 @@ saveTrend_radEfectName = {'trend_dradEfect_sfc_cld.mat', 'trend_dradEfect_toa_cl
 plevel = 24; % wv_lwkernel and wv_swkernel level;
 t_scflevel = 25; % sfc t_lwkernel level;
 
-[readme, level, tLin, vars] = obsParameters('ERA5');
+[readme, level, tLin, vars] = obsParameters('ERAi');
 for p_1 = 1:2
-    varsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{1}); %rawdata
-    dvarsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{2}); %anomaly
-    kernelCalPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{4}); % kernelCal
-    radEfectPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{5}); %radEffect
+    varsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{1}); %rawdata
+    dvarsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{2}); %anomaly
+    kernelCalPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{4}); % kernelCal
+    radEfectPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{5}); %radEffect
     auto_mkdir(radEfectPath)
     % load dvars
     load([dvarsPath, 'global_vars.mat'])% lat_k lon_k time plev_k

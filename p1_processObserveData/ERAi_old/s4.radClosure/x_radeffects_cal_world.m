@@ -1,3 +1,12 @@
+%%---------------------------------------------------------
+% Author       : LYC
+% Date         : 2020-06-09 15:52:00
+% LastEditTime : 2020-07-07 12:53:15
+% LastEditors  : LYC
+% Description  : 
+% FilePath     : /code/p1_processObserveData/ERAi_old/s4.radClosure/x_radeffects_cal_world.m
+%  
+%%---------------------------------------------------------
 % c_radeffects_cal.m
 % this program is aimed to calculate radiation effects(total,short,long)
 % TOA and SFC
