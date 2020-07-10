@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-06 15:05:35
-% LastEditTime : 2020-07-08 10:10:51
+% LastEditTime : 2020-07-10 09:45:09
 % LastEditors  : LYC
 % Description  :
 % FilePath     : /code/p1_processObserveData/ERAi/plot/ERAi_plot_radTrend.m
@@ -14,8 +14,8 @@ load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/mask/mask_cp
 load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/mask/mask_ce72.mat')% load word land mask
 load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/correct_worldmap.mat')
 load('/home/liuyc/lib/tools/matlab/plot/myMap/01.china_map/mat_file/mask14472.mat')
-[mlabels, areaNum] = obsPlotParameters('SFC', 'land', 'ERAi-radEffect-tsRad');
-[readme, level, tLin, vars] = obsParameters();
+[mlabels, areaNum] = obsPlotParameters('sfc', 'land', 'ERAi-radEffect-tsRad');
+[readme, level, tLin, vars] = obsParameters('ERAi');
 % Latitude range
 p_3 = 60;
 lon1 = [2.5 357.5]; lat1 = [-p_3 + 1 p_3 - 1]; % world area
@@ -31,7 +31,7 @@ for p_1 = 1:2
     kernelCalPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{4}); % kernelCal
     radEfectPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{5}); %radEffect
     dradTrendPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{6}); %/data1/liuyincheng/cmip6-proces/aimp_2000-2014/MRI-ESM2-0/ensemble/radEffect_trend/
-    outPutPath = fullfile('/home/liuyc/Research/P02.Ts_change_research/figure/01.observe/1.3/', tLin.time{p_1}, 'ERAi', 'radEffect');
+    outPutPath = fullfile('/home/liuyc/Research/P02.Ts_change_research/figure/01.observe/1.3/', tLin.time{p_1}, 'ERAi', 'fig_radEffect');
     auto_mkdir(outPutPath)
 
     load([dvarsTrendPath, 'global_vars.mat'])%% 'lon_f', 'lat_f', 'lon_k', 'lat_k', 'plev_k', 'time'
@@ -98,7 +98,7 @@ for p_1 = 1:2
             m_grid('linestyle', 'none', 'tickdir', 'out', 'xticklabels', [], 'yticklabels', [], 'fontsize', 8, 'color', 'k');
         end
 
-        title({[mlabels.component{varNum}, mlabels.unite{varNum}]; ['cc = ', num2str(yr_cc{varNum})]}, 'Interpreter', 'latex', 'fontsize', 10); % cc=',num2str(corr))
+        title({[mlabels.component{varNum}, mlabels.unite{varNum}]; ['spatial cc = ', num2str(yr_cc{varNum})]}, 'Interpreter', 'latex', 'fontsize', 10); % cc=',num2str(corr))
         % c=colorbar;
         % % c.Limits=[mmin(varNum) mmax(varNum)];%
         % c.Box='off';

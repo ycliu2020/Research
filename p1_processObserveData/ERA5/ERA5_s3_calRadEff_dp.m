@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-06 08:55:44
-% LastEditTime : 2020-07-08 10:02:59
+% LastEditTime : 2020-07-09 18:32:32
 % LastEditors  : LYC
 % Description  :
 % FilePath     : /code/p1_processObserveData/ERA5/ERA5_s3_calRadEff_dp.m
@@ -254,3 +254,4 @@ for p_1 = 1:2
     save([radEfectPath, 'dR_mainEffect_toa.mat'], 'dR_mainEffect_toa');
 
 end
+t = toc; disp(t)

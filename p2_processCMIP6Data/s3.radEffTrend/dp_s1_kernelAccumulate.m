@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-07-05 20:41:51
+% LastEditTime : 2020-07-09 09:51:10
 % LastEditors  : LYC
 % Description  : cal month mean ps and thickness dps, dp
 %                this script mainly include:ps and dps, dp
@@ -144,8 +144,8 @@ for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
                 ts_lwkernel = ts_lwkernel_copy{sfcToa};
                 t_lwkernel = t_lwkernel_copy{sfcToa};
                 t_level2_lwkernel = t_lwkernel_copy{sfcToa}; % only contain near surface 2 levels
-                wv_lwkernel = wv_swkernel_copy{sfcToa};
-                wv_swkernel = wv_lwkernel_copy{sfcToa};
+                wv_lwkernel = wv_lwkernel_copy{sfcToa};
+                wv_swkernel = wv_swkernel_copy{sfcToa};
                 numdp = 24;
 
                 if sfcToa <= 2%sfc

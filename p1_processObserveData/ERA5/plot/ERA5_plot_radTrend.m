@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-06 15:05:35
-% LastEditTime : 2020-07-08 10:12:46
+% LastEditTime : 2020-07-10 09:41:50
 % LastEditors  : LYC
 % Description  :
 % FilePath     : /code/p1_processObserveData/ERA5/plot/ERA5_plot_radTrend.m
@@ -22,7 +22,7 @@ lon1 = [2.5 357.5]; lat1 = [-p_3 + 1 p_3 - 1]; % world area
 set(0, 'defaultfigurecolor', 'w')
 
 %% different time series, 1mean 2000-03 to 2018-02(18*12). 2 mean 200207-201706(15*12)
-for p_1 = 1:1
+for p_1 = 1:2
     %%%%%%%%%%%%%%%%%%%%%%%%%%%
     %read data
     varsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{1}); %rawdata
@@ -31,7 +31,7 @@ for p_1 = 1:1
     kernelCalPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{4}); % kernelCal
     radEfectPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{5}); %radEffect
     dradTrendPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{6}); %/data1/liuyincheng/cmip6-proces/aimp_2000-2014/MRI-ESM2-0/ensemble/radEffect_trend/
-    outPutPath = fullfile('/home/liuyc/Research/P02.Ts_change_research/figure/01.observe/1.3/', tLin.time{p_1}, 'ERA5', 'radEffect');
+    outPutPath = fullfile('/home/liuyc/Research/P02.Ts_change_research/figure/01.observe/1.3/', tLin.time{p_1}, 'ERA5', 'fig_radEffect');
     auto_mkdir(outPutPath)
 
     load([dvarsTrendPath, 'global_vars.mat'])%% 'lon_f', 'lat_f', 'lon_k', 'lat_k', 'plev_k', 'time'
@@ -98,7 +98,7 @@ for p_1 = 1:1
             m_grid('linestyle', 'none', 'tickdir', 'out', 'xticklabels', [], 'yticklabels', [], 'fontsize', 8, 'color', 'k');
         end
 
-        title({[mlabels.component{varNum}, mlabels.unite{varNum}]; ['cc = ', num2str(yr_cc{varNum})]}, 'Interpreter', 'latex', 'fontsize', 10); % cc=',num2str(corr))
+        title({[mlabels.component{varNum}, mlabels.unite{varNum}]; ['spatial cc = ', num2str(yr_cc{varNum})]}, 'Interpreter', 'latex', 'fontsize', 10); % cc=',num2str(corr))
         % c=colorbar;
         % % c.Limits=[mmin(varNum) mmax(varNum)];%
         % c.Box='off';
@@ -112,9 +112,9 @@ for p_1 = 1:1
     tt = {['Level:', mlabels.level, ', Era: ', tLin.time{p_1}], ['Data:', mlabels.dataName{1}, ', Trend(year mean)']};
     sgtt = sgtitle(tt, 'Fontsize', 14, 'Interpreter', 'none');
     figureName = [mlabels.dataName{1}, '_', tLin.time{p_1}, '_radEffect', '_', mlabels.area,'_',mlabels.level];
-    % saveFileName = [outPutPath, '/', figureName, '.png'];
-    % saveas(gcf, saveFileName)
-    % % save_png(saveFileName)%high resolution
-    % close gcf
+    saveFileName = [outPutPath, '/', figureName, '.png'];
+    saveas(gcf, saveFileName)
+    % save_png(saveFileName)%high resolution
+    close gcf
 
 end

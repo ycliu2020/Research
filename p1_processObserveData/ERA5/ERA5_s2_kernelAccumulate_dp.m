@@ -77,8 +77,8 @@ for p_1 = 1:2
         ts_lwkernel = ts_lwkernel_copy{sfcToa};
         t_lwkernel = t_lwkernel_copy{sfcToa};
         t_level2_lwkernel = t_lwkernel_copy{sfcToa}; % only contain near surface 2 levels
-        wv_lwkernel = wv_swkernel_copy{sfcToa};
-        wv_swkernel = wv_lwkernel_copy{sfcToa};
+        wv_lwkernel = wv_lwkernel_copy{sfcToa};
+        wv_swkernel = wv_swkernel_copy{sfcToa};
         numdp = 24;
 
         if sfcToa <= 2%sfc

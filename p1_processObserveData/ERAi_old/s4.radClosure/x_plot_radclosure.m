@@ -1,8 +1,16 @@
+%%---------------------------------------------------------
+% Author       : LYC
+% Date         : 2020-06-09 15:52:00
+% LastEditTime : 2020-07-08 20:31:40
+% LastEditors  : LYC
+% Description  : 
+% FilePath     : /code/p1_processObserveData/ERAi_old/s4.radClosure/x_plot_radclosure.m
+%  
+%%---------------------------------------------------------
 % This program is to test radiation closure of kernel method
 % For four regions: China/ 20-50N/ Northern Hemisphere land/ Global land
 %这是时间序列图
 clc;clear;
-pre_load;
 inputpath='E:\Repeat_the_experiment\testdata\radclosure_date\';
 load([inputpath,'wordmean_r.mat'])% meanarea,late,lone
 name_num=1;

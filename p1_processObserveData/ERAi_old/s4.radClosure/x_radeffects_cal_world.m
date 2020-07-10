@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-07-07 12:53:15
+% LastEditTime : 2020-07-08 19:32:32
 % LastEditors  : LYC
 % Description  : 
 % FilePath     : /code/p1_processObserveData/ERAi_old/s4.radClosure/x_radeffects_cal_world.m
@@ -63,7 +63,7 @@ end
 totalrad = l_rad+s_rad;
 %china area mean
 meanarea=zeros(216,4,3,2);% 216montime,4toa/sfc,3radiation kinds,2real/effect
-[Late,Lone] = meshgrid(late,lone);
+[Lone,Late] = ndgrid(lone, late);
 wgt = cos(Late./180.*pi);%纬度加权算区域平均值
 
 load('/home/lyc/tools/matlab/map/a_world_map/mask/mask_cp144')% maskworld_cp

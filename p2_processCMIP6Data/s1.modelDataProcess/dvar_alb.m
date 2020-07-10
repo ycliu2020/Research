@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-07-05 12:50:57
+% LastEditTime : 2020-07-10 16:53:49
 % LastEditors  : LYC
 % Description  : cal mainly alb include 1.regrid vars, 2.vars anomly
 %                CMIP6 mothly data
@@ -19,14 +19,15 @@ outPath = '/data1/liuyincheng/cmip6-process/';
 alb_names = {'alb'};
 var_state = {'d', 'clim_', 'trendm_d', 'trends_d', 'trendyr_d'}; % m,s,yr indicate that month, season, year
 kernels_path = '/data1/liuyincheng/y_kernels/kernels_YiH/toa/dp.nc';
-lonf = 0:2.5:357.5; nlonf = length(lonf);
-latf = 90:-2.5:-90; nlatf = length(latf);
-
+lon_k = 0:2.5:357.5; nlonk = length(lon_k);
+lat_k = 90:-2.5:-90; nlatk = length(lat_k);
+lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f); % figure lat lon
+lon_f = lon_k; nlonf = length(lon_f);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % experiment
 for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     % model parameters
-    [readme, Experiment, level, tLin, mPlev, vars] = modelParameters(p_1);
+    [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(p_1);
     % input and output path (tLin:1740)
     inputPath = '/data1/liuyincheng/CMIP6-mirror/';
     exmPath_all = cell(1, length(Experiment));
@@ -37,8 +38,8 @@ for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
 
     exmPath = exmPath_all{p_1};
     time2 = 1:tLin.inter{p_1};
-    plevf = ncread(kernels_path, 'player'); % pay attention to plevf's range must smaller than plev's
-    plevfnum = length(plevf);
+    plev_k = ncread(kernels_path, 'player'); % pay attention to plev_k's range must smaller than plev's
+    nplevf = length(plev_k);
     readme.timeseries = tLin.read{p_1};
     readme.sfcAlbeo = 'sfc albeo';
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -151,7 +152,7 @@ for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             [pp] = testLonlat(temp);
             [pp, lon_v, lat_v, temp_alb] = fixLonlat(pp, p_2, lon_v, lat_v, temp_alb, temp);
 
-            albeo_regrid = autoRegrid3(lon_v, lat_v, time2, temp_alb, lonf, latf, time2);
+            albeo_regrid = autoRegrid3(lon_v, lat_v, time2, temp_alb, lon_k, lat_k, time2);
             % now we finished, next we cal the anomaly.
             [alb_anom, alb_clim] = monthlyAnomaly3D(144, 73, time.date, albeo_regrid, 1);
 
@@ -164,8 +165,8 @@ for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             % save grobal vars
             timeseries = tLin.time{p_1};
             modelname = level.model2{level1}(1:end);
-            save([outPathName{1}, 'global_vars.mat'], 'lonf', 'latf', 'time', 'plevf', 'readme', 'timeseries', 'modelname')
-            save([outPathName{2}, 'global_vars.mat'], 'lonf', 'latf', 'time', 'plevf', 'readme', 'timeseries', 'modelname')
+            save([outPathName{1}, 'global_vars.mat'], 'lon_k', 'lat_k', 'time', 'plev_k', 'readme', 'timeseries', 'modelname')
+            save([outPathName{2}, 'global_vars.mat'], 'lon_k', 'lat_k', 'time', 'plev_k', 'readme', 'timeseries', 'modelname')
             
             disp([esmName{esmNum,1}, ' ensemble is done!'])
         end

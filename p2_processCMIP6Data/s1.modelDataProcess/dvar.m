@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-07-06 09:56:38
+% LastEditTime : 2020-07-10 16:53:05
 % LastEditors  : LYC
 % Description  : cal mainly include 1.regrid vars, 2.vars anomly
 %                CMIP6 mothly data
@@ -18,14 +18,15 @@ nowpath = pwd;
 outPath = '/data1/liuyincheng/cmip6-process/';
 var_state = {'d', 'clim_', 'trendm_d', 'trends_d', 'trendyr_d'}; % m,s,yr indicate that month, season, year
 kernels_path = '/data1/liuyincheng/y_kernels/kernels_YiH/toa/dp.nc';
-lonf = 0:2.5:357.5; nlonf = length(lonf);
-latf = 90:-2.5:-90; nlatf = length(latf);
-
+lon_k = 0:2.5:357.5; nlonk = length(lon_k);
+lat_k = 90:-2.5:-90; nlatk = length(lat_k);
+lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f); % figure lat lon
+lon_f = lon_k; nlonf = length(lon_f);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % experiment
-for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980; 3 means ssp245, 4 means ssp370, 6 abrupt-4xCO2_150years
+for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980; 3 means ssp245, 4 means ssp370, 6 abrupt-4xCO2_150years
     % model parameters
-    [readme, Experiment, level, tLin, mPlev, vars] = modelParameters(p_1);
+    [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(p_1);
     % experiment path (tLin:1740)
     inputPath = '/data1/liuyincheng/CMIP6-mirror/';
     exmPath_all = cell(1, length(Experiment));
@@ -36,8 +37,8 @@ for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980; 3 means ssp245, 4 means ssp370
 
     exmPath = exmPath_all{p_1};
     time2 = 1:tLin.inter{p_1};
-    plevf = ncread(kernels_path, 'player'); % pay attention to plevf's range must smaller than plev's
-    plevfnum = length(plevf);
+    plev_k = ncread(kernels_path, 'player'); % pay attention to plev_k's range must smaller than plev's
+    nplevk = length(plev_k);
     readme.timeseries = tLin.read{p_1};
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % model
@@ -115,7 +116,7 @@ for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980; 3 means ssp245, 4 means ssp370
                     [pp] = testLonlat(temp);
                     [pp, lon_v, lat_v, temp_v] = fixLonlat(pp, p_2, lon_v, lat_v, temp_v, temp);
                     % regrid to unite axis
-                    v_regrid = autoRegrid4(lon_v, lat_v, plev, time2, temp_v, lonf, latf, plevf, time2);
+                    v_regrid = autoRegrid4(lon_v, lat_v, plev, time2, temp_v, lon_k, lat_k, plev_k, time2);
                     clear temp_v
                 elseif ismember(1, strcmp(v_names{ii}, vars.D3))% 3D vars
                     p_2 = 3; % mean 3D vars
@@ -126,7 +127,7 @@ for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980; 3 means ssp245, 4 means ssp370
                     [pp] = testLonlat(temp);
                     [pp, lon_v, lat_v, temp_v] = fixLonlat(pp, p_2, lon_v, lat_v, temp_v, temp);
                     % regrid to unite axis
-                    v_regrid = autoRegrid3(lon_v, lat_v, time2, temp_v, lonf, latf, time2);
+                    v_regrid = autoRegrid3(lon_v, lat_v, time2, temp_v, lon_k, lat_k, time2);
                     clear temp_v
                 end
 
@@ -135,7 +136,7 @@ for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980; 3 means ssp245, 4 means ssp370
                 save([varsPath, v_names{ii}], v_names{ii});
                 eval(['clear ', v_names{ii}])
                 %% now we finished, next we cal the anomaly.
-                [v_anom, v_clim] = monthlyAnomaly(144, 73, plevfnum, time.date, v_regrid, 1); %[nlongitude,nlatitude,time,var,startmonth]
+                [v_anom, v_clim] = monthlyAnomaly(144, 73, nplevk, time.date, v_regrid, 1); %[nlongitude,nlatitude,time,var,startmonth]
                 clear v_regrid
                 % save and release space
                 eval([dv_names{ii}, '= v_anom;']); %
@@ -149,8 +150,8 @@ for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980; 3 means ssp245, 4 means ssp370
             % save grobal vars
             timeseries = tLin.time{p_1};
             modelname = level.model2{level1}(1:end);
-            save([varsPath, 'global_vars.mat'], 'lonf', 'latf', 'time', 'plevf', 'readme', 'timeseries', 'modelname')
-            save([dvarsPath, 'global_vars.mat'], 'lonf', 'latf', 'time', 'plevf', 'readme', 'timeseries', 'modelname')
+            save([varsPath, 'global_vars.mat'], 'lon_k', 'lat_k', 'time', 'plev_k', 'readme', 'timeseries', 'modelname')
+            save([dvarsPath, 'global_vars.mat'], 'lon_k', 'lat_k', 'time', 'plev_k', 'readme', 'timeseries', 'modelname')
             
             disp([esmName{esmNum,1}, ' ensemble is done!'])
         end
