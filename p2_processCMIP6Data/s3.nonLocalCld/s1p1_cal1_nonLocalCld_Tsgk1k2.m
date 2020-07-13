@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-06-17 14:34:22
+% LastEditTime : 2020-07-11 10:33:09
 % LastEditors  : LYC
 % Description  : 计算lamda_cloud 和 deltaTsg的线性关系(k1和k2)
-% FilePath     : /code/p2_processCMIP6Data/s4.nonLocalCld/s1p1_cal1_nonLocalCld_Tsgk1k2.m
+% FilePath     : /code/p2_processCMIP6Data/s3.nonLocalCld/s1p1_cal1_nonLocalCld_Tsgk1k2.m
 %
 %%---------------------------------------------------------
 % 云, 温度 水汽 反照率
@@ -26,18 +26,20 @@ figTestPath = '/data1/liuyincheng/cmip6-process/z_assembleData/figTest/';
 auto_mkdir(figTestPath)
 % load lamda_cloud
 load('/data1/liuyincheng/cmip6-process/z_globalVar/lamda_cloud.mat')
+lon_k = 0:2.5:357.5; nlonk = length(lon_k);
+lat_k = 90:-2.5:-90; nlatk = length(lat_k);
+lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f); % figure lat lon
+lon_f = lon_k; nlonf = length(lon_f);
 
 for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     nowpath = pwd;
-    [readme, Experiment, level, tLin, mPlev, vars] = modelParameters(p_1);
+    [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(p_1);
 
     % inputPath
     inputPath = ['/data1/liuyincheng/cmip6-process/', level.time1{p_1}]; %/data1/liuyincheng/cmip6-process/amip_2000-2014/
     dvarsPath = [inputPath, level.model2{1}, '/', level.process3{2}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/anomaly
-    load([dvarsPath, 'global_vars.mat'])% latf lonf time plevf readme
-    lat = 88.75:-2.5:-88.75; nlat = length(lat);
-    lon = lonf; nlon = length(lon);
-    nlonf = length(lonf); nlatf = length(latf); ntime = length(time);
+    load([dvarsPath, 'global_vars.mat'])% lat_k lon_k time plev_k readme
+    ntime = length(time.date);
     DeltaTsgAssemble = zeros(length(level.model2), 2); % global mean temperture change during whole period
     lamdaCloudAssemble = zeros(length(level.model2), 1);
     dnonCloudAssemblePath = [inputPath, 'z_assembleData/', level.process3{8}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/non_localCld/
@@ -52,25 +54,23 @@ for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
         dradEffectPath = [inputPath, level.model2{level1}, '/', level.process3{6}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/radEffect/
         dnonCloudPath = [inputPath, level.model2{level1}, '/', level.process3{8}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/non_localCld/
         auto_mkdir(dnonCloudPath)
-        load([dvarsPath, 'global_vars.mat'])% latf lonf time plevf readme
+        load([dvarsPath, 'global_vars.mat'])% lat_k lon_k time plev_k readme
         load([dvarsPath, 'dts.mat'])%
         % regrid dts to 144x72(unite grids)
-        [Xlon, Ylat, Ttime] = meshgrid(lat, lon, time);
-        [Xlonf, Ylatf, Ttimef] = meshgrid(latf, lonf, time);
-        dts = interp3(Xlonf, Ylatf, Ttimef, dts, Xlon, Ylat, Ttime);
+        dts = autoRegrid3(lon_k, lat_k, time.date, dts, lon_f, lat_f, time.date);
         %% Part1: cal dtsg series and DeltaTsg
         % 1.1 cal dtsg
         % land mask (optional)
         if strcmp(maskLandSW, 'maskLand') == 1
 
             for var_id = 1:varUsedSize_vars
-                [dts] = maskLand(dts, lat, p_3, -p_3, areaNum);
+                [dts] = maskLand(dts, lat_f, p_3, -p_3, areaNum);
             end
 
         end
 
         % global Zonal weighted average (time, vars)
-        jiaquan = cosd(lat);
+        jiaquan = cosd(lat_f);
         wei = ones(144, 72); %格点纬度加权
 
         for latiNum = 1:72
@@ -88,14 +88,14 @@ for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
         save([dvarsPath, ['dtsg_', maskLandSW, '.mat']], 'dtsg', 'readmeDtsg')
 
         % 1.2 cal period DeltaTsg (whole time line)
-        X = [ones(size(time)) time]; %dts
+        X = [ones(size(time.date)) time.date]; %dts
         [b, bint, r, rint, stats] = regress(dtsg, X);
         trend_dtsg = b(2); % slop of time series K/时间的单位
         trendUnit = 'K/day';
-        DeltaTsg = trend_dtsg * (time(end) - time(1));
+        DeltaTsg = trend_dtsg * (time.date(end) - time.date(1));
         DeltaTsgMeaning = 'whole period ts change';
         readme.maskStatement = 'nomask mean land+sea; mask land mean no sea';
-        save([dnonCloudPath, 'global_vars.mat'], 'lonf', 'latf', 'time', 'plevf', 'readme', 'timeseries', 'modelname')
+        save([dnonCloudPath, 'global_vars.mat'], 'lon_k', 'lat_k', 'time', 'plev_k', 'readme', 'timeseries', 'modelname')
         save([dvarsTrendPath, 'trend_dtsg.mat'], 'trend_dtsg', 'trendUnit')
         save([dvarsTrendPath, ['DeltaTsg_', maskLandSW, '.mat']], 'DeltaTsg', 'DeltaTsgMeaning')
         DeltaTsgAssemble(level1, 1) = DeltaTsg;
@@ -113,7 +113,7 @@ for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
     end
     % save assemble data
     readme.meanOfDeltaTsgAssemble = '(DeltaTsg,trend_dtsg)';
-    save([dnonCloudAssemblePath, 'global_vars.mat'], 'lonf', 'latf', 'time', 'plevf', 'readme', 'timeseries', 'modelname')
+    save([dnonCloudAssemblePath, 'global_vars.mat'], 'lon_k', 'lat_k', 'time', 'plev_k', 'readme', 'timeseries', 'modelname')
     save([dnonCloudAssemblePath, ['DeltaTsgAssemble_', maskLandSW, '.mat']], 'DeltaTsgAssemble')
     save([dnonCloudAssemblePath, 'lamdaCloudAssemble.mat'], 'lamdaCloudAssemble','existModelName')
     %% Part2: cal k1, k2 about lamda_cloud and DeltaTsAssemble(DeltaTsAssemble=k1*lamda_cloud+k2) and plot

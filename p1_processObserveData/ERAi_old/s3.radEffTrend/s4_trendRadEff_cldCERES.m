@@ -5,9 +5,9 @@
 %
 clc; clear; tic;
 
-varLevel1{1} = 'sfc'; varLevel1{2} = 'toa';
-varLevel2{1} = 'all'; varLevel2{2} = 'clr';
-varLevel3{1} = 'ERAi'; varLevel3{2} = 'CERES';
+sfcToaName{1} = 'sfc'; sfcToaName{2} = 'toa';
+allClrName{1} = 'all'; allClrName{2} = 'clr';
+dataName{1} = 'ERAi'; dataName{2} = 'CERES';
 realRad_source = 'CERES';
 
 %% different time series, 1mean 2000-03 to 2018-02(18*12). 2 mean 200207-201706(15*12)
@@ -23,12 +23,12 @@ for p_1 = 1:2
     s_albEff = zeros(144, 72, tLin.inter{p_1}, 2, 2); l_taEff = s_albEff; l_tsEff = s_albEff; l_wvEff = s_albEff; s_wvEff = s_albEff; totalEff = s_albEff;
     l_rad = s_albEff; s_rad = s_albEff;
 
-    for ii = 1:2% 1.sfc, 2.toa
-        var1 = char(varLevel1{ii});
+    for sfcToa = 1:2% 1.sfc, 2.toa
+        var1 = char(sfcToaName{sfcToa});
 
-        for jj = 1:2% 1.all 2.clr
-            var2 = char(varLevel2{jj});
-            eff_path = strcat(inputpath, varLevel3{1}, '/radEffect/dradEffect_', var1, '_', var2, '.nc');
+        for allClr = 1:2% 1.all 2.clr
+            var2 = char(allClrName{allClr});
+            eff_path = strcat(inputpath, dataName{1}, '/radEffect/dradEffect_', var1, '_', var2, '.nc');
             realRad_path = strcat(inputpath, realRad_source, '/anomaly/drad.mat');
             % grobal vars
             lonPlot = ncread(eff_path, 'longitude'); % 144x72
@@ -36,15 +36,15 @@ for p_1 = 1:2
             nlon = length(lonPlot); nlat = length(latPlot);
             time = ncread(eff_path, 'time'); ntime = length(time);
             % read effects
-            s_albEff(:, :, :, ii, jj) = ncread(eff_path, 'albRadEff');
-            l_taEff(:, :, :, ii, jj) = ncread(eff_path, 'taRadEff');
-            l_tsEff(:, :, :, ii, jj) = ncread(eff_path, 'tsRadEff');
-            l_wvEff(:, :, :, ii, jj) = ncread(eff_path, 'wvlwRadEff');
-            s_wvEff(:, :, :, ii, jj) = ncread(eff_path, 'wvswRadEff');
-            totalEff(:, :, :, ii, jj) = ncread(eff_path, 'totalRadEff');
+            s_albEff(:, :, :, sfcToa, allClr) = ncread(eff_path, 'albRadEff');
+            l_taEff(:, :, :, sfcToa, allClr) = ncread(eff_path, 'taRadEff');
+            l_tsEff(:, :, :, sfcToa, allClr) = ncread(eff_path, 'tsRadEff');
+            l_wvEff(:, :, :, sfcToa, allClr) = ncread(eff_path, 'wvlwRadEff');
+            s_wvEff(:, :, :, sfcToa, allClr) = ncread(eff_path, 'wvswRadEff');
+            totalEff(:, :, :, sfcToa, allClr) = ncread(eff_path, 'totalRadEff');
             % read real rad Anomly
-            l_rad(:, :, :, ii, jj) = cell2mat(struct2cell(load(realRad_path, ['dR_lw_', var1, '_', var2]))); %net thermal radiation
-            s_rad(:, :, :, ii, jj) = cell2mat(struct2cell(load(realRad_path, ['dR_sw_', var1, '_', var2]))); %net thermal radiation
+            l_rad(:, :, :, sfcToa, allClr) = cell2mat(struct2cell(load(realRad_path, ['dR_lw_', var1, '_', var2]))); %net thermal radiation
+            s_rad(:, :, :, sfcToa, allClr) = cell2mat(struct2cell(load(realRad_path, ['dR_sw_', var1, '_', var2]))); %net thermal radiation
         end
 
     end

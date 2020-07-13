@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-06 13:27:23
-% LastEditTime : 2020-07-08 10:01:46
+% LastEditTime : 2020-07-12 19:51:20
 % LastEditors  : LYC
 % Description  :
 % FilePath     : /code/p1_processObserveData/ERAi/ERAi_s4_trendVars_dp.m

@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-06 08:55:44
-% LastEditTime : 2020-07-09 10:47:23
+% LastEditTime : 2020-07-13 09:31:46
 % LastEditors  : LYC
 % Description  :
 % FilePath     : /code/p1_processObserveData/ERAi/ERAi_s3_calRadEff_dp.m
@@ -233,7 +233,7 @@ for p_1 = 1:2
     save([radEfectPath, 'dCRF_toa.mat'], 'dCRF_toa');
     save([radEfectPath, 'dR_cloud_sfc.mat'], 'dR_cloud_sfc');
     save([radEfectPath, 'dR_cloud_toa.mat'], 'dR_cloud_toa');
-    save([radEfectPath, 'dR_residual_cld_sfc.mat'], 'dR_residual_cld_sfc');
+    save([radEfectPath, 'dR_residual_cld_sfc.mat'], 'dR_residual_cld_sfc'); % note that residual cld=clr(in sfc or toa);
     save([radEfectPath, 'dR_residual_cld_toa.mat'], 'dR_residual_cld_toa');
     save([radEfectPath, 'dR_residual_clr_sfc.mat'], 'dR_residual_clr_sfc');
     save([radEfectPath, 'dR_residual_clr_toa.mat'], 'dR_residual_clr_toa');

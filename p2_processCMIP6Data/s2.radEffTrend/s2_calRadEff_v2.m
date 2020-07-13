@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-07-06 13:08:40
+% LastEditTime : 2020-07-13 10:18:15
 % LastEditors  : LYC
 % Description  : cal mainly include 1.regrid vars, 2.vars anomly
 %                CMIP6 mothly data
@@ -12,7 +12,7 @@
 %                PS: m mean month, s mean season, yr mean year
 % inputPath    : /code/p2_processCMIP6Data/s1.modelDataProcess/
 % Attention!!!
-% check lat: model lat disagree with kernels lat (Opposite direction)
+% check lat_f: model lat_f disagree with kernels lat_f (Opposite direction)
 %%---------------------------------------------------------
 clear; clc; tic;
 % pause(9999)
@@ -40,12 +40,15 @@ saveTrend_radEfectName = {'trend_dradEfect_sfc_cld.mat', 'trend_dradEfect_toa_cl
 plevel = 24; % wv_lwkernel and wv_swkernel level;
 t_scflevel = 25; % sfc t_lwkernel level;
 load('/data1/liuyincheng/cmip6-process/z_globalVar/ERF_rec.mat')% 'ERF_rec', 'timeERF_rec'
-
+lon_k = 0:2.5:357.5; nlonk = length(lon_k); % kernel lat lon
+lat_k = 90:-2.5:-90; nlatk = length(lat_k);
+lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f); % figure lat lon
+lon_f = lon_k; nlonf = length(lon_f);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % experiment
-for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     %CAMS-CSM1-0 didn't have sfc clear sky radiation, delete it
-    [readme, Experiment, level, tLin, mPlev, vars] = modelParameters(p_1);
+    [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(p_1);
     % exmPath
     exmPath = ['/data1/liuyincheng/cmip6-process/', level.time1{p_1}]; %/data1/liuyincheng/cmip6-process/2000-2014/
     %%% load ERF data
@@ -90,7 +93,7 @@ for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             auto_mkdir(radEfectPath)
             %%%%% step1: cal dReffect
             % load dvars
-            load([dvarsPath, 'global_vars.mat'])% latf lonf time plevf readme
+            load([dvarsPath, 'global_vars.mat'])% lat_k lon_k time plev_k readme
             load([varsPath, 'hus.mat'])
             load([dvarsPath, 'dhus.mat'])% dhus and clim_hus
             load([dvarsPath, 'dalb.mat'])%
@@ -99,10 +102,8 @@ for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             dta(isnan(dta)) = 0;
             dalb(isnan(dalb)) = 0; dts(isnan(dts)) = 0;
             ntime = length(time.date);
-            lat = 88.75:-2.5:-88.75; nlat = length(lat);
-            lon = lonf; nlon = length(lon);
-            nlonf = length(lonf); nlatf = length(latf);
             % cal the fixed moisture because kernel q's unit is W/m2/K/100mb
+            startMonth=1;
             dhus2 = zeros(144, 73, 24, ntime);
             for monNum = 1:ntime
                 dhus2(:, :, :, monNum) = (log(hus(:, :, :, monNum)) - log(clim_hus(:, :, :, mod(monNum + startMonth- 2, 12) + 1))) .* clim_ta(:, :, :, mod(monNum + startMonth- 2, 12) + 1).^2 * Rv / Lv;
@@ -179,32 +180,30 @@ for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
                 end
 
                 %regrid 144x72(unite grids)
-                [Xlon, Ylat, Ttime] = meshgrid(lat, lon, time.date);
-                [Xlonf, Ylatf, Ttimef] = meshgrid(latf, lonf, time.date);
-                wvlwEffect = interp3(Xlonf, Ylatf, Ttimef, wvlwEffect, Xlon, Ylat, Ttime);
-                wvswEffect = interp3(Xlonf, Ylatf, Ttimef, wvswEffect, Xlon, Ylat, Ttime);
-                taEffect = interp3(Xlonf, Ylatf, Ttimef, taEffect, Xlon, Ylat, Ttime);
-                tsEffect = interp3(Xlonf, Ylatf, Ttimef, tsEffect, Xlon, Ylat, Ttime);
-                albEffect = interp3(Xlonf, Ylatf, Ttimef, albEffect, Xlon, Ylat, Ttime);
+                wvlwEffect = autoRegrid3(lon_k, lat_k, time.date, wvlwEffect, lon_f, lat_f, time.date);
+                wvswEffect = autoRegrid3(lon_k, lat_k, time.date, wvswEffect, lon_f, lat_f, time.date);
+                taEffect = autoRegrid3(lon_k, lat_k, time.date, taEffect, lon_f, lat_f, time.date);
+                tsEffect = autoRegrid3(lon_k, lat_k, time.date, tsEffect, lon_f, lat_f, time.date);
+                albEffect = autoRegrid3(lon_k, lat_k, time.date, albEffect, lon_f, lat_f, time.date);
                 % integration(taEffect,tsEffect,albEffect,totalEffect,husEffect)
                 husEffect = wvlwEffect + wvswEffect;
                 totalEffect = husEffect + taEffect + tsEffect + albEffect;
                 mainEffect = husEffect + taEffect + albEffect; % prepare for cal ta+alb+q+clod effect
 
                 if ii <= 2
-                    taOnlyEffect = interp3(Xlonf, Ylatf, Ttimef, taOnlyEffect, Xlon, Ylat, Ttime);
-                    taOnlyEffect2 = interp3(Xlonf, Ylatf, Ttimef, taOnlyEffect2, Xlon, Ylat, Ttime);
-                    tasEffect = interp3(Xlonf, Ylatf, Ttimef, tasEffect, Xlon, Ylat, Ttime);
-                    tasEffect2 = interp3(Xlonf, Ylatf, Ttimef, tasEffect2, Xlon, Ylat, Ttime);
+                    taOnlyEffect = autoRegrid3(lon_k, lat_k, time.date, taOnlyEffect, lon_f, lat_f, time.date);
+                    taOnlyEffect2 = autoRegrid3(lon_k, lat_k, time.date, taOnlyEffect2, lon_f, lat_f, time.date);
+                    tasEffect = autoRegrid3(lon_k, lat_k, time.date, tasEffect, lon_f, lat_f, time.date);
+                    tasEffect2 = autoRegrid3(lon_k, lat_k, time.date, tasEffect2, lon_f, lat_f, time.date);
                     % save the radEffect: dradEfect_sfc_cld.mat
-                    save([radEfectPath, 'global_vars.mat'], 'lon', 'lat', 'time', 'plevf', 'readme', 'timeseries', 'modelname')
+                    save([radEfectPath, 'global_vars.mat'], 'lon_f', 'lat_f', 'time', 'plev_k', 'readme', 'timeseries', 'modelname')
                     save([radEfectPath, saveradEfectName{ii}], 'wvlwEffect', 'wvswEffect', 'tsEffect', 'albEffect', 'husEffect', ...
                         'taEffect', 'taOnlyEffect', 'tasEffect', 'tasEffect2', 'taOnlyEffect2', 'totalEffect', 'mainEffect');
                 else
-                    taOnlyEffect2 = interp3(Xlonf, Ylatf, Ttimef, taOnlyEffect2, Xlon, Ylat, Ttime);
-                    tasEffect2 = interp3(Xlonf, Ylatf, Ttimef, tasEffect2, Xlon, Ylat, Ttime);
+                    taOnlyEffect2 = autoRegrid3(lon_k, lat_k, time.date, taOnlyEffect2, lon_f, lat_f, time.date);
+                    tasEffect2 = autoRegrid3(lon_k, lat_k, time.date, tasEffect2, lon_f, lat_f, time.date);
                     % save the radEffect: dradEfect_sfc_cld.mat
-                    save([radEfectPath, 'global_vars.mat'], 'lon', 'lat', 'time', 'plevf', 'readme', 'timeseries', 'modelname')
+                    save([radEfectPath, 'global_vars.mat'], 'lon_f', 'lat_f', 'time', 'plev_k', 'readme', 'timeseries', 'modelname')
                     save([radEfectPath, saveradEfectName{ii}], 'wvlwEffect', 'wvswEffect', 'tsEffect', 'albEffect', 'husEffect', ...
                         'taEffect', 'tasEffect2', 'taOnlyEffect2', 'totalEffect', 'mainEffect');
                 end
@@ -247,13 +246,9 @@ for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             ss_rad(isnan(ss_rad)) = 0;
 
             %regrid 144x72(unite grids)
-
-            [Xlon, Ylat, Ttime] = meshgrid(lat, lon, time.date);
-            [Xlonf, Ylatf, Ttimef] = meshgrid(latf, lonf, time.date);
-
             for ii = 1:4
-                l_rad(:, :, :, ii) = interp3(Xlonf, Ylatf, Ttimef, squeeze(ll_rad(:, :, :, ii)), Xlon, Ylat, Ttime);
-                s_rad(:, :, :, ii) = interp3(Xlonf, Ylatf, Ttimef, squeeze(ss_rad(:, :, :, ii)), Xlon, Ylat, Ttime);
+                l_rad(:, :, :, ii) = autoRegrid3(lon_k, lat_k, time.date, squeeze(ll_rad(:, :, :, ii)), lon_f, lat_f, time.date);
+                s_rad(:, :, :, ii) = autoRegrid3(lon_k, lat_k, time.date, squeeze(ss_rad(:, :, :, ii)), lon_f, lat_f, time.date);
             end
 
             % 1.sfc, 2.toa( 1sfc cld,2sfc clr,3toa cld,4toa clr)

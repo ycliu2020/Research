@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-07-09 09:51:10
+% LastEditTime : 2020-07-11 10:10:49
 % LastEditors  : LYC
 % Description  : cal month mean ps and thickness dps, dp
 %                this script mainly include:ps and dps, dp
@@ -13,11 +13,15 @@
 %                time:2000.01-2014.12(interval:15*12);1980.01-2014.12(interval:35*12); 2015.01-2099.12(interval:85*12)
 %                initial time in hist(1740 total): 1,561 of 1740(2000.03);1,321 of 1740(1980.01)
 %                initial time in futrue(1032 total): 1 of 1032(2015.01);
-% FilePath     : /code/p2_processCMIP6Data/s3.radEffTrend/dp_s1_kernelAccumulate.m
+% FilePath     : /code/p2_processCMIP6Data/s2.radEffTrend/s1_kernelAccumulate.m
 %
 %%---------------------------------------------------------
 clear; clc; tic;
 nowpath = pwd;
+lon_k = 0:2.5:357.5; nlonk = length(lon_k);
+lat_k = 90:-2.5:-90; nlatk = length(lat_k);
+lat_f = 88.75:-2.5:-88.75; nlatk = length(lat_f); % figure lat lon
+lon_f = lon_k; nlonk = length(lon_f);
 %% kernel data
 % kernel path
 kernelsPath = '/data1/liuyincheng/y_kernels/kernels_YiH/';
@@ -73,9 +77,9 @@ dp_raw = ncread([exampKernelPath, 'dp.nc'], 'dp');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % experiment
-for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     % model parameters
-    [readme, Experiment, level, tLin, mPlev, vars] = modelParameters(p_1);
+    [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(p_1);
     % exmPath
     exmPath = ['/data1/liuyincheng/cmip6-process/', level.time1{p_1}]; %~/data/cmip6/2000-2014/
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -93,15 +97,15 @@ for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
         for esmNum = 1:length(esmName)
             % input and output Path
             esmPath = fullfile(mdlPath, esmName{esmNum, 1});
-            inputPath1 = fullfile(esmPath, level.process3{1}); %~/data/cmip6/2000-2014/MRI-ESM2-0/rawdata_regrids
+            rawRegridPath = fullfile(esmPath, level.process3{1}); %~/data/cmip6/2000-2014/MRI-ESM2-0/rawdata_regrids
             kernelsOutPath = fullfile(esmPath, level.process3{5}); % /home/lyc/data/cmip6/2000-2014/MRI-ESM2-0/kernelsCal/
             auto_mkdir(kernelsOutPath)
             %%%%% Part1 month mean ps (ps_m(144x73x12))
-            load([inputPath1, 'global_vars.mat'])% latf lonf time plevf readme
-            load([inputPath1, 'ps.mat'])
-            ntime = length(time.date); nlatf = length(latf); nlonf = length(lonf);
+            load([rawRegridPath, 'global_vars.mat'])% lat_k lon_k time plev_k readme
+            load([rawRegridPath, 'ps.mat'])
+            ntime = length(time.date); nlatk = length(lat_k); nlonk = length(lon_k);
             ps = ps ./ 100; % transform hpa unite
-            ps_m = zeros(nlonf, nlatf, 12);
+            ps_m = zeros(nlonk, nlatk, 12);
             [yy, mm, dd] = datevec(time.date);
 
             for im = 1:12
@@ -111,12 +115,12 @@ for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
 
             month = 1:12;
             % Part2 cal dps,dp
-            dp = zeros(nlonf, nlatf, 24, 12); % revise dp in all layers, under the lowest layer are zeros
-            dp_level2 = zeros(nlonf, nlatf, 24, 12); % only contain the near sfc
-            dps = zeros(nlonf, nlatf, 12);
+            dp = zeros(nlonk, nlatk, 24, 12); % revise dp in all layers, under the lowest layer are zeros
+            dp_level2 = zeros(nlonk, nlatk, 24, 12); % only contain the near sfc
+            dps = zeros(nlonk, nlatk, 12);
 
-            for i = 1:nlonf
-                for j = 1:nlatf
+            for i = 1:nlonk
+                for j = 1:nlatk
                     for nt = 1:12
                         if isnan(ps_m(i, j, nt)) == 1
                             continue
@@ -133,7 +137,7 @@ for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
                 end
             end
 
-            save([kernelsOutPath, 'global_vars.mat'], 'lonf', 'latf', 'time', 'plevf', 'readme', 'timeseries', 'modelname')
+            save([kernelsOutPath, 'global_vars.mat'], 'lon_k', 'lat_k', 'time', 'plev_k', 'readme', 'timeseries', 'modelname')
             save([kernelsOutPath, 'kernel_dp.mat'], 'dps', 'dp', 'dp_level2');
             save([kernelsOutPath, 'kernel_ps_m.mat'], 'ps_m');
             disp('ps is done!')
@@ -170,7 +174,7 @@ for p_1 = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
                     end
 
                 end
-                % save([kernelsOutPath,'global_vars.mat'], 'lonf', 'latf', 'time','plevf','readme','timeseries','modelname')
+                % save([kernelsOutPath,'global_vars.mat'], 'lon_k', 'lat_k', 'time','plev_k','readme','timeseries','modelname')
                 save([kernelsOutPath, saveName{sfcToa}], 'alb_swkernel', 'ts_lwkernel', 't_lwkernel', 't_level2_lwkernel', 'wv_lwkernel', 'wv_swkernel');
             end
             disp([esmName{esmNum, 1}, ' ensemble is done!'])

@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-07-06 13:40:45
+% LastEditTime : 2020-07-11 10:01:21
 % LastEditors  : LYC
 % Description  : cal mainly include 1.regrid vars, 2.vars anomly
 %                CMIP6 mothly data
@@ -10,7 +10,7 @@
 %                initial time in futrue(1032 total): 1 of 1032(2015.01);
 %                initial time in amip-hist(1740 total): 1,561 of 1740(2000.03);1,321 of 1740(1980.01);
 %                PS: m mean month, s mean season, yr mean year
-% FilePath     : /code/p2_processCMIP6Data/s3.radEffTrend/dp_s3p1_trendRadEff_cldSfc.m
+% FilePath     : /code/p2_processCMIP6Data/s2.radEffTrend/s3p1_trendRadEff_cldSfc.m
 %
 %%---------------------------------------------------------
 clear; clc; tic;
