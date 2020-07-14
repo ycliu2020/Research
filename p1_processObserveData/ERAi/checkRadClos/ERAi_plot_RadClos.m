@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-08 19:48:12
-% LastEditTime : 2020-07-09 20:04:47
+% LastEditTime : 2020-07-14 16:34:00
 % LastEditors  : LYC
 % Description  : plot radClos
 % FilePath     : /code/p1_processObserveData/ERAi/checkRadClos/ERAi_plot_RadClos.m
@@ -12,10 +12,10 @@ lon_k = 0:2.5:357.5; nlonk = length(lon_k); % kernel lat lon
 lat_k = 90:-2.5:-90; nlatk = length(lat_k);
 lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f); % figure lat lon
 lon_f = lon_k; nlonf = length(lon_f);
-areaName = {'china', 'world'};
-areaLabel = {'cn', 'un'};
-Label.wave = {'net', 'sw', 'lw'};
 
+Label.wave = {'net', 'sw', 'lw'};
+areaLabel = {'un', 'cn'};
+areaName = {'world', 'china'};
 figureTitle = {'Radiation closure experiment (60N-60S mean)', 'Radiation closure experiment (China mean)'};
 
 [readme, level, tLin, vars] = obsParameters('ERAi');

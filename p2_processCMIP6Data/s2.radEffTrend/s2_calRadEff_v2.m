@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-07-13 10:18:15
+% LastEditTime : 2020-07-14 09:07:01
 % LastEditors  : LYC
 % Description  : cal mainly include 1.regrid vars, 2.vars anomly
 %                CMIP6 mothly data
@@ -46,7 +46,7 @@ lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f); % figure lat lon
 lon_f = lon_k; nlonf = length(lon_f);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % experiment
-for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for p_1 = 3:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     %CAMS-CSM1-0 didn't have sfc clear sky radiation, delete it
     [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(p_1);
     % exmPath
@@ -320,7 +320,7 @@ for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
     end
 
     disp([level.time1{p_1}, ' era is done!'])
-    clear
+    clear dCRF_sfc dR_cloud_sfc dR_residual_cld_sfc dR_residual_clr_sfc dR_residual_cld_toa dR_residual_clr_toa dR_ObsTotal_cld_sfc dR_ObsTotal_clr_sfc dR_ObsTotal_cld_toa dR_ObsTotal_clr_toa ss_rad ll_rad l_rad s_rad
 end
 
 t = toc; disp(t)

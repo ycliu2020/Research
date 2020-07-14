@@ -8,16 +8,17 @@ outputpath1 = '/data1/liuyincheng/Observe-process/200207-201706/MODIS/radEffect/
 outputpath2 = '/data1/liuyincheng/Observe-process/200207-201706/MODIS/radEffect_trend/';
 auto_mkdir(outputpath1)
 auto_mkdir(outputpath2)
+lon_f = 0:2.5:357.5; nlonf = length(lon_f);
+lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f);
 
 p_1 = 2; % different time series, 1mean 2000 - 03 to 2018 - 02(18 * 12). 2 mean 200207 - 201706(15 * 12)
-[readme, tLin] = observeParameters(p_1); % fuction% readme,  tLin,
-
+[readme, level, tLin, vars] = obsParameters('ERA5');
 %------------------------ MODIS data ------------------------
-load([inputpath, 'surface_flux_MODIS_kernel_estimation_200207_201908.mat'])% lat, lon, lwcf, swcf,, lat1,lon1,
-% lat=89.5:-1:-89.5;lon=.5:1:359.5;
-lat = double(lat); lon = double(lon);
-lon(2:end + 1) = lon; lon(1) = -0.5;
-Rsfc_cloud = swcf + swcf;
+load([inputpath, 'surface_flux_MODIS_kernel_estimation_200207_201908.mat'])% lat_m, lon_m, lwcf, swcf,, lat1,lon1,
+% lat_m=89.5:-1:-89.5;lon_m=.5:1:359.5;
+lat_m = double(lat); lon_m = double(lon);
+lon_m(2:end + 1) = lon_m; lon_m(1) = -0.5;
+Rsfc_cloud = swcf + lwcf;
 Rsfc_cloud(:, 2:end + 1, :) = Rsfc_cloud; Rsfc_cloud(:, 1, :) = Rsfc_cloud(:, end, :);
 Rsfc_cloud = permute(Rsfc_cloud, [2 1 3]);
 % choose 200207_201706 time
@@ -27,21 +28,16 @@ t0 = datetime(2002, 7, 1);
 t = t0 + calmonths(0:179);
 time = datenum(t);
 
-% Regrid the latitude
-lonPlot = 0:2.5:357.5; nlonPlot = length(lonPlot);
-latPlot = 88.75:-2.5:-88.75; nlatPlot = length(latPlot);
-
-[Xlon, Ylat, Ttime] = meshgrid(lat, lon, time);
-[Xlonff, Ylatff, Ttimeff] = meshgrid(latPlot, lonPlot, time);
-Rsfc_cloud = interp3(Xlon, Ylat, Ttime, Rsfc_cloud, Xlonff, Ylatff, Ttimeff);
+% Regrid
+Rsfc_cloud = autoRegrid3(lon_m, lat_m, time, Rsfc_cloud, lon_f, lat_f, time);
 
 %% Deseasonalize
-startmonth = tLin.startmonth{2};
-[dRsfc_cloudMOD, Clim_Rsfc_cloudMOD] = monthlyAnomaly3D(nlonPlot, nlatPlot, time, Rsfc_cloud, startmonth);
+startMonth = tLin.startMonth{2};
+[dRsfc_cloudMOD, Clim_Rsfc_cloudMOD] = monthlyAnomaly3D(nlonf, nlatf, time, Rsfc_cloud, startMonth);
 
 
 %% cal trend
-[trendm_dRsfc_cloudMOD, trends_dRsfc_cloudMOD, trendyr_dRsfc_cloudMOD, ~, ~] = autoCalTrend(dRsfc_cloudMOD, nlonPlot, nlatPlot, time, startmonth);
+[trendm_dRsfc_cloudMOD, trends_dRsfc_cloudMOD, trendyr_dRsfc_cloudMOD, ~, ~] = autoCalTrend(dRsfc_cloudMOD, nlonf, nlatf, time, startMonth);
 
 
 %%  ------------------------ erai data ------------------------
@@ -66,9 +62,9 @@ for ii = 1:2% 1.sfc, 2.toa
         eff_path = strcat(inputpath_erai, varLevel3{1}, '/radEffect/dradEffect_', var1, '_', var2, '.nc');
         realRad_path = strcat(inputpath_erai, realRad_source, '/anomaly/drad.mat');
         % grobal vars
-        lonPlot = ncread(eff_path, 'longitude'); % 144x72
-        latPlot = ncread(eff_path, 'latitude');
-        nlon = length(lonPlot); nlat = length(latPlot);
+        lon_f = ncread(eff_path, 'longitude'); % 144x72
+        lat_f = ncread(eff_path, 'latitude');
+        nlon = length(lon_f); nlat = length(lat_f);
         time = ncread(eff_path, 'time'); ntime = length(time);
         % read effects
         s_albEff(:, :, :, ii, jj) = ncread(eff_path, 'albRadEff');
@@ -107,22 +103,22 @@ dRheat_varsCal_sfc_noResi = dR_husSfcAll + dR_albSfcAll + dR_taSfcAll + dRsfc_cl
 testVar_equal_Resi=squeeze(dR_all(:, :, :, 1))-dR_tsSfcAll;% 验证这一项和上一项是否相等
 
 %% Save to mat
-save([outputpath1, 'dcloud_MOD.mat'], 'lonPlot', 'latPlot', 'time', 'readme'...
+save([outputpath1, 'dcloud_MOD.mat'], 'lon_f', 'lat_f', 'time', 'readme'...
     , 'dRsfc_cloudMOD', 'Clim_Rsfc_cloudMOD'...
     ,'dR_residualMOD_sfc','dRheat_varsCal_sfc_Resi','dRheat_varsCal_sfc_noResi','testVar_equal_Resi')
 
-load('/data1/liuyincheng/Observe-process/200207-201706/ERAi/radEffect/dcldRadEffect_ERAi.mat')% 'lonPlot', 'latPlot', 'time', ...'dR_cloud_sfc', 'dR_cloud_toa','dR_residual_sfc','dR_residual_toa'
+load('/data1/liuyincheng/Observe-process/200207-201706/ERAi/radEffect/dcldRadEffect_ERAi.mat')% 'lon_f', 'lat_f', 'time', ...'dR_cloud_sfc', 'dR_cloud_toa','dR_residual_sfc','dR_residual_toa'
 dRheat_varsCal_sfc_ResiERAi = dR_husSfcAll + dR_albSfcAll + dR_taSfcAll + dRsfc_cloudMOD + dR_residual_sfc;
 
 %% cal trend
-[trendm_dRsfc_residualMOD, trends_dRsfc_residualMOD, trendyr_dRsfc_residualMOD, ~, ~] = autoCalTrend(dR_residualMOD_sfc, nlon, nlat, time, startmonth);
-[trendm_dRsfcHeat_varsCal_Resi, trends_dRsfcHeat_varsCal_Resi, trendyr_dRsfcHeat_varsCal_Resi, ~, ~] = autoCalTrend(dRheat_varsCal_sfc_Resi, nlon, nlat, time, startmonth);
-[trendm_dRsfcHeat_varsCal_ResiERAi, trends_dRsfcHeat_varsCal_ResiERAi, trendyr_dRsfcHeat_varsCal_ResiERAi, ~, ~] = autoCalTrend(dRheat_varsCal_sfc_ResiERAi, nlon, nlat, time, startmonth);
-[trendm_dRsfcHeat_varsCal_noResi, trends_dRsfcHeat_varsCal_noResi, trendyr_dRsfcHeat_varsCal_noResi, ~, ~] = autoCalTrend(dRheat_varsCal_sfc_noResi, nlon, nlat, time, startmonth);
-[trendm_testVar_equal_Resi, trends_testVar_equal_Resi, trendyr_testVar_equal_Resi, ~, ~] = autoCalTrend(testVar_equal_Resi, nlon, nlat, time, startmonth);
+[trendm_dRsfc_residualMOD, trends_dRsfc_residualMOD, trendyr_dRsfc_residualMOD, ~, ~] = autoCalTrend(dR_residualMOD_sfc, nlon, nlat, time, startMonth);
+[trendm_dRsfcHeat_varsCal_Resi, trends_dRsfcHeat_varsCal_Resi, trendyr_dRsfcHeat_varsCal_Resi, ~, ~] = autoCalTrend(dRheat_varsCal_sfc_Resi, nlon, nlat, time, startMonth);
+[trendm_dRsfcHeat_varsCal_ResiERAi, trends_dRsfcHeat_varsCal_ResiERAi, trendyr_dRsfcHeat_varsCal_ResiERAi, ~, ~] = autoCalTrend(dRheat_varsCal_sfc_ResiERAi, nlon, nlat, time, startMonth);
+[trendm_dRsfcHeat_varsCal_noResi, trends_dRsfcHeat_varsCal_noResi, trendyr_dRsfcHeat_varsCal_noResi, ~, ~] = autoCalTrend(dRheat_varsCal_sfc_noResi, nlon, nlat, time, startMonth);
+[trendm_testVar_equal_Resi, trends_testVar_equal_Resi, trendyr_testVar_equal_Resi, ~, ~] = autoCalTrend(testVar_equal_Resi, nlon, nlat, time, startMonth);
 
 % save as mat file
-save([outputpath2, 'trend_dcloud_MOD.mat'], 'lonPlot', 'latPlot', 'time', 'readme', ...
+save([outputpath2, 'trend_dcloud_MOD.mat'], 'lon_f', 'lat_f', 'time', 'readme', ...
     'trendm_dRsfc_cloudMOD', 'trends_dRsfc_cloudMOD', 'trendyr_dRsfc_cloudMOD', ...
     'trendm_dRsfc_residualMOD', 'trends_dRsfc_residualMOD', 'trendyr_dRsfc_residualMOD', ...
     'trendm_dRsfcHeat_varsCal_Resi', 'trends_dRsfcHeat_varsCal_Resi', 'trendyr_dRsfcHeat_varsCal_Resi', ...

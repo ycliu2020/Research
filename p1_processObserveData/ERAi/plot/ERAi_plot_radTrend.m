@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-06 15:05:35
-% LastEditTime : 2020-07-10 09:45:09
+% LastEditTime : 2020-07-14 09:54:02
 % LastEditors  : LYC
 % Description  :
 % FilePath     : /code/p1_processObserveData/ERAi/plot/ERAi_plot_radTrend.m
@@ -14,7 +14,7 @@ load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/mask/mask_cp
 load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/mask/mask_ce72.mat')% load word land mask
 load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/correct_worldmap.mat')
 load('/home/liuyc/lib/tools/matlab/plot/myMap/01.china_map/mat_file/mask14472.mat')
-[mlabels, areaNum] = obsPlotParameters('sfc', 'land', 'ERAi-radEffect-tsRad');
+[mlabels, areaNum] = obsPlotParameters('toa', 'land', 'ERAi-radEffect-tsRad');
 [readme, level, tLin, vars] = obsParameters('ERAi');
 % Latitude range
 p_3 = 60;

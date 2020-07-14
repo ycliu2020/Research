@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-06 08:55:44
-% LastEditTime : 2020-07-13 09:31:46
+% LastEditTime : 2020-07-14 11:25:22
 % LastEditors  : LYC
 % Description  :
 % FilePath     : /code/p1_processObserveData/ERAi/ERAi_s3_calRadEff_dp.m

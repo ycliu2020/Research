@@ -1,11 +1,11 @@
 %%---------------------------------------------------------
 % Author       : LYC
-% Date         : 2020-07-06 15:05:35
-% LastEditTime : 2020-07-14 14:58:06
+% Date         : 2020-07-13 14:22:44
+% LastEditTime : 2020-07-13 18:49:05
 % LastEditors  : LYC
-% Description  :
-% FilePath     : /code/p1_processObserveData/ERA5/plot/ERA5_plot_radTrend.m
-%
+% Description  : 
+% FilePath     : /code/p1_processObserveData/ERA5/plot/ERA5_CERES_plot_radTrend.m
+%  
 %%---------------------------------------------------------
 clc; clear;
 nowpath = pwd;
@@ -14,7 +14,7 @@ load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/mask/mask_cp
 load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/mask/mask_ce72.mat')% load word land mask
 load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/correct_worldmap.mat')
 load('/home/liuyc/lib/tools/matlab/plot/myMap/01.china_map/mat_file/mask14472.mat')
-[mlabels, areaNum] = obsPlotParameters('toa', 'land', 'ERA5-radEffect-tsRad');
+[mlabels, areaNum] = obsPlotParameters('sfc', 'landsea', 'CERESCloud-ERA5-radEffect-tsRad_t');
 [readme, level, tLin, vars] = obsParameters('ERA5');
 % Latitude range
 p_3 = 60;
@@ -31,17 +31,25 @@ for p_1 = 1:2
     kernelCalPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{4}); % kernelCal
     radEfectPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{5}); %radEffect
     dradTrendPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{6}); %/data1/liuyincheng/cmip6-proces/aimp_2000-2014/MRI-ESM2-0/ensemble/radEffect_trend/
-    outPutPath = fullfile('/home/liuyc/Research/P02.Ts_change_research/figure/01.observe/1.3/', tLin.time{p_1}, 'ERA5', 'fig_radEffect');
+    
+    anomPath_ceres = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'CERES', level.standVarPath{2}); % /anomaly
+    anomTrendPath_ceres = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'CERES', level.standVarPath{3}); % /anomaly_trend
+
+
+    outPutPath = fullfile('/home/liuyc/Research/P02.Ts_change_research/figure/01.observe/1.3/', tLin.time{p_1}, 'CERES');
     auto_mkdir(outPutPath)
 
     load([dvarsTrendPath, 'global_vars.mat'])%% 'lon_f', 'lat_f', 'lon_k', 'lat_k', 'plev_k', 'time'
     load([dradTrendPath, 'trend_dradEfect_toa_cld.mat'])% 10 vars:'trendyr_dRtoa_ta','trendyr_dRtoa_taOnly2', 'trendyr_dRtoa_tas2., 'trendyr_dRtoa_tsAtom', 'trendyr_dRtoa_mainEffect', 'trendyr_dRtoa_residual', 'trendyr_dRtoa_cloud', 'trendyr_dRtoa_q', 'trendyr_dRtoa_alb', 'trendyr_dRtoa_ts'
     load([dradTrendPath, 'trend_dradEfect_sfc_cld.mat'])% 10 vars:'trendyr_dRsfc_ta','trendyr_dRsfc_taOnly2', 'trendyr_dRsfc_tas2., 'trendyr_dRsfc_tsAtom', 'trendyr_dRsfc_mainEffect', 'trendyr_dRsfc_residual', 'trendyr_dRsfc_cloud', 'trendyr_dRsfc_q', 'trendyr_dRsfc_alb', 'trendyr_dRsfc_ts'
-    load([dvarsTrendPath, 'trend_dnetTOA.mat'])% trendyr_dnetTOA
-    load([dvarsTrendPath, 'trend_drhs.mat'])% trendyr_drhs
-    load([dvarsTrendPath, 'trend_dhFlux.mat'])% trendyr_dhFlux
-    load([dvarsTrendPath, 'trend_drhsPlus.mat'])% trendyr_dhFlux
     load([dvarsTrendPath, 'trend_dts.mat'])% trendyr_dts
+
+    load([anomTrendPath_ceres, 'trend_dCErhsPlus_era5.mat']) %'trendm_dCErhsPlus_era5', 'trends_dCErhsPlus_era5', 'trendyr_dCErhsPlus_era5'
+    load([anomTrendPath_ceres, 'trend_dCErhs.mat']) %'dCErhs'
+    load([anomTrendPath_ceres, 'trend_dCEcloud_era5.mat']);% 'trendm_dCEcloud_sfc_t', 'trends_dCEcloud_sfc_t', 'trendyr_dCEcloud_sfc_t','trendm_dCEcloud_toa_t', 'trends_dCEcloud_toa_t', 'trendyr_dCEcloud_toa_t', 'trendm_dCEcloud_sfc_c', 'trends_dCEcloud_sfc_c', 'trendyr_dCEcloud_sfc_c','trendm_dCEcloud_toa_c', 'trends_dCEcloud_toa_c', 'trendyr_dCEcloud_toa_c'
+    load([anomTrendPath_ceres, 'trend_dCEres_era5.mat']);%dCEres_sfc_t, dCEres_sfc_c, dCEres_toa_t, _c
+    load([anomTrendPath_ceres, 'trend_dCEmainEff_era5.mat']);%'trendm_dCEmainEff_sfc_t', 'trends_dCEmainEff_sfc_t', 'trendyr_dCEmainEff_sfc_t','trendm_dCEmainEff_toa_t', 'trends_dCEmainEff_toa_t', 'trendyr_dCEmainEff_toa_t','trendm_dCEmainEff_sfc_c', 'trends_dCEmainEff_sfc_c', 'trendyr_dCEmainEff_sfc_c','trendm_dCEmainEff_toa_c', 'trends_dCEmainEff_toa_c', 'trendyr_dCEmainEff_toa_c');
+    load([anomTrendPath_ceres, 'trend_dCEnetTOA.mat']) %'trendm_dCEnetTOA', 'cons_dCEnetTOA', 'p_dCEnetTOA', 'trends_dCEnetTOA', 'trendyr_dCEnetTOA');
     nlonf = length(lon_f);
     nlatf = length(lat_f);
     % use one var to plot
@@ -109,9 +117,9 @@ for p_1 = 1:2
         c.Limits = [min(colorbar_Series) max(colorbar_Series)];
     end
 
-    tt = {['Level:', mlabels.level, ', Era: ', tLin.time{p_1}], ['Data:', mlabels.dataName{1}, ', Trend(year mean)']};
+    tt = {['Level:', mlabels.level, ', Era: ', tLin.time{p_1}], ['Data:', mlabels.dataName{2}, ' and ' , mlabels.dataName{1}, ', Trend(year mean)']};
     sgtt = sgtitle(tt, 'Fontsize', 14, 'Interpreter', 'none');
-    figureName = [mlabels.dataName{1}, '_', tLin.time{p_1}, '_radEffect', '_', mlabels.area,'_',mlabels.level];
+    figureName = [mlabels.dataName{2},'_dRcloud_',mlabels.dataName{1}, '_', tLin.time{p_1}, '_radEffect', '_', mlabels.area,'_',mlabels.level];
     saveFileName = [outPutPath, '/', figureName, '.png'];
     saveas(gcf, saveFileName)
     % save_png(saveFileName)%high resolution

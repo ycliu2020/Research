@@ -54,11 +54,11 @@ nlat = length(lat);
 nlon = length(lon);
 %% Regrid (unite plot)
 % Regraded to 2.5*2.5
-lonPlot = 0:2.5:357.5; nlonPlot = length(lonPlot);
-latPlot = 88.75:-2.5:-88.75; nlatPlot = length(latPlot);
+lon_f = 0:2.5:357.5; nlonf = length(lon_f);
+lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f);
 time2 = 1:ntime;
 [Xlon, Ylat, Ttime] = meshgrid(lat, lon, time2);
-[Xlonf, Ylatf, Ttimef] = meshgrid(latPlot, lonPlot, time2);
+[Xlonf, Ylatf, Ttimef] = meshgrid(lat_f, lon_f, time2);
 
 dRnetCE = interp3(Xlon, Ylat, Ttime, dRnetCE, Xlonf, Ylatf, Ttimef);
 dRnetCE_lw_cld = interp3(Xlon, Ylat, Ttime, dRnetCE_lw_cld, Xlonf, Ylatf, Ttimef);
@@ -66,20 +66,20 @@ dRdwnCE_lw_cld = interp3(Xlon, Ylat, Ttime, dRdwnCE_lw_cld, Xlonf, Ylatf, Ttimef
 dRnetCE_sw_cld = interp3(Xlon, Ylat, Ttime, dRnetCE_sw_cld, Xlonf, Ylatf, Ttimef);
 
 % HadCRUT4 data
-filename2 = '/data1/liuyincheng/Observe-rawdata/HadCRUT4/HadCRUT.4.6.0.0.median.nc';
-dts0 = ncread(filename2, 'temperature_anomaly');
-lonh = ncread(filename2, 'longitude'); nlonh = length(lonh); % -177.5:5:177.5
-lath = ncread(filename2, 'latitude'); nlath = length(lath);
+hadDataPath = '/data1/liuyincheng/Observe-rawdata/HadCRUT4/HadCRUT.4.6.0.0.median.nc';
+dts0 = ncread(hadDataPath, 'temperature_anomaly');
+lon_h = ncread(hadDataPath, 'longitude'); nlonh = length(lon_h); % -177.5:5:177.5
+lat_h = ncread(hadDataPath, 'latitude'); nlath = length(lat_h);
 % transfor mat time
-timeh = ncread(filename2, 'time'); % 1979/03 - 2018/02
-timeUnits_h = ncreadatt(filename, 'time', 'units');
+time_h = ncread(hadDataPath, 'time'); % 1979/03 - 2018/02
+timeUnits_h = ncreadatt(hadDataPath, 'time', 'units');
 timeCalendar_h = 'gregorian';
-timeh = double(cdfdate2num(timeUnits, timeCalendar, timeh));
-ntimeh = length(timeh);
+time_h = double(cdfdate2num(timeUnits, timeCalendar, time_h));
+ntimeh = length(time_h);
 
+[readme, level, tLin, vars] = obsParameters('CERES');
 %% different time series, 1mean 2000-03 to 2018-02(18*12). 2 mean 200207-201706(15*12)
 for p_1 = 1:2
-    [readme, tLin] = observeParameters(p_1); % fuction% readme,  tLin,
     outpath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'CERES/anomaly_trend/');
     auto_mkdir(outpath)
 
@@ -101,20 +101,20 @@ for p_1 = 1:2
 
     %% Deseasonalized Anomaly
     startmonth = tLin.startmonth{p_1};
-    [dRnetCE, Clim_dRnet] = monthlyAnomaly3D(nlonPlot, nlatPlot, time, dRnetCE, startmonth);
-    [dRnetCE_lw_cld, Clim_dRnet_lw] = monthlyAnomaly3D(nlonPlot, nlatPlot, time, dRnetCE_lw_cld, startmonth);
-    [dRdwnCE_lw_cld, Clim_dRdwn_lw] = monthlyAnomaly3D(nlonPlot, nlatPlot, time, dRdwnCE_lw_cld, startmonth);
-    [dRnetCE_sw_cld, Clim_dRnet_sw] = monthlyAnomaly3D(nlonPlot, nlatPlot, time, dRnetCE_sw_cld, startmonth);
+    [dRnetCE, Clim_dRnet] = monthlyAnomaly3D(nlonf, nlatf, time, dRnetCE, startmonth);
+    [dRnetCE_lw_cld, Clim_dRnet_lw] = monthlyAnomaly3D(nlonf, nlatf, time, dRnetCE_lw_cld, startmonth);
+    [dRdwnCE_lw_cld, Clim_dRdwn_lw] = monthlyAnomaly3D(nlonf, nlatf, time, dRdwnCE_lw_cld, startmonth);
+    [dRnetCE_sw_cld, Clim_dRnet_sw] = monthlyAnomaly3D(nlonf, nlatf, time, dRnetCE_sw_cld, startmonth);
 
     % -------section 2: calculate the ts anomalies from HadCRUT4-----------
     % find start and end month
-    timeStr_h = string(datestr(timeh, formatOut));
+    timeStr_h = string(datestr(time_h, formatOut));
     startT_h = find(timeStr_h == timeSpec);
     endT_h = startT_h + tLin.inter{p_1} - 1;
 
     dts0_had = dts0(:, :, startT_h:endT_h); % 1803:2000.03, 2018:2018.02, 72*36*216 surface temperature anomaly, Global land
-    timeh = timeh(startT_h:endT_h);
-    ntimeh = length(timeh);
+    time_h = time_h(startT_h:endT_h);
+    ntimeh = length(time_h);
 
     % Missing too many data,so it will be eliminated from the time series after missing only one test
     test = dts0_had;
@@ -132,16 +132,16 @@ for p_1 = 1:2
     % cal the rhs(LW_down+SW)
     CErhs = dRdwnCE_lw_cld + dRnetCE_sw_cld;
     % cal the ts trend
-    trendm_dTsHad = zeros(nlonh, nlath, 12, 2); trendm_CErhs = zeros(nlonPlot, nlatPlot, 12, 2); % trend, 12 months
+    trendm_dTsHad = zeros(nlonh, nlath, 12, 2); trendm_CErhs = zeros(nlonf, nlatf, 12, 2); % trend, 12 months
     % im==1 is MAM, im==2 is JJA, im==3 is SON, im==4 is DJF
-    trends_dTsHad = zeros(nlonh, nlath, 4); trends_CErhs = zeros(nlonPlot, nlatPlot, 4); % trend, 4 seasons
+    trends_dTsHad = zeros(nlonh, nlath, 4); trends_CErhs = zeros(nlonf, nlatf, 4); % trend, 4 seasons
 
-    p_dTsHad = zeros(nlonh, nlath, 12); p_CErhs = zeros(nlonPlot, nlatPlot, 12); % f test
-    cons_dTsHad = zeros(nlonh, nlath, 12); cons_CErhs = zeros(nlonPlot, nlatPlot, 12); % mean
+    p_dTsHad = zeros(nlonh, nlath, 12); p_CErhs = zeros(nlonf, nlatf, 12); % f test
+    cons_dTsHad = zeros(nlonh, nlath, 12); cons_CErhs = zeros(nlonf, nlatf, 12); % mean
     % months mean trend(unite:per day)
-    for i = 1:nlonPlot
+    for i = 1:nlonf
 
-        for j = 1:nlatPlot
+        for j = 1:nlatf
             [~, trendm_CErhs(i, j, :, :), cons_CErhs(i, j, :), p_CErhs(i, j, :)] = detrend_yan(CErhs(i, j, :), time);
         end
 
@@ -150,7 +150,7 @@ for p_1 = 1:2
     for i = 1:nlonh
 
         for j = 1:nlath
-            [~, trendm_dTsHad(i, j, :, :), cons_dTsHad(i, j, :), p_dTsHad(i, j, :)] = detrend_yan(dts0_had(i, j, :), timeh);
+            [~, trendm_dTsHad(i, j, :, :), cons_dTsHad(i, j, :), p_dTsHad(i, j, :)] = detrend_yan(dts0_had(i, j, :), time_h);
         end
 
     end
@@ -161,11 +161,11 @@ for p_1 = 1:2
 
     % ----save-----
     outfilename1 = [outpath, 'dradCERES_dTsHad4.0.mat'];
-    save(outfilename1, 'lonPlot', 'latPlot', 'dRnetCE', 'dRnetCE_lw_cld', 'dRdwnCE_lw_cld', 'dRnetCE_sw_cld', 'Clim_dRnet', 'Clim_dRnet_lw', 'Clim_dRdwn_lw', 'Clim_dRnet_sw', 'time', ...
-        'lonh', 'lath', 'dts0_had', 'timeh')
+    save(outfilename1, 'lon_f', 'lat_f', 'dRnetCE', 'dRnetCE_lw_cld', 'dRdwnCE_lw_cld', 'dRnetCE_sw_cld', 'Clim_dRnet', 'Clim_dRnet_lw', 'Clim_dRdwn_lw', 'Clim_dRnet_sw', 'time', ...
+        'lon_h', 'lat_h', 'dts0_had', 'time_h')
 
-    outfilename2 = [outpath, 'trend_dradCERES_dTsHad4.0.mat'];
-    save(outfilename2, 'lonPlot', 'latPlot', 'lonh', 'lath', 'time', 'timeh', ...
+    outhadDataPath = [outpath, 'trend_dradCERES_dTsHad4.0.mat'];
+    save(outhadDataPath, 'lon_f', 'lat_f', 'lon_h', 'lat_h', 'time', 'time_h', ...
         'trendm_dTsHad', 'trendm_CErhs', 'trendyr_dTsHad', 'trendyr_CErhs', ...
         'p_dTsHad', 'p_CErhs', 'cons_dTsHad', 'cons_CErhs')
 end

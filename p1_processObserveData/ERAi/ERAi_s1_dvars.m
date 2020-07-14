@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-07 12:51:42
-% LastEditTime : 2020-07-12 19:50:12
+% LastEditTime : 2020-07-13 15:57:25
 % LastEditors  : LYC
 % Description  : 
 % FilePath     : /code/p1_processObserveData/ERAi/ERAi_s1_dvars.m

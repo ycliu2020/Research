@@ -1,11 +1,11 @@
 %%---------------------------------------------------------
 % Author       : LYC
-% Date         : 2020-07-06 15:05:35
-% LastEditTime : 2020-07-14 14:58:06
+% Date         : 2020-07-14 15:20:59
+% LastEditTime : 2020-07-14 15:22:59
 % LastEditors  : LYC
-% Description  :
-% FilePath     : /code/p1_processObserveData/ERA5/plot/ERA5_plot_radTrend.m
-%
+% Description  : 
+% FilePath     : /code/p1_processObserveData/ERAi/plot/ERAi_MODIS_plot_radTrend.m
+%  
 %%---------------------------------------------------------
 clc; clear;
 nowpath = pwd;
@@ -14,24 +14,29 @@ load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/mask/mask_cp
 load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/mask/mask_ce72.mat')% load word land mask
 load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/correct_worldmap.mat')
 load('/home/liuyc/lib/tools/matlab/plot/myMap/01.china_map/mat_file/mask14472.mat')
-[mlabels, areaNum] = obsPlotParameters('toa', 'land', 'ERA5-radEffect-tsRad');
-[readme, level, tLin, vars] = obsParameters('ERA5');
+[mlabels, areaNum] = obsPlotParameters('sfc', 'landsea', 'MODISCloud-ERAi-radEffect-tsRad');
+[readme, level, tLin, vars] = obsParameters('ERAi');
 % Latitude range
 p_3 = 60;
 lon1 = [2.5 357.5]; lat1 = [-p_3 + 1 p_3 - 1]; % world area
 set(0, 'defaultfigurecolor', 'w')
 
 %% different time series, 1mean 2000-03 to 2018-02(18*12). 2 mean 200207-201706(15*12)
-for p_1 = 1:2
+for p_1 = 2:2
     %%%%%%%%%%%%%%%%%%%%%%%%%%%
     %read data
-    varsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{1}); %rawdata
-    dvarsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{2}); %anomaly
-    dvarsTrendPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{3}); %anomaly_trend
-    kernelCalPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{4}); % kernelCal
-    radEfectPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{5}); %radEffect
-    dradTrendPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{6}); %/data1/liuyincheng/cmip6-proces/aimp_2000-2014/MRI-ESM2-0/ensemble/radEffect_trend/
-    outPutPath = fullfile('/home/liuyc/Research/P02.Ts_change_research/figure/01.observe/1.3/', tLin.time{p_1}, 'ERA5', 'fig_radEffect');
+    varsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{1}); %rawdata
+    dvarsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{2}); %anomaly
+    dvarsTrendPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{3}); %anomaly_trend
+    kernelCalPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{4}); % kernelCal
+    radEfectPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{5}); %radEffect
+    dradTrendPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{6}); %/data1/liuyincheng/cmip6-proces/aimp_2000-2014/MRI-ESM2-0/ensemble/radEffect_trend/
+    
+    anomPath_mod = '/data1/liuyincheng/Observe-process/200207-201706/MODIS/radEffect/';
+    anomTrendPath_mod = '/data1/liuyincheng/Observe-process/200207-201706/MODIS/radEffect_trend/';
+
+
+    outPutPath = fullfile('/home/liuyc/Research/P02.Ts_change_research/figure/01.observe/1.3/', tLin.time{p_1}, 'MODIS');
     auto_mkdir(outPutPath)
 
     load([dvarsTrendPath, 'global_vars.mat'])%% 'lon_f', 'lat_f', 'lon_k', 'lat_k', 'plev_k', 'time'
@@ -42,6 +47,12 @@ for p_1 = 1:2
     load([dvarsTrendPath, 'trend_dhFlux.mat'])% trendyr_dhFlux
     load([dvarsTrendPath, 'trend_drhsPlus.mat'])% trendyr_dhFlux
     load([dvarsTrendPath, 'trend_dts.mat'])% trendyr_dts
+
+    load([anomTrendPath_mod, 'trend_dRMO_cloud.mat'])% 'trendm_dRMOsfc_cloud', 'trends_dRMOsfc_cloud', 'trendyr_dRMOsfc_cloud'
+    load([anomTrendPath_mod, 'trend_dRMOD_cloud_era5.mat'])%  'trendm_dRMO_mainEffect_sfc', 'trends_dRMO_mainEffect_sfc', 'trendyr_dRMO_mainEffect_sfc','trendm_dRMO_mainEffect_sfc_addRes', 'trends_dRMO_mainEffect_sfc_addRes', 'trendyr_dRMO_mainEffect_sfc_addRes','trendm_dRMO_res_sfc', 'trends_dRMO_res_sfc', 'trendyr_dRMO_res_sfc'
+
+
+
     nlonf = length(lon_f);
     nlatf = length(lat_f);
     % use one var to plot
@@ -109,9 +120,9 @@ for p_1 = 1:2
         c.Limits = [min(colorbar_Series) max(colorbar_Series)];
     end
 
-    tt = {['Level:', mlabels.level, ', Era: ', tLin.time{p_1}], ['Data:', mlabels.dataName{1}, ', Trend(year mean)']};
+    tt = {['Level:', mlabels.level, ', Era: ', tLin.time{p_1}], ['Data:', mlabels.dataName{2}, ' and ' , mlabels.dataName{1}, ', Trend(year mean)']};
     sgtt = sgtitle(tt, 'Fontsize', 14, 'Interpreter', 'none');
-    figureName = [mlabels.dataName{1}, '_', tLin.time{p_1}, '_radEffect', '_', mlabels.area,'_',mlabels.level];
+    figureName = [mlabels.dataName{2},'_dRcloud_',mlabels.dataName{1}, '_', tLin.time{p_1}, '_radEffect', '_', mlabels.area,'_',mlabels.level];
     saveFileName = [outPutPath, '/', figureName, '.png'];
     saveas(gcf, saveFileName)
     % save_png(saveFileName)%high resolution
