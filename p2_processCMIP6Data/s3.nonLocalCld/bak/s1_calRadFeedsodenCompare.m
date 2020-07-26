@@ -8,8 +8,8 @@ load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/mask/mask_ce
 load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/correct_worldmap.mat')% ????????????????word_mapx(:),word_mapy(:)
 load('/home/liuyc/lib/tools/matlab/plot/myMap/01.china_map/mat_file/mask14472.mat')
 areaNum = 1; % world land
-p_3 = 88.75; % Latitude range
-lon1 = [2.5 357.5]; lat1 = [-p_3 + 1 p_3 - 1]; % world area
+latRange = 88.75; % Latitude range
+lon1 = [2.5 357.5]; lat1 = [-latRange + 1 latRange - 1]; % world area
 
 for p_1 = 5:5%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     nowpath = pwd;
@@ -47,7 +47,7 @@ for p_1 = 5:5%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
         % mask(world land)
         % for var_id = 1:2
         %     tempVar=squeeze(varUsed(:,:,:,var_id));
-        %     [tempVar] = maskLand(tempVar, lat, p_3, -p_3, areaNum);
+        %     [tempVar] = maskLand(tempVar, lat, latRange, -latRange, areaNum);
         %     varUsed(:,:,:,var_id)=tempVar;
         % end
         % Zonal weighted average(vars, time)

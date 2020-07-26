@@ -8,8 +8,8 @@
 % Note         : only cal cloud, hus, ta, alb on sfc/toa, if need more vars, add later.
 %%---------------------------------------------------------
 clear; clc; tic;
-p_3 = 88.75; % Latitude range
-lon1 = [2.5 357.5]; lat1 = [-p_3 + 1 p_3 - 1]; % world area
+latRange = 88.75; % Latitude range
+lon1 = [2.5 357.5]; lat1 = [-latRange + 1 latRange - 1]; % world area
 toaSfc = {'toa', 'sfc'};
 
 for p_1 = [2 4]%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980

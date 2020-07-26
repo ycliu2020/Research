@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-07-14 09:07:01
+% LastEditTime : 2020-07-22 21:05:46
 % LastEditors  : LYC
 % Description  : cal mainly include 1.regrid vars, 2.vars anomly
 %                CMIP6 mothly data
@@ -46,21 +46,21 @@ lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f); % figure lat lon
 lon_f = lon_k; nlonf = length(lon_f);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % experiment
-for p_1 = 3:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for exmNum = 3:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     %CAMS-CSM1-0 didn't have sfc clear sky radiation, delete it
-    [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(p_1);
+    [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(exmNum);
     % exmPath
-    exmPath = ['/data1/liuyincheng/cmip6-process/', level.time1{p_1}]; %/data1/liuyincheng/cmip6-process/2000-2014/
+    exmPath = ['/data1/liuyincheng/cmip6-process/', level.time1{exmNum}]; %/data1/liuyincheng/cmip6-process/2000-2014/
     %%% load ERF data
-    if strcmp(Experiment{p_1}(1:3), 'ami')
-        timeERF = timeERF_rec.hist(find(timeERF_rec.hist == tLin.startYear{p_1}):find(timeERF_rec.hist == tLin.endYear{p_1}));
-        ERForcing = ERF_rec.hist(find(timeERF_rec.hist == tLin.startYear{p_1}):find(timeERF_rec.hist == tLin.endYear{p_1}));
-    elseif strcmp(Experiment{p_1}(1:6), 'ssp245')
-        timeERF = timeERF_rec.ssp(find(timeERF_rec.ssp == tLin.startYear{p_1}):find(timeERF_rec.ssp == tLin.endYear{p_1}));
-        ERForcing = ERF_rec.ssp245(find(timeERF_rec.ssp == tLin.startYear{p_1}):find(timeERF_rec.ssp == tLin.endYear{p_1}));
-    elseif strcmp(Experiment{p_1}(1:6), 'ssp370')
-        timeERF = timeERF_rec.ssp(find(timeERF_rec.ssp == tLin.startYear{p_1}):find(timeERF_rec.ssp == tLin.endYear{p_1}));
-        ERForcing = ERF_rec.ssp370(find(timeERF_rec.ssp == tLin.startYear{p_1}):find(timeERF_rec.ssp == tLin.endYear{p_1}));
+    if strcmp(Experiment{exmNum}(1:3), 'ami')
+        timeERF = timeERF_rec.hist(find(timeERF_rec.hist == tLin.startYear{exmNum}):find(timeERF_rec.hist == tLin.endYear{exmNum}));
+        ERForcing = ERF_rec.hist(find(timeERF_rec.hist == tLin.startYear{exmNum}):find(timeERF_rec.hist == tLin.endYear{exmNum}));
+    elseif strcmp(Experiment{exmNum}(1:6), 'ssp245')
+        timeERF = timeERF_rec.ssp(find(timeERF_rec.ssp == tLin.startYear{exmNum}):find(timeERF_rec.ssp == tLin.endYear{exmNum}));
+        ERForcing = ERF_rec.ssp245(find(timeERF_rec.ssp == tLin.startYear{exmNum}):find(timeERF_rec.ssp == tLin.endYear{exmNum}));
+    elseif strcmp(Experiment{exmNum}(1:6), 'ssp370')
+        timeERF = timeERF_rec.ssp(find(timeERF_rec.ssp == tLin.startYear{exmNum}):find(timeERF_rec.ssp == tLin.endYear{exmNum}));
+        ERForcing = ERF_rec.ssp370(find(timeERF_rec.ssp == tLin.startYear{exmNum}):find(timeERF_rec.ssp == tLin.endYear{exmNum}));
     else
         ERForcing = 0;
         disp('this experient doesnt need ERF or havent input ERF Data!')
@@ -73,12 +73,12 @@ for p_1 = 3:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % model
-    for level1 = 1:length(level.model2)
+    for mdlNum = 1:length(level.model2)
         % model path
-        mdlPath = fullfile(exmPath, level.model2{level1});
+        mdlPath = fullfile(exmPath, level.model2{mdlNum});
         eval(['cd ', mdlPath]);
         disp(' ')
-        disp([level.model2{level1}, ' model start!'])
+        disp([level.model2{mdlNum}, ' model start!'])
 
         % ensemble member path
         esmName = getPath_fileName(mdlPath, '.');
@@ -315,11 +315,11 @@ for p_1 = 3:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             disp([esmName{esmNum, 1}, ' ensemble is done!'])
         end
 
-        disp([level.model2{level1}, ' model is done!'])
+        disp([level.model2{mdlNum}, ' model is done!'])
         disp(' ')
     end
 
-    disp([level.time1{p_1}, ' era is done!'])
+    disp([level.time1{exmNum}, ' era is done!'])
     clear dCRF_sfc dR_cloud_sfc dR_residual_cld_sfc dR_residual_clr_sfc dR_residual_cld_toa dR_residual_clr_toa dR_ObsTotal_cld_sfc dR_ObsTotal_clr_sfc dR_ObsTotal_cld_toa dR_ObsTotal_clr_toa ss_rad ll_rad l_rad s_rad
 end
 

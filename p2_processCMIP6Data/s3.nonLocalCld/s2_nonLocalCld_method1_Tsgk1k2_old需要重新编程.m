@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-07-11 10:33:09
+% LastEditTime : 2020-07-22 20:40:32
 % LastEditors  : LYC
 % Description  : 计算lamda_cloud 和 deltaTsg的线性关系(k1和k2)
 % FilePath     : /code/p2_processCMIP6Data/s3.nonLocalCld/s1p1_cal1_nonLocalCld_Tsgk1k2.m
@@ -14,11 +14,11 @@ clear; clc; tic;
 % model settings
 load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/mask/mask_cp144.mat')% load word land mask
 load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/mask/mask_ce72.mat')% load word land mask
-load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/correct_worldmap.mat')% ????????????????word_mapx(:),word_mapy(:)
+load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/correct_worldmap.mat')
 load('/home/liuyc/lib/tools/matlab/plot/myMap/01.china_map/mat_file/mask14472.mat')
 
-p_3 = 88.75; % Latitude range
-lon1 = [2.5 357.5]; lat1 = [-p_3 + 1 p_3 - 1]; % world area
+latRange = 88.75; % Latitude range
+lon1 = [2.5 357.5]; lat1 = [-latRange + 1 latRange - 1]; % world area
 toaSfc = {'toa', 'sfc'};
 maskLandSW = 'nomask'; %{'nomask', 'maskLand'};
 areaNum = 1; % world land
@@ -31,28 +31,34 @@ lat_k = 90:-2.5:-90; nlatk = length(lat_k);
 lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f); % figure lat lon
 lon_f = lon_k; nlonf = length(lon_f);
 
-for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for exmNum = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     nowpath = pwd;
-    [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(p_1);
+    [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(exmNum);
 
-    % inputPath
-    inputPath = ['/data1/liuyincheng/cmip6-process/', level.time1{p_1}]; %/data1/liuyincheng/cmip6-process/amip_2000-2014/
-    dvarsPath = [inputPath, level.model2{1}, '/', level.process3{2}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/anomaly
+    % exmPath
+    exmPath = ['/data1/liuyincheng/cmip6-process/', level.time1{exmNum}]; %/data1/liuyincheng/cmip6-process/amip_2000-2014/
+    dvarsPath = [exmPath, level.model2{1}, '/', level.process3{2}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/anomaly
     load([dvarsPath, 'global_vars.mat'])% lat_k lon_k time plev_k readme
     ntime = length(time.date);
     DeltaTsgAssemble = zeros(length(level.model2), 2); % global mean temperture change during whole period
     lamdaCloudAssemble = zeros(length(level.model2), 1);
-    dnonCloudAssemblePath = [inputPath, 'z_assembleData/', level.process3{8}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/non_localCld/
+    dnonCloudAssemblePath = [exmPath, 'z_assembleData/', level.process3{8}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/non_localCld/
     auto_mkdir(dnonCloudAssemblePath)
     countm=1;
     % model loop
-    for level1 = 1:length(level.model2)
-        % load data
-        dvarsPath = [inputPath, level.model2{level1}, '/', level.process3{2}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/anomaly
-        dvarsTrendPath = [inputPath, level.model2{level1}, '/', level.process3{3}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/anomaly_trend
-        varsPath = [inputPath, level.model2{level1}, '/', level.process3{1}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/rawdata
-        dradEffectPath = [inputPath, level.model2{level1}, '/', level.process3{6}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/radEffect/
-        dnonCloudPath = [inputPath, level.model2{level1}, '/', level.process3{8}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/non_localCld/
+    for mdlNum = 1:length(level.model2)
+        % model path
+        mdlPath = fullfile(exmPath, level.model2{mdlNum});
+        eval(['cd ', mdlPath]);
+        disp(' ')
+        disp([level.model2{mdlNum}, ' model start!'])
+
+        % path
+        dvarsPath = [exmPath, level.model2{mdlNum}, '/', level.process3{2}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/anomaly
+        dvarsTrendPath = [exmPath, level.model2{mdlNum}, '/', level.process3{3}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/anomaly_trend
+        varsPath = [exmPath, level.model2{mdlNum}, '/', level.process3{1}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/rawdata
+        dradEffectPath = [exmPath, level.model2{mdlNum}, '/', level.process3{6}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/radEffect/
+        dnonCloudPath = [exmPath, level.model2{mdlNum}, '/', level.process3{8}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/non_localCld/
         auto_mkdir(dnonCloudPath)
         load([dvarsPath, 'global_vars.mat'])% lat_k lon_k time plev_k readme
         load([dvarsPath, 'dts.mat'])%
@@ -64,7 +70,7 @@ for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
         if strcmp(maskLandSW, 'maskLand') == 1
 
             for var_id = 1:varUsedSize_vars
-                [dts] = maskLand(dts, lat_f, p_3, -p_3, areaNum);
+                [dts] = maskLand(dts, lat_f, latRange, -latRange, areaNum);
             end
 
         end
@@ -98,17 +104,17 @@ for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
         save([dnonCloudPath, 'global_vars.mat'], 'lon_k', 'lat_k', 'time', 'plev_k', 'readme', 'timeseries', 'modelname')
         save([dvarsTrendPath, 'trend_dtsg.mat'], 'trend_dtsg', 'trendUnit')
         save([dvarsTrendPath, ['DeltaTsg_', maskLandSW, '.mat']], 'DeltaTsg', 'DeltaTsgMeaning')
-        DeltaTsgAssemble(level1, 1) = DeltaTsg;
-        DeltaTsgAssemble(level1, 2) = trend_dtsg;
-        if isempty(lamda_cloud.modelVar(strcmp(lamda_cloud.modelName, level.model2{level1}) == 1))==1
-            lamdaCloudAssemble(level1) = nan;
+        DeltaTsgAssemble(mdlNum, 1) = DeltaTsg;
+        DeltaTsgAssemble(mdlNum, 2) = trend_dtsg;
+        if isempty(lamda_cloud.modelVar(strcmp(lamda_cloud.modelName, level.model2{mdlNum}) == 1))==1
+            lamdaCloudAssemble(mdlNum) = nan;
         else
-            lamdaCloudAssemble(level1) = lamda_cloud.modelVar(strcmp(lamda_cloud.modelName, level.model2{level1}) == 1);
-            existModelName{countm} = level.model2{level1}; % record used model name 
+            lamdaCloudAssemble(mdlNum) = lamda_cloud.modelVar(strcmp(lamda_cloud.modelName, level.model2{mdlNum}) == 1);
+            existModelName{countm} = level.model2{mdlNum}; % record used model name 
             countm=countm+1;
         end
 
-        disp([level.model2{level1}, ' model is done!'])
+        disp([level.model2{mdlNum}, ' model is done!'])
         disp(' ')
     end
     % save assemble data
@@ -138,14 +144,14 @@ for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
     plot(lamdaCloudAssemble, DeltaTsgVs, 'o', lamdaCloudAssemble, yfit, '-')
     xlabel('\lambda_{cloud}');
     ylabel('\DeltaTsg');
-    title(['Experient:', level.time1{p_1}(1:end - 1)], 'Interpreter', 'none');
+    title(['Experient:', level.time1{exmNum}(1:end - 1)], 'Interpreter', 'none');
     text(0.65, 0.95, ['r2= ', num2str(rsq)], 'units', 'normalized');
     text(0.65, 0.9, ['y=', num2str(k1_cld), 'x+', num2str(k2_cld)], 'units', 'normalized');
-    figurename = [figTestPath, level.time1{p_1}(1:end - 1), '.png'];
+    figurename = [figTestPath, level.time1{exmNum}(1:end - 1), '.png'];
     saveas(gcf, figurename)
     close gcf
     
-    disp([level.time1{p_1}, ' era is done!'])
+    disp([level.time1{exmNum}, ' era is done!'])
     disp(' ')
 
 end

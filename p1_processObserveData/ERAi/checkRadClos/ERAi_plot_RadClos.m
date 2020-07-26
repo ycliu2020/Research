@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-08 19:48:12
-% LastEditTime : 2020-07-14 16:34:00
+% LastEditTime : 2020-07-14 16:42:43
 % LastEditors  : LYC
 % Description  : plot radClos
 % FilePath     : /code/p1_processObserveData/ERAi/checkRadClos/ERAi_plot_RadClos.m

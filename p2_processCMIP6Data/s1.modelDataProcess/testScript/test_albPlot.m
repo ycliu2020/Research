@@ -14,8 +14,8 @@ load('/home/lyc/lib/tools/matlab/map/01.china_map/mat_file/mask14472.mat')
 % figure set
 set(0,  'defaultfigurecolor',  'w')
 areaNum = 1; % world land
-p_3 = 90; % Latitude range
-lon1 = [2.5 357.5]; lat1 = [-p_3 + 1 p_3 - 1]; % world area
+latRange = 90; % Latitude range
+lon1 = [2.5 357.5]; lat1 = [-latRange + 1 latRange - 1]; % world area
 % lon1=[70,140];lat1=[0,60]; % China area
 
 colorBarMin = min(min(plotVar)); 

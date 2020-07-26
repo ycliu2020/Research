@@ -8,8 +8,8 @@
 % Note         : only cal cloud, hus, ta, alb on sfc/toa, if need more vars, add later.
 %%---------------------------------------------------------
 clear; clc; tic;
-p_3 = 88.75; % Latitude range
-lon1 = [2.5 357.5]; lat1 = [-p_3 + 1 p_3 - 1]; % world area
+latRange = 88.75; % Latitude range
+lon1 = [2.5 357.5]; lat1 = [-latRange + 1 latRange - 1]; % world area
 toaSfc = {'toa', 'sfc'};
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % experiment

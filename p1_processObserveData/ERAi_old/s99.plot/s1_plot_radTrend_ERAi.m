@@ -21,8 +21,8 @@ dataname = {'ERAi', 'CERES', 'MODIS'};
 mmin = -5; %colorRange{p_1};
 mmax = -mmin;
 % Latitude range
-p_3 = 60; % Latitude range
-lon1 = [2.5 357.5]; lat1 = [-p_3 + 1 p_3 - 1]; % world area
+latRange = 60; % Latitude range
+lon1 = [2.5 357.5]; lat1 = [-latRange + 1 latRange - 1]; % world area
 % lon1=[70,140];lat1=[0,60]; % China area
 set(0, 'defaultfigurecolor', 'w')
 
@@ -53,7 +53,7 @@ for toaSfc = 1:2
             trendyr = trendyr * 365 * 10;
             % trendyr(:, :, 1) = trendyr(:, :, 1) .* 5;
             % mask and cal the cc
-            [trendyr, yr_cc, yr_pp] = maskArea(trendyr, latPlot, p_3, -p_3, areaNum);
+            [trendyr, yr_cc, yr_pp] = maskArea(trendyr, latPlot, latRange, -latRange, areaNum);
             set(0, 'DefaultFigureVisible', 'on')
             ss = get(0, 'ScreenSize'); % ???????????
             h = figure('Position', [ss(4) / 2 ss(3) / 35 ss(3) * 3/9.5 ss(4) * 4/5]); % ???????????????

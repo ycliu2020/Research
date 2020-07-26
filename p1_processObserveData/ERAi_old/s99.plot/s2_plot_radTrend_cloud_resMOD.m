@@ -47,8 +47,8 @@ level_label = {'SFC', 'TOA', 'ATM(TOA-SFC)'};
 % figure set
 set(0, 'defaultfigurecolor', 'w')
 areaNum = 1; % world land
-p_3 = 60; % Latitude range
-lon1 = [2.5 357.5]; lat1 = [-p_3 + 1 p_3 - 1]; % world area
+latRange = 60; % Latitude range
+lon1 = [2.5 357.5]; lat1 = [-latRange + 1 latRange - 1]; % world area
 % lon1=[70,140];lat1=[0,60]; % China area
 % colorRange={[-5 -5 -4 -4 -2 -2];[-5 -5 -4 -4 -1 -1];[-3 -4 -1 -2 -.5 -1];[-5 -7 -1.5 -3 -1 -1]};
 mmin = -5; %colorRange{p_1};
@@ -65,7 +65,7 @@ end
 trendyr = trendyr * 365 * 10;
 % trendyr(:, :, 1) = trendyr(:, :, 1) .* 5;
 % mask and cal the cc
-[trendyr, yr_cc, yr_pp] = maskArea(trendyr, lat, p_3, -p_3, areaNum);
+[trendyr, yr_cc, yr_pp] = maskArea(trendyr, lat, latRange, -latRange, areaNum);
 
 set(0, 'DefaultFigureVisible', 'on')
 ss = get(0, 'ScreenSize'); % ???????????
@@ -110,7 +110,7 @@ c.Limits = [mmin mmax];
 tt = ['Level:', level_label{1}, ', Era: 200207-201706', ];
 sgtt = sgtitle(tt, 'Fontsize', 14, 'Interpreter', 'none');
 % save file 
-% f_tt = [level.time1{p_1}(1:end - 1), '_', level.model2{level1}];
+% figTitle = [level.time1{p_1}(1:end - 1), '_', level.model2{level1}];
 % figurename = '/home/lyc/research/P02.Ts_change_research/figure/Observe/1.0/sfc_cloudMODIS_landsea.png';
 % saveas(gcf, figurename)
 % save_png(figurename)%high resolution

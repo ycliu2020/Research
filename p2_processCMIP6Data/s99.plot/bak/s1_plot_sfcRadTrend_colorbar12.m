@@ -47,8 +47,8 @@ for p_1=p1_left:p1_right
     % figure set
     set(0, 'defaultfigurecolor', 'w')
     areaNum = 1; % world land
-    p_3 = 60; % Latitude range
-    lon1 = [2.5 357.5]; lat1 = [-p_3+1 p_3-1]; % world area
+    latRange = 60; % Latitude range
+    lon1 = [2.5 357.5]; lat1 = [-latRange+1 latRange-1]; % world area
     % lon1=[70,140];lat1=[0,60]; % China area
     % colorRange={[-5 -5 -4 -4 -2 -2];[-5 -5 -4 -4 -1 -1];[-3 -4 -1 -2 -.5 -1];[-5 -7 -1.5 -3 -1 -1]};
     mmin = -5; %colorRange{p_1};
@@ -77,7 +77,7 @@ for p_1=p1_left:p1_right
         trendyr = trendyr * 365 * 10;
         trendyr(:, :, 1) = trendyr(:, :, 1) .* 5;
         % mask and cal the cc
-        [trendyr, yr_cc, yr_pp] = maskArea(trendyr, lat, p_3, -p_3, areaNum);
+        [trendyr, yr_cc, yr_pp] = maskArea(trendyr, lat, latRange, -latRange, areaNum);
 
         set(0, 'DefaultFigureVisible', 'off')
         ss = get(0, 'ScreenSize'); % ???????????
@@ -122,8 +122,8 @@ for p_1=p1_left:p1_right
         % c.Box='off';
         tt = ['Level:', level_label{p_2}, ', Era: ', level.time1{p_1}(1:end - 1), ', Model:', level.model2{level1}];
         sgtt = sgtitle(tt, 'Fontsize', 14, 'Interpreter', 'none');
-        f_tt = [level.time1{p_1}(1:end - 1), '_', level.model2{level1}];
-        figurename = [outputPath, f_tt, '.png'];
+        figTitle = [level.time1{p_1}(1:end - 1), '_', level.model2{level1}];
+        figurename = [outputPath, figTitle, '.png'];
         saveas(gcf, figurename)
         % save_png(figurename)%high resolution
         close gcf

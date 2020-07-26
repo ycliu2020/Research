@@ -26,8 +26,8 @@ p1_left = 3; p1_right = 4;
 mmin = -2.5; %colorRange{p_1};
 mmax = -mmin;
 % Latitude range
-p_3 = 60;
-lon1 = [2.5 357.5]; lat1 = [-p_3 + 1 p_3 - 1]; % world area
+latRange = 60;
+lon1 = [2.5 357.5]; lat1 = [-latRange + 1 latRange - 1]; % world area
 set(0, 'defaultfigurecolor', 'w')
 
 for p_1 = p1_left:p1_right
@@ -102,7 +102,7 @@ for p_1 = p1_left:p1_right
         trendyr(:, :, 1) = trendyr(:, :, 1);
         trendyr(:, :, 10) = trendyr(:, :, 10);
         % mask and cal the cc
-        [trendyr, yr_cc, yr_pp] = maskArea(trendyr, lat, p_3, -p_3, areaNum);
+        [trendyr, yr_cc, yr_pp] = maskArea(trendyr, lat, latRange, -latRange, areaNum);
 
         set(0, 'DefaultFigureVisible', 'off')
         ss = get(0, 'ScreenSize'); % ???????????
@@ -159,8 +159,8 @@ for p_1 = p1_left:p1_right
 
         tt = ['Level:', mlabels.level, ', Era: ', level.time1{p_1}(1:end - 1), ', Model:', existModelName{level1}];
         sgtt = sgtitle(tt, 'Fontsize', 14, 'Interpreter', 'none');
-        f_tt = [level.time1{p_1}(1:end - 1), '_', existModelName{level1}, '_', mlabels.fileN1];
-        figurename = [mPath.Output, '/', f_tt, '.png'];
+        figTitle = [level.time1{p_1}(1:end - 1), '_', existModelName{level1}, '_', mlabels.fileN1];
+        figurename = [mPath.Output, '/', figTitle, '.png'];
         saveas(gcf, figurename)
         % save_png(figurename)%high resolution
         close gcf

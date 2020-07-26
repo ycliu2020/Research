@@ -1,32 +1,33 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-15 10:44:34
-% LastEditTime : 2020-07-11 10:27:35
+% LastEditTime : 2020-07-23 15:34:11
 % LastEditors  : LYC
 % Description  : cal dRvars effect on Ts : according Ts=dRx/Kts
 % FilePath     : /code/p2_processCMIP6Data/s2.radEffTrend/s4_calTsEffect.m
 % Note         : only cal cloud, hus, ta, alb on sfc/toa, if need more vars, add later.
 %%---------------------------------------------------------
 clear; clc; tic;
-p_3 = 88.75; % Latitude range
-lon1 = [2.5 357.5]; lat1 = [-p_3 + 1 p_3 - 1]; % world area
+latRange = 88.75; % Latitude range
+lon1 = [2.5 357.5]; lat1 = [-latRange + 1 latRange - 1]; % world area
 toaSfc = {'toa', 'sfc'};
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % experiment
-for p_1 = [2 4]%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for exmNum = 1:3%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     nowpath = pwd;
-    [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(p_1);
+    [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(exmNum);
     % exmPath
-    exmPath = ['/data1/liuyincheng/cmip6-process/', level.time1{p_1}]; %/data1/liuyincheng/cmip6-process/amip_2000-2014/
+    exmPath = ['/data1/liuyincheng/cmip6-process/', level.time1{exmNum}]; %/data1/liuyincheng/cmip6-process/amip_2000-2014/
+    disp([level.time1{exmNum}, ' era start!'])
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % model
-    for level1 = 1:length(level.model2)
+    for mdlNum = 1:length(level.model2)
         % model path
-        mdlPath = fullfile(exmPath, level.model2{level1});
+        mdlPath = fullfile(exmPath, level.model2{mdlNum});
         eval(['cd ', mdlPath]);
         disp(' ')
-        disp([level.model2{level1}, ' model start!'])
+        disp([level.model2{mdlNum}, ' model start!'])
         % ensemble member path
         esmName = getPath_fileName(mdlPath, '.');
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -113,10 +114,10 @@ for p_1 = [2 4]%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp37
             end
             disp([esmName{esmNum,1}, ' ensemble is done!'])
         end
-        disp([level.model2{level1}, ' model is done!'])
+        disp([level.model2{mdlNum}, ' model is done!'])
         disp(' ')
     end
-    disp([level.time1{p_1}, ' era is done!'])
+    disp([level.time1{exmNum}, ' era is done!'])
     disp(' ')
 end
 
