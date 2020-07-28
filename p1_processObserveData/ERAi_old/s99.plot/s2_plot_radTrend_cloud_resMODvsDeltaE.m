@@ -109,7 +109,7 @@ c.Limits = [mmin mmax];
 % c.LineWidth = 'white';
 % c.Box='off';
 tt = ['Level:', level_label{1}, ', Era: 200207-201706', ];
-sgtt = sgtitle(tt, 'Fontsize', 14, 'Interpreter', 'none');
+sgtt = sgtitle(headLineTxt, 'Fontsize', 14, 'Interpreter', 'none');
 % save file 
 % figTitle = [level.time1{p_1}(1:end - 1), '_', level.model2{level1}];
 % figurename = '/home/lyc/research/P02.Ts_change_research/figure/Observe/1.0/sfc_cloudMODIS_landsea.png';

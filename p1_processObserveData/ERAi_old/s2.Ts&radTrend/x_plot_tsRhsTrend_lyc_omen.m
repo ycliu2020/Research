@@ -220,7 +220,7 @@ end
 colorbar('Position',[pos(1)+pos(3)+0.01 pos(2) 0.015 pos(4)*2.5])
 caxis([mmin mmax])
 tt = 'Compare of Surface Temperature in 2000-2018';
-sgtt = sgtitle(tt, 'Fontsize', 14, 'Interpreter', 'none');
+sgtt = sgtitle(headLineTxt, 'Fontsize', 14, 'Interpreter', 'none');
 
 % %----------------------section3: had season图,专门为had数据设计----------------------------------
 % ts1 = trend_Ts_s; % decide varible to plot

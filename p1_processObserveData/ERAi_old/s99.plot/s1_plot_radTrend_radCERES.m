@@ -105,7 +105,7 @@ for toaSfc = 1:2
             % c.LineWidth = 'white';
             % c.Box='off';
             tt = ['Level:', mlabels.level, ', Era: ', tLin.time{p_1}];
-            sgtt = sgtitle(tt, 'Fontsize', 14, 'Interpreter', 'none');
+            sgtt = sgtitle(headLineTxt, 'Fontsize', 14, 'Interpreter', 'none');
             % save file
             figTitle = ['observe_', tLin.time{p_1}, '_varsTrend', '_', mlabels.area];
             figurename = [mPath.Output, '/', figTitle, '.png'];

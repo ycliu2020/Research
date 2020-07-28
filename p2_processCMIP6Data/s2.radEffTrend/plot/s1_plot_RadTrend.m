@@ -123,7 +123,7 @@ for p_1 = p1_left:p1_right
         % c.Box='off';
 
         tt = ['Level:', mlabels.level, ', Era: ', level.time1{p_1}(1:end - 1), ', Model:', level.model2{level1}];
-        sgtt = sgtitle(tt, 'Fontsize', 14, 'Interpreter', 'none');
+        sgtt = sgtitle(headLineTxt, 'Fontsize', 14, 'Interpreter', 'none');
         figTitle = [level.time1{p_1}(1:end - 1), '_', level.model2{level1},'_',mlabels.fileN1];
         figurename=[mPath.Output,'/',figTitle,'.png'];
         saveas(gcf,figurename)

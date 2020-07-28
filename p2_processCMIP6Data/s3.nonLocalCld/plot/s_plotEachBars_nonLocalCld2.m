@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-17 15:12:08
-% LastEditTime : 2020-07-24 11:11:04
+% LastEditTime : 2020-07-26 17:07:08
 % LastEditors  : LYC
 % Description  : only cal ensember r1i1p1f1
 % FilePath     : /code/p2_processCMIP6Data/s3.nonLocalCld/plot/s_plotEachBars_nonLocalCld2.m
@@ -111,13 +111,13 @@ for exmName = exm_left:exm_right
             caxis([min(colorbar_Series) max(colorbar_Series)]);
             hold on
             m_line(world_mapx(:), world_mapy(:), 'color', [0 0 0], 'LineWidth', 0.5);
-            if plotCol==1&&plotRow==4
+            if plotCol==1&&plotRow==f_row
                 m_grid('linestyle', 'none', 'tickdir', 'out', 'yaxislocation', 'left', 'fontsize', 8, 'color', 'k'); 
-            elseif plotCol==1&&plotRow~=4
+            elseif plotCol==1&&plotRow~=f_row
                 m_grid('linestyle', 'none', 'tickdir', 'out', 'xticklabels',[], 'yaxislocation', 'left', 'fontsize', 8, 'color', 'k');
-            elseif plotCol~=1&&plotRow==4 
+            elseif plotCol~=1&&plotRow==f_row 
                 m_grid('linestyle', 'none', 'tickdir', 'out', 'yticklabels',[], 'fontsize', 8, 'color', 'k');
-            elseif plotCol~=1&&plotRow~=4 
+            elseif plotCol~=1&&plotRow~=f_row 
                 m_grid('linestyle', 'none', 'tickdir', 'out', 'xticklabels',[], 'yticklabels',[], 'fontsize', 8, 'color', 'k');
             end
     
@@ -125,7 +125,7 @@ for exmName = exm_left:exm_right
             % sequence
             figSeq=char(97+varNum-1);
             yLoc=-0.1;
-            if plotRow==4
+            if plotRow==f_row
                 yLoc=-0.2;
             end
             txt=text(0.5, yLoc, ['(',figSeq,')'],'Units','normalized','FontSize',10);

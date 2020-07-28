@@ -119,7 +119,7 @@ for p_1 = 1:2
     end
 
     headLineTxt = {['Level:', mlabels.level, ', Era: ', tLin.time{p_1}], ['Data:', mlabels.dataName{2}, ' and ' , mlabels.dataName{1}, ', Trend(year mean)']};
-    sgtt = sgtitle(tt, 'Fontsize', 14, 'Interpreter', 'none');
+    sgtt = sgtitle(headLineTxt, 'Fontsize', 14, 'Interpreter', 'none');
     figureName = [mlabels.dataName{2},'_dRcloud_',mlabels.dataName{1}, '_', tLin.time{p_1}, '_radEffect', '_', mlabels.area,'_',mlabels.level];
     saveFileName = [outPutPath, '/', figureName, '.png'];
     saveas(gcf, saveFileName)

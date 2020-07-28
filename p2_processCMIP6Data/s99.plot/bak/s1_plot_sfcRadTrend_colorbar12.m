@@ -121,7 +121,7 @@ for p_1=p1_left:p1_right
         % c.LineWidth = 'white';
         % c.Box='off';
         tt = ['Level:', level_label{p_2}, ', Era: ', level.time1{p_1}(1:end - 1), ', Model:', level.model2{level1}];
-        sgtt = sgtitle(tt, 'Fontsize', 14, 'Interpreter', 'none');
+        sgtt = sgtitle(headLineTxt, 'Fontsize', 14, 'Interpreter', 'none');
         figTitle = [level.time1{p_1}(1:end - 1), '_', level.model2{level1}];
         figurename = [outputPath, figTitle, '.png'];
         saveas(gcf, figurename)
