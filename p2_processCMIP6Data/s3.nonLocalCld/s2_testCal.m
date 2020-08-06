@@ -1,11 +1,11 @@
 %%---------------------------------------------------------
 % Author       : LYC
-% Date         : 2020-06-17 13:16:32
-% LastEditTime : 2020-07-29 10:09:57
+% Date         : 2020-07-29 09:43:56
+% LastEditTime : 2020-07-29 09:44:39
 % LastEditors  : LYC
-% Description  : 计算非局地云的辐射效应和温度贡献(用云辐射贡献的ts变化求)
-% FilePath     : /code/p2_processCMIP6Data/s3.nonLocalCld/s2_nonLocalCld_method2.m
-% Attention    : both amip and ssp on surface caled
+% Description  : 
+% FilePath     : /code/p2_processCMIP6Data/s3.nonLocalCld/s2_testCal.m
+%  
 %%---------------------------------------------------------
 
 clear; clc; tic;
@@ -22,7 +22,7 @@ for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
     [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(exmNum);
     % exmPath
     exmPath = ['/data1/liuyincheng/cmip6-process/', level.time1{exmNum}]; %/data1/liuyincheng/cmip6-process/amip_2000-2014/
-    for mdlNum = 1:length(level.model2)
+    for mdlNum = 4:4%length(level.model2)
         % model path
         mdlPath = fullfile(exmPath, level.model2{mdlNum});
         eval(['cd ', mdlPath]);
@@ -32,7 +32,7 @@ for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
         esmName = getPath_fileName(mdlPath, '.');
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % ensemble member
-        for esmNum = 1:length(esmName)
+        for esmNum = 1:1%length(esmName)
             esmPath = fullfile(mdlPath, esmName{esmNum, 1});
             % data path
             varsPath = fullfile(esmPath,level.process3{1}); %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/rawdata_regrid
@@ -45,7 +45,7 @@ for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             load([dradEffectPath, 'global_vars.mat'])% lat_f lon_f time plev_k readme
             ntime = length(time.date);
             % load dtsg and DeltaTsg
-            load([dvarsPath, 'dtsg_nomask.mat']) %dtsg
+            load([dvarsPath, 'dtsg_nomask.mat'])
             load([dvarsTrendPath, 'DeltaTsg_nomask.mat'])% DeltaTsg, DeltaTsgMeaning
 
             varUsed = zeros(nlonf, nlatf, ntime, 3); % dR

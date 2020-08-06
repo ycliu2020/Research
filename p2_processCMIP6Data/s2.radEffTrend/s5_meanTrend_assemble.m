@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-28 10:52:10
-% LastEditTime : 2020-07-28 10:57:13
+% LastEditTime : 2020-07-28 11:22:47
 % LastEditors  : LYC
 % Description  : 
 % FilePath     : /code/p2_processCMIP6Data/s2.radEffTrend/s5_meanTrend_assemble.m
@@ -92,7 +92,7 @@ for exmName = exm_left:exm_right
         [trendyr, yr_cc, yr_pp] = maskArea(trendyr, lat_f, latRange, -latRange, areaNum);
 
  
-
+        % [varMean] = areaMeanLatWeight(varInput, lat);
 
     %model
     end

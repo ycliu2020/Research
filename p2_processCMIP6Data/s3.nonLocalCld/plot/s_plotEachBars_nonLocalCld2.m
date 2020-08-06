@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-17 15:12:08
-% LastEditTime : 2020-07-26 17:07:08
+% LastEditTime : 2020-07-29 11:40:27
 % LastEditors  : LYC
 % Description  : only cal ensember r1i1p1f1
 % FilePath     : /code/p2_processCMIP6Data/s3.nonLocalCld/plot/s_plotEachBars_nonLocalCld2.m
@@ -23,7 +23,7 @@ latRange = 60;
 lon1 = [2.5 357.5]; lat1 = [-latRange + 1 latRange - 1]; % world area
 set(0, 'defaultfigurecolor', 'w')
 
-exm_left = 1; exm_right = 3;
+exm_left = 4; exm_right = 4;
 for exmName = exm_left:exm_right
     [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(exmName);
     % mPath.input:E:/data/cmip6-process/2000-2014/
@@ -35,7 +35,7 @@ for exmName = exm_left:exm_right
     auto_mkdir(mPath.Output)
 
     % model loop
-    mdl_left = 1; mdl_right = length(level.model2); % differnt models%length(level.model2)
+    mdl_left = 4; mdl_right = 4;length(level.model2); % differnt models%length(level.model2)
     for mdlName = mdl_left:mdl_right
         mdlPath=fullfile(mPath.input, level.model2{mdlName});
         % load data
@@ -91,7 +91,7 @@ for exmName = exm_left:exm_right
         %%%%%%%%%%%%%%%%%%%%%%%%%%%
         %plot
         f_row = 4; f_col = 3; % 设置画图的行列
-        set(0, 'DefaultFigureVisible', 'off')
+        set(0, 'DefaultFigureVisible', 'on')
         ss = get(0, 'ScreenSize'); 
         h = figure('Position', [ss(4)/2-100 ss(3) / 35 ss(3)/5*f_col (ss(4)-80)/5*f_row]);
         % clf reset;
@@ -139,10 +139,10 @@ for exmName = exm_left:exm_right
         headLineTxt = {['Level:', mlabels.level, ', Era: ', level.time1{exmName}(1:end - 1),', Trend(year mean)'], ['Model:', level.model2{mdlName}, ', Ensemble: ', esm]};
         sgtt = sgtitle(headLineTxt, 'Fontsize', 14, 'Interpreter', 'none');
         figTitle = [level.time1{exmName}(1:end - 1), '_', level.model2{mdlName}, '_', mlabels.fileN1,'_',esm];
-        figurename = [mPath.Output, '/', figTitle, '.png'];
-        saveas(gcf, figurename)
-        % save_png(figurename)%high resolution
-        close gcf
+        % figurename = [mPath.Output, '/', figTitle, '.png'];
+        % saveas(gcf, figurename)
+        % % save_png(figurename)%high resolution
+        % close gcf
     end
 
 end
