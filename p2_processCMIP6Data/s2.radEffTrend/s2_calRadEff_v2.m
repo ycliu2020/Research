@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-07-22 21:05:46
+% LastEditTime : 2020-08-10 11:13:09
 % LastEditors  : LYC
 % Description  : cal mainly include 1.regrid vars, 2.vars anomly
 %                CMIP6 mothly data
@@ -312,6 +312,12 @@ for exmNum = 3:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             dR_mainEffect_toa = dR_cloud_toa + dR_main(:, :, :, 3);
             save([radEfectPath, 'dR_mainEffect_sfc.mat'], 'dR_mainEffect_sfc');
             save([radEfectPath, 'dR_mainEffect_toa.mat'], 'dR_mainEffect_toa');
+            % 20/8/9 补充
+            dR_totalEffect_sfc = dR_cloud_sfc + dR_total(:, :, :, 1);
+            dR_totalEffect_toa = dR_cloud_toa + dR_total(:, :, :, 3);
+            save([radEfectPath, 'dR_totalEffect_sfc.mat'], 'dR_totalEffect_sfc');
+            save([radEfectPath, 'dR_totalEffect_toa.mat'], 'dR_totalEffect_toa');
+            
             disp([esmName{esmNum, 1}, ' ensemble is done!'])
         end
 
