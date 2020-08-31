@@ -26,7 +26,7 @@ shopt -s extglob # enable extended globbing
 # 1.dont change this script during runing
 # 2.dont break the run during runing, if break, please rm the temp file first
 # 3.amip: first move /amip/CMIP/*.nc to /amip, then run the script
-# 
+#
 # Name statement
 # exp: Experiment
 # mdl: model
@@ -34,11 +34,12 @@ shopt -s extglob # enable extended globbing
 # grd: grid_label
 
 locPath='/data1/liuyincheng/CMIP6-mirror/' # Directory of input files
-exp_set='ssp245 ssp370'               # Experiment ( could be more )
-tab='Amon'                               # table_ID
+exp_set='historical'               # Experiment ( could be more )
+tab='Amon Omon'                               # table_ID
 var_set=("hus" "ta" "ts" "ps" "hfls" "hfss"\
     "rlus" "rsus" "rsds" "rlds" "rsuscs" "rsdscs" "rldscs" \
-"rlut" "rsut" "rsdt" "rlutcs" "rsutcs" "clisccp" "ua" "va" "wap") # 22 variables
+    "rlut" "rsut" "rsdt" "rlutcs" "rsutcs" "clisccp" "ua" "va" "wap" \
+    "thetao" "tos" "tosga" "thetaoga")
 
 for exp in ${exp_set}; do
     loc=$locPath$exp"/"
@@ -74,7 +75,7 @@ for exp in ${exp_set}; do
                 echo "------------------------------"
                 echo "ensemble member" ${esm} "includes" ${grd_nbr} "grid label(s):"
                 echo ${grd_set}"."
-
+                
                 for grd in ${grd_set}; do	      # grid label
                     # Number of files in this ensemble member
                     fl_nbr=$( ls ${loc}${var_set[var_id]}_${tab}_${mdl}_${exp}_${esm}_${grd}_*.nc \

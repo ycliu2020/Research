@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-17 13:16:32
-% LastEditTime : 2020-07-29 10:09:57
+% LastEditTime : 2020-08-30 20:45:27
 % LastEditors  : LYC
 % Description  : 计算非局地云的辐射效应和温度贡献(用云辐射贡献的ts变化求)
 % FilePath     : /code/p2_processCMIP6Data/s3.nonLocalCld/s2_nonLocalCld_method2.m
