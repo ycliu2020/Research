@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-08-15 10:27:16
-% LastEditTime : 2020-08-30 21:30:12
+% LastEditTime : 2020-09-04 16:30:52
 % LastEditors  : LYC
 % Description  :
-% FilePath     : /code/p2_processCMIP6Data/s3.nonLocalCld/s2_nonLocalCld_method3.m
+% FilePath     : /code/p2_processCMIP6Data/s3.nonLocalCld/s2_nonLocalCld_method3_v1.m
 %
 %%---------------------------------------------------------
 
@@ -12,7 +12,6 @@ clear; clc; tic;
 latRange = 88.75; % Latitude range
 lon1 = [2.5 357.5]; lat1 = [-latRange + 1 latRange - 1]; % world area
 toaSfc = {'toa', 'sfc'};
-load('/data1/liuyincheng/cmip6-process/z_globalVar/ERF_rec.mat')% 'ERF_rec', 'timeERF_rec'
 lon_k = 0:2.5:357.5; nlonk = length(lon_k); % kernel lat lon
 lat_k = 90:-2.5:-90; nlatk = length(lat_k);
 lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f); % figure lat lon
@@ -24,6 +23,7 @@ for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
     % exmPath
     exmPath = ['/data1/liuyincheng/cmip6-process/', level.time1{exmNum}]; %/data1/liuyincheng/cmip6-process/amip_2000-2014/
     %%% load ERF data
+    load('/data1/liuyincheng/cmip6-process/z_globalVar/ERF_rec.mat')% 'ERF_rec', 'timeERF_rec'
     if strcmp(Experiment{exmNum}(1:3), 'ami')
         timeERF = timeERF_rec.hist(find(timeERF_rec.hist == tLin.startYear{exmNum}):find(timeERF_rec.hist == tLin.endYear{exmNum}));
         ERForcing = ERF_rec.hist(find(timeERF_rec.hist == tLin.startYear{exmNum}):find(timeERF_rec.hist == tLin.endYear{exmNum}));
@@ -45,7 +45,7 @@ for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % model member
-    for mdlNum = 1:length(level.model2)
+    for mdlNum = 9:9 %1:length(level.model2)
         % model path
         mdlName = level.model2{mdlNum};
         mdlPath = fullfile(exmPath, mdlName);
@@ -107,7 +107,8 @@ for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             load([varsPath, 'rsdt.mat'])% toa_incoming_shortwave_flux
             dR_nonCloud = totalEffect;
             dR_netTOA = squeeze(dR_allsky(:, :, :, 2));
-            %regrid to 144x72(unite grids)
+            
+            % regrid to 144x72(unite grids)
             netTOA = rsdt - rlut - rsut; % net radiation in toa (lonxlatxmonth): W/m2
             netTOA = autoRegrid3(lon_k, lat_k, time.date, netTOA, lon_f, lat_f, time.date);
             %%%%%%%%%%%%%%%%%%%%Part1: 2层EBM模式计算非云和云致温度变化(分离云对全球的整体作用)%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -147,7 +148,7 @@ for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             Cd_ref = (Dd_ref * rho_water * cp_water * f0) / (86400 * 365.25); % Cd_ref(deep-layer ocean) mean the result of formula (22) in reference Geoffroy
 
             startY = 0; endY = 84; interY = 1;
-            [Seri_k_dts, Seri_k_dtd, Seri_b_dRnetTOA, gammaa] = EBMLayer2_gamma(C_ref, Cd_ref, gblM_R_netTOA, dts_ctrl, bts0, b_td0, startY, endY, interY);
+            [Seri_k_dts, Seri_k_dtd, Seri_b_dRnetTOA, gammaa] = EBMLayer2_gamma2(C_ref, Cd_ref, gblM_R_netTOA, dts_ctrl, bts0, b_td0, startY, endY, interY);
             save([dnonLocalCldPath, 'gamma-EBM.mat'], 'gammaa');
 
             %% step3: 计算没有云情况下的温度变化
@@ -265,7 +266,7 @@ function [Seri_k_dts, Seri_k_dtd, Seri_b_dRnetTOA, gammaa] = EBMLayer2_gamma(C_r
     %         figName = [];
     % end
 
-    timeExamp = startT + interT * 15 - 1:interT:endT;
+    timeExamp = startT + interT * 4 - 1:interT:endT;
     diffTimeSum = length(timeExamp); % 总共有几组时间段
 
     Delta_ts = zeros(diffTimeSum, 1);
@@ -276,8 +277,9 @@ function [Seri_k_dts, Seri_k_dtd, Seri_b_dRnetTOA, gammaa] = EBMLayer2_gamma(C_r
 
     Seri_k_dRnetTOA = zeros(diffTimeSum, 1);
     Seri_b_dRnetTOA = zeros(diffTimeSum, 1);
-    denominator = zeros(diffTimeSum, 1);
 
+    p_Plus = zeros(diffTimeSum, 1);
+    p_Minus = zeros(diffTimeSum, 1);
 
     % 计算k_dtd (function 1)
     for diffTime = 1:diffTimeSum%循环每一组
@@ -286,7 +288,6 @@ function [Seri_k_dts, Seri_k_dtd, Seri_b_dRnetTOA, gammaa] = EBMLayer2_gamma(C_r
 
         Seri_dRnetTOA_ctrl = dR_netTOA(1:timeExamp(diffTime) - startT + 1);
         Seri_dts_ctrl = dts(1:timeExamp(diffTime) - startT + 1);
-        Seri_dts = dts(1:timeExamp(diffTime) - startT + 1);
 
         %% cal Delta ts
         k_dts = polyfit(timeSeries', Seri_dts_ctrl, 1);
@@ -297,12 +298,70 @@ function [Seri_k_dts, Seri_k_dtd, Seri_b_dRnetTOA, gammaa] = EBMLayer2_gamma(C_r
         k_dRnetTOA = polyfit(timeSeries', Seri_dRnetTOA_ctrl, 1);
         Seri_k_dRnetTOA(diffTime) = k_dRnetTOA(1);
         Seri_b_dRnetTOA(diffTime) = k_dRnetTOA(2);
-        denominator(diffTime) = timeExamp(diffTime) + startT; %(t1+t2)
-        Seri_k_dtd(diffTime) = (0.5 * Seri_k_dRnetTOA(diffTime) * denominator(diffTime) + Seri_b_dRnetTOA(diffTime) - C_ref * Seri_k_dts(diffTime)) / Cd_ref;
+        p_Plus(diffTime) = timeExamp(diffTime) + startT; %(t1+t2)
+        p_Minus(diffTime) = timeExamp(diffTime) - startT; %(t1+t2)
+        Seri_k_dtd(diffTime) = (0.5 * Seri_k_dRnetTOA(diffTime) * p_Plus(diffTime) + Seri_b_dRnetTOA(diffTime) - C_ref * Seri_k_dts(diffTime)) / Cd_ref;
     end
 
     % 计算gamma (function 2, see document for details)
-    xdata = 0.5 * (Seri_k_dts - Seri_k_dtd) .* denominator + Seri_b_dts - b_td0;
+    xdata = 0.5 * (Seri_k_dts - Seri_k_dtd) .* p_Plus + Seri_b_dts - b_td0;
+    ydata = Seri_k_dtd .* Cd_ref;
+    % gamma1=ydata./xdata;
+
+    % 线性拟合
+    kb = polyfit(xdata, ydata, 1);
+    k_fit = kb(1);
+    b_fit = kb(2);
+
+    % % 线性拟合(过零点)
+    % [k_fit, b_fit] = plotLinFit_point0(xdata, ydata, xLabel, yLabel, modelName);
+    gammaa = k_fit;
+    resiual = b_fit;
+
+end
+function [Seri_k_dts, Seri_k_dtd, Seri_b_dRnetTOA, gammaa] = EBMLayer2_gamma2(C_ref, Cd_ref, dR_netTOA, dts, bts0, b_td0, startT, endT, interT)
+    % 计算gamma值
+    % switch nargin
+    %     case 8
+    %         figName = [];
+    % end
+
+    timeExamp = startT + interT * 4 - 1:interT:endT;
+    diffTimeSum = length(timeExamp); % 总共有几组时间段
+
+    Delta_ts = zeros(diffTimeSum, 1);
+    Seri_k_dtd = zeros(diffTimeSum, 1);
+
+    Seri_k_dts = zeros(diffTimeSum, 1);
+    Seri_b_dts = zeros(diffTimeSum, 1);
+
+    Seri_k_dRnetTOA = zeros(diffTimeSum, 1);
+    Seri_b_dRnetTOA = zeros(diffTimeSum, 1);
+
+    p_Plus = zeros(diffTimeSum, 1);
+    p_Minus = zeros(diffTimeSum, 1);
+
+    % 计算k_dtd (function 1)
+    for diffTime = 1:diffTimeSum%循环每一组
+        timeSeries = startT:timeExamp(diffTime);
+        dtime = length(timeSeries);
+
+        Seri_dRnetTOA_ctrl = dR_netTOA(1:timeExamp(diffTime) - startT + 1);
+        Seri_dts_ctrl = dts(1:timeExamp(diffTime) - startT + 1);
+
+        %% cal Delta ts
+        k_dts = polyfit(timeSeries', Seri_dts_ctrl, 1);
+        Delta_ts(diffTime) = k_dts(1) * dtime;
+        Seri_k_dts(diffTime) = k_dts(1);
+        Seri_b_dts(diffTime) = bts0;
+
+        p_Plus(diffTime) = timeExamp(diffTime) + startT; %(t1+t2)
+        p_Minus(diffTime) = timeExamp(diffTime) - startT; %(t1+t2)
+        Seri_k_dtd(diffTime) = (sum(Seri_dRnetTOA_ctrl) / p_Minus(diffTime) - C_ref * Seri_k_dts(diffTime)) / Cd_ref;
+    end
+
+    % 计算gamma (function 2, see document for details)
+    xdata = 0.5 * (Seri_k_dts - Seri_k_dtd) .* p_Plus + Seri_b_dts - b_td0;
     ydata = Seri_k_dtd .* Cd_ref;
     % gamma1=ydata./xdata;
 
@@ -325,7 +384,7 @@ function [k_tnc, DeltaTsg_noncld, DeltaTsg_cld] = EBMLayer2_ktnc(gammaa, lamda_n
             figName = [];
     end
 
-    timeExamp = startT + interT * 15 - 1:interT:endT;
+    timeExamp = startT + interT * 4 - 1:interT:endT;
     diffTimeSum = length(timeExamp); % 总共有几组时间段
 
     sum_ERF = zeros(diffTimeSum, 1);
@@ -364,18 +423,27 @@ function [k_tnc, DeltaTsg_noncld, DeltaTsg_cld] = EBMLayer2_ktnc_Test(gammaa, la
             figName = [];
     end
 
-    timeExamp = startT + interT * 15 - 1:interT:endT;
+    timeExamp = startT + interT * 4 - 1:interT:endT;
     diffTimeSum = length(timeExamp); % 总共有几组时间段
-
-    sum_ERF = zeros(diffTimeSum, 1);
     
     p_Plus = zeros(diffTimeSum, 1);
     p_Minus = zeros(diffTimeSum, 1);
     
-    % 计算(function 7)
+    % 计算ERF(function 7)
     for diffTime = 1:diffTimeSum%循环每一组
         timeSeries = startT:timeExamp(diffTime);
         lenTime = length(timeSeries);
+
+        Seri_erf = ERForcing(1:timeExamp(diffTime) - startT + 1);
+
+        %% cal Delta ERF
+        k_f = polyfit(timeSeries', Seri_erf, 1);
+        Delta_ts(diffTime) = k_dts(1) * dtime;
+        Seri_k_f(diffTime) = k_f(1);
+        Seri_b_dts(diffTime) = b;
+
+
+        Seri_k_dtd(diffTime) = (sum(Seri_dRnetTOA_ctrl) / p_Minus(diffTime) - C_ref * Seri_k_dts(diffTime)) / Cd_ref;
 
         p_Plus(diffTime) = timeExamp(diffTime) + startT; %(t1+t2)
         p_Minus(diffTime) = timeExamp(diffTime) - startT; %(t1+t2)
@@ -398,7 +466,7 @@ function [k_tnc, DeltaTsg_noncld, DeltaTsg_cld] = EBMLayer2_ktnc_Test(gammaa, la
 
     resiual = b_fit;
     title({['ssp370 Model: ', modelName]; ['k_tnc: ', num2str(k_tnc), '  Res(认为截距为误差): ', num2str(resiual)];['无云情况下温度变化:',num2str(DeltaTsg_noncld),'云致温度变化:',num2str(DeltaTsg_cld)]})
-    figName = ['/home/liuyc/Research/P02.Ts_change_research/figure/02.cmip6Result/1.6/nonLocalCld2_fix/tempChangeTest/ssp370_r1i1p1f1_', modelName, '_Jim.png'];
+    figName = ['/home/liuyc/Research/P02.Ts_change_research/figure/02.cmip6Result/1.6/nonLocalCld3/tempChangeTest/ssp370_r1i1p1f1_', modelName, '_Jim.png'];
     saveas(gcf, figName)
 
 end

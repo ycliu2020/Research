@@ -112,12 +112,12 @@ def autoGet_esmName(main_path):
     return mdlNames
 
 
-mdl_xpt = ['amip/CMIP', 'ssp245', 'ssp370']
+mdl_xpt = ['amip/CMIP', 'ssp245', 'ssp370', 'historical']
 # ['abrupt-4xCO2', 'ssp370', 'ssp245',
 #            'amip/CMIP', 'amip-hist', 'piControl']  # experiment
 
 # mdl_nsm = 'r1i1p1f1'  # ensemble member
-mdl_rlm = 'Amon'  # model realm
+mdl_rlm = 'Omon'  # model realm
 mdl_grid = 'gn'  # model realm
 data_path = '/data1/liuyincheng/CMIP6-mirror/'
 

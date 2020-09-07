@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-08-09 14:58:33
-% LastEditTime : 2020-08-30 16:33:57
+% LastEditTime : 2020-09-01 16:12:07
 % LastEditors  : LYC
 % Description  : 修正计算非云致温度变化实验可行性分析 feasibility study report
 % FilePath     : /code/p2_processCMIP6Data/s3.nonLocalCld/s2_nonLocalCld_method3_testEBM_FSR.m
@@ -127,8 +127,8 @@ for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             Cd_ref = (Dd_ref * rho_water * cp_water * f0) / (86400 * 365.25); % Cd_ref(deep-layer ocean) mean the result of formula (22) in reference Geoffroy
 
             startY = 0; endY = 84; interY = 1;
-            % [Seri_k_dts, Seri_b_dts, Seri_k_dtd, Seri_b_dRnetTOA, gammaa] = EBMLayer2Test(C_ref, Cd_ref, gblM_R_netTOA, dts_ctrl, startY, endY, interY, mdlName);
-            [Seri_k_dts, Seri_b_dts, Seri_k_dtd, gammaa] = EBMLayer2Test2(C_ref, Cd_ref, gblM_R_netTOA, dts_ctrl, bts0, b_td0, startY, endY, interY, mdlName);
+            [Seri_k_dts, Seri_b_dts, Seri_k_dtd, Seri_b_dRnetTOA, gammaa] = EBMLayer2_gammaTest(C_ref, Cd_ref, gblM_R_netTOA, dts_ctrl, startY, endY, interY, mdlName);
+            % [Seri_k_dts, Seri_b_dts, Seri_k_dtd, gammaa] = EBMLayer2_gammaTest2(C_ref, Cd_ref, gblM_R_netTOA, dts_ctrl, bts0, b_td0, startY, endY, interY, mdlName);
 
             disp([esmName{esmNum, 1}, ' ensemble is done!'])
         end
@@ -144,7 +144,7 @@ end
 
 t = toc; disp(t)
 
-function [Seri_k_dts, Seri_b_dts, Seri_k_dtd, Seri_b_dRnetTOA, gammaa] = EBMLayer2Test(C_ref, Cd_ref, dR_netTOA, dts, bts0, b_td0, startT, endT, interT, modelName, figName)
+function [Seri_k_dts, Seri_b_dts, Seri_k_dtd, Seri_b_dRnetTOA, gammaa] = EBMLayer2_gammaTest(C_ref, Cd_ref, dR_netTOA, dts, bts0, b_td0, startT, endT, interT, modelName, figName)
 
     switch nargin
         case 10
@@ -162,7 +162,7 @@ function [Seri_k_dts, Seri_b_dts, Seri_k_dtd, Seri_b_dRnetTOA, gammaa] = EBMLaye
 
     Seri_k_dRnetTOA = zeros(diffTimeSum, 1);
     Seri_b_dRnetTOA = zeros(diffTimeSum, 1);
-    denominator = zeros(diffTimeSum, 1);
+    p_Plus = zeros(diffTimeSum, 1);
 
     % 计算k_dtd (function 1)
     for diffTime = 1:diffTimeSum%循环每一组
@@ -182,12 +182,12 @@ function [Seri_k_dts, Seri_b_dts, Seri_k_dtd, Seri_b_dRnetTOA, gammaa] = EBMLaye
         k_dRnetTOA = polyfit(timeSeries', Seri_dRnetTOA_ctrl, 1);
         Seri_k_dRnetTOA(diffTime) = k_dRnetTOA(1);
         Seri_b_dRnetTOA(diffTime) = k_dRnetTOA(2);
-        denominator(diffTime) = timeExamp(diffTime) + startT; %(t1+t2)
-        Seri_k_dtd(diffTime) = (0.5 * Seri_k_dRnetTOA(diffTime) * denominator(diffTime) + Seri_b_dRnetTOA(diffTime) - C_ref * Seri_k_dts(diffTime)) / Cd_ref;
+        p_Plus(diffTime) = timeExamp(diffTime) + startT; %(t1+t2)
+        Seri_k_dtd(diffTime) = (0.5 * Seri_k_dRnetTOA(diffTime) * p_Plus(diffTime) + Seri_b_dRnetTOA(diffTime) - C_ref * Seri_k_dts(diffTime)) / Cd_ref;
     end
 
     % 计算gamma (function 2, see document for details)
-    xdata = 0.5 * (Seri_k_dts - Seri_k_dtd) .* denominator + Seri_b_dts - b_td0;
+    xdata = 0.5 * (Seri_k_dts - Seri_k_dtd) .* p_Plus + Seri_b_dts - b_td0;
     ydata = Seri_k_dtd .* Cd_ref;
     % gamma1=ydata./xdata;
 
@@ -207,7 +207,10 @@ function [Seri_k_dts, Seri_b_dts, Seri_k_dtd, Seri_b_dRnetTOA, gammaa] = EBMLaye
 
 end
 
-function [Seri_k_dts, Seri_b_dts, Seri_k_dtd gammaa] = EBMLayer2Test2(C_ref, Cd_ref, dR_netTOA, dts, bts0, b_td0, startT, endT, interT, modelName, figName)
+
+
+
+function [Seri_k_dts, Seri_b_dts, Seri_k_dtd gammaa] = EBMLayer2_gammaTest2(C_ref, Cd_ref, dR_netTOA, dts, bts0, b_td0, startT, endT, interT, modelName, figName)
 
     switch nargin
         case 10
@@ -223,7 +226,7 @@ function [Seri_k_dts, Seri_b_dts, Seri_k_dtd gammaa] = EBMLayer2Test2(C_ref, Cd_
     Seri_k_dts = zeros(diffTimeSum, 1);
     Seri_b_dts = zeros(diffTimeSum, 1);
 
-    denominator = zeros(diffTimeSum, 1);
+    p_Plus = zeros(diffTimeSum, 1);
 
     % 计算k_dtd (function 1)
     for diffTime = 1:diffTimeSum%循环每一组
@@ -240,12 +243,13 @@ function [Seri_k_dts, Seri_b_dts, Seri_k_dtd gammaa] = EBMLayer2Test2(C_ref, Cd_
         Seri_k_dts(diffTime) = k_dts(1);
         Seri_b_dts(diffTime) = bts0;
 
-        denominator(diffTime) = timeExamp(diffTime) - startT; %(t1+t2)
-        Seri_k_dtd(diffTime) = (sum(Seri_dRnetTOA_ctrl) / denominator(diffTime) - C_ref * Seri_k_dts(diffTime)) / Cd_ref;
+        p_Plus(diffTime) = timeExamp(diffTime) + startT; %(t1+t2)
+        p_Minus(diffTime) = timeExamp(diffTime) - startT; %(t1+t2)
+        Seri_k_dtd(diffTime) = (sum(Seri_dRnetTOA_ctrl) / p_Minus(diffTime) - C_ref * Seri_k_dts(diffTime)) / Cd_ref;
     end
 
     % 计算gamma (function 2, see document for details)
-    xdata = 0.5 * (Seri_k_dts - Seri_k_dtd) .* denominator + Seri_b_dts - b_td0;
+    xdata = 0.5 * (Seri_k_dts - Seri_k_dtd) .* p_Plus + Seri_b_dts - b_td0;
     ydata = Seri_k_dtd .* Cd_ref;
     % gamma1=ydata./xdata;
 
@@ -289,7 +293,7 @@ function [k, C, x, y, Integral_ts, Integral_RnetTOA, Delta_ts] = EBMLayer1Test(d
     Seri_k_dRnetTOA = zeros(diffTimeSum, 1);
     Seri_b_dRnetTOA = zeros(diffTimeSum, 1);
     numerator = zeros(diffTimeSum, 1);
-    denominator = zeros(diffTimeSum, 1);
+    p_Plus = zeros(diffTimeSum, 1);
     % 计算基于基态的变量
     ts_ctrl = mean(dts(1:10));
     dts_ctrl = dts - ts_ctrl;
@@ -318,13 +322,13 @@ function [k, C, x, y, Integral_ts, Integral_RnetTOA, Delta_ts] = EBMLayer1Test(d
         Integral_ts(diffTime) = sum(Seri_dts_ctrl);
         Integral_ts1(diffTime) = sum(Seri_dts);
         % new method
-        denominator(diffTime) = timeExamp(diffTime) + startT;
+        p_Plus(diffTime) = timeExamp(diffTime) + startT;
     end
 
     % polyfit y and x
     %  plot function Newmethod
-    y = (Seri_k_dRnetTOA .* denominator + 2 * Seri_b_dRnetTOA) ./ (Seri_k_dts .* denominator + 2 * Seri_b_dts);
-    x = 2 * Seri_k_dts ./ (Seri_k_dts .* denominator + 2 * Seri_b_dts);
+    y = (Seri_k_dRnetTOA .* p_Plus + 2 * Seri_b_dRnetTOA) ./ (Seri_k_dts .* p_Plus + 2 * Seri_b_dts);
+    x = 2 * Seri_k_dts ./ (Seri_k_dts .* p_Plus + 2 * Seri_b_dts);
     xLabel = '2k\_ts/(k\_ts(t1+t2)+2b\_ts)';
     yLabel = '(k\_netTOA(t1+t2)+2b\_netTOA)/(k\_ts(t1+t2)+2b\_ts)';
     [k_fit, b_fit] = plotLinFit(x, y, xLabel, yLabel, modelName, figName);
