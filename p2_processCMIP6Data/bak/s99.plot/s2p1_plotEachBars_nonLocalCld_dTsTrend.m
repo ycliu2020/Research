@@ -30,7 +30,7 @@ lon1 = [2.5 357.5]; lat1 = [-latRange + 1 latRange - 1]; % world area
 set(0, 'defaultfigurecolor', 'w')
 
 for p_1 = p1_left:p1_right
-    [readme, Experiment, level, tLin, mPlev, vars] = modelParameters(p_1);
+    [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(p_1);
     % mPath.input:E:/data/cmip6-process/2000-2014/
 
     mPath.input = fullfile('/data1/liuyincheng/cmip6-process/', level.time1{p_1});

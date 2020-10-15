@@ -13,7 +13,7 @@ clc; clear;
 nowpath = pwd;
 p1_left=1;p1_right=5;% Experent
 for p_1=p1_left:p1_right
-    [readme, Experiment, level, tLin, mPlev, vars] = modelParameters(p_1);
+    [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(p_1);
     p2_left=1;p2_right=length(level.model2);% differnt models %length(level.model2)
 
     % inputPath:E:/data/cmip6-process/2000-2014/

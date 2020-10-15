@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-08-09 14:58:33
-% LastEditTime : 2020-09-04 15:34:35
+% LastEditTime : 2020-09-23 09:54:14
 % LastEditors  : LYC
 % Description  : 这里和1的区别主要采用了离散的计算方式计算gamma项  修正计算非云致温度变化实验可行性分析 feasibility study report
-% FilePath     : /code/p2_processCMIP6Data/s3.nonLocalCld/s2_nonLocalCld_method3_v2_testEBM2_FSR2.m
+% FilePath     : /code/p2_processCMIP6Data/s4.nonLocalCld/s2_nonLocalCld_method3_v2_testEBM2_FSR2.m
 %
 %%---------------------------------------------------------
 

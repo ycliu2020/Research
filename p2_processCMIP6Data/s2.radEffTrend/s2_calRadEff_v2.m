@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-08-31 17:09:09
+% LastEditTime : 2020-09-19 09:32:13
 % LastEditors  : LYC
 % Description  : cal mainly include 1.regrid vars, 2.vars anomly
 %                CMIP6 mothly data

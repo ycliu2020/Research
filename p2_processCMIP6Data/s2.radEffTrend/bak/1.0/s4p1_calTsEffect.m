@@ -14,7 +14,7 @@ toaSfc = {'toa', 'sfc'};
 
 for p_1 = [2 4]%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     nowpath = pwd;
-    [readme, Experiment, level, tLin, mPlev, vars] = modelParameters(p_1);
+    [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(p_1);
     % inputPath
     inputPath = ['/data1/liuyincheng/cmip6-process/', level.time1{p_1}]; %/data1/liuyincheng/cmip6-process/amip_2000-2014/
     dvarsPath = [inputPath, level.model2{1}, '/', level.process3{6}]; %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/anomaly

@@ -27,7 +27,7 @@ areaNum = 1; % world land
 for p_1 = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     nowpath = pwd;
     %CAMS-CSM1-0 didn't have sfc clear sky radiation, delete it
-    [readme, Experiment, level, tLin, mPlev, vars] = modelParameters(p_1);
+    [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(p_1);
 
     % inputPath
     inputPath = ['/data1/liuyincheng/cmip6-process/', level.time1{p_1}]; %/data1/liuyincheng/cmip6-process/amip_2000-2014/

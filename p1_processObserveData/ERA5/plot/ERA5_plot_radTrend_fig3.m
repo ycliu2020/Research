@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-06 15:05:35
-% LastEditTime : 2020-09-15 21:11:52
+% LastEditTime : 2020-09-15 21:13:56
 % LastEditors  : LYC
 % Description  :
-% FilePath     : /code/p1_processObserveData/ERA5/plot/ERA5_plot_radTrend.m
+% FilePath     : /code/p1_processObserveData/ERA5/plot/ERA5_plot_radTrend_fig2.m
 %
 %%---------------------------------------------------------
 clc; clear;
@@ -58,11 +58,11 @@ for exmNum = 1:2
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%
     %plot
-    f_row = 3; f_col = 3; % 设置画图的行列
+    f_row = 1; f_col = 2; % 设置画图的行列
     set(0, 'DefaultFigureVisible', 'on')
 
     ss = get(0, 'ScreenSize');
-    h = figure('Position', [ss(4) / 2 - 100, ss(3) / 35, ss(3) / 5 * f_col, (ss(4) - 80) / 5 * f_row]);
+    h = figure('Position', [96 433 1361 455]);
     % h = figure('Position', [ss(4)/2-100 ss(3) / 35 ss(3)/2+100 ss(4) * 4/5]);
     % set(h,'visible','off');
     % clf reset;
@@ -70,10 +70,15 @@ for exmNum = 1:2
     f_matrix = reshape(1:f_row * f_col, [f_col, f_row])';
     % figure
     for varNum = 1:f_row * f_col
-        trendz = squeeze(trendyr(:, :, varNum));
+
         [plotRow, plotCol] = find(f_matrix == varNum);
-        subplot_yc(3, 3, plotRow, plotCol);
+        subplot_yc(f_row, f_col, plotRow, plotCol);
         hold on
+        if varNum==2
+            varNum=3;
+        end
+        trendz = squeeze(trendyr(:, :, varNum));
+
         m_proj('Mercator', 'lon', lon1, 'lat', lat1); %Mercator,Equidistant cylindrical,lambert,Miller Cylindrical
         m_pcolor(lon_f, lat_f, trendz');
         % [x, y]=find(trendz(:,:)<=0);
@@ -84,7 +89,8 @@ for exmNum = 1:2
         col_SeriesNum = 10;
         [colorbar_Series] = findSuit_colorInt(trendz, col_SeriesNum);
         % caxis([mmin(varNum) mmax(varNum)]);
-        caxis([min(colorbar_Series) max(colorbar_Series)]);
+        cax_limt=5;
+        caxis([-cax_limt cax_limt]);
         hold on
         m_line(world_mapx(:), world_mapy(:), 'color', [0 0 0], 'LineWidth', 0.5);
         % plot ticklabels only on the margin
@@ -113,13 +119,13 @@ for exmNum = 1:2
         hold on
         c = colorbar;
         % c.TickLength = 0.0245;
-        c.Ticks = colorbar_Series(2:end - 1);
-        c.Limits = [min(colorbar_Series) max(colorbar_Series)];
+        c.Ticks = [-5 -2.5 0 2.5 5];
+        c.Limits = [-cax_limt cax_limt];
     end
 
     headLineTxt = {['Level:', mlabels.level, ', Era: ', tLin.time{exmNum}], ['Data:', mlabels.dataName{1}, ', Trend(year mean)']};
     sgtt = sgtitle(headLineTxt, 'Fontsize', 14, 'Interpreter', 'none');
-    figureName = [mlabels.dataName{1}, '_', tLin.time{exmNum}, '_', mlabels.figType{1}, '_', mlabels.area, '_', mlabels.level];
+    figureName = [mlabels.dataName{1}, '_', tLin.time{exmNum}, '_', mlabels.figType{1}, '_', mlabels.area, '_', mlabels.level,'_fig2'];
     saveFileName = [outPutPath, '/', figureName, '.png'];
     saveas(gcf, saveFileName)
     % save_png(saveFileName)%high resolution

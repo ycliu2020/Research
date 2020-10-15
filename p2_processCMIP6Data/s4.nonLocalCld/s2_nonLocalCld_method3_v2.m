@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-08-09 14:58:33
-% LastEditTime : 2020-09-04 23:05:12
+% LastEditTime : 2020-09-23 11:09:23
 % LastEditors  : LYC
 % Description  : v2 和 v1 最大的不同就在于v2采用了散点累积的积分, 而v1采用了线性关系的假设.
-% FilePath     : /code/p2_processCMIP6Data/s3.nonLocalCld/s2_nonLocalCld_method3_v2.m
+% FilePath     : /code/p2_processCMIP6Data/s4.nonLocalCld/s2_nonLocalCld_method3_v2.m
 %
 %%---------------------------------------------------------
 

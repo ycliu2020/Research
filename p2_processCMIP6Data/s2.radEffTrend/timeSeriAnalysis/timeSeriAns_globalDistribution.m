@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-08-31 17:00:15
-% LastEditTime : 2020-09-15 11:03:58
+% LastEditTime : 2020-09-14 17:15:01
 % LastEditors  : LYC
 % Description  : 计算不同变量间的时间序列相关性并画图
-% FilePath     : /code/p2_processCMIP6Data/s2.radEffTrend/timeSeriAnalysis/timeSeriANS.m
+% FilePath     : /code/p2_processCMIP6Data/s2.radEffTrend/timeSeriAnalysis/timeSeriAns_globalDistribution.m
 %
 %%---------------------------------------------------------
 clc; clear; tic;
@@ -30,7 +30,7 @@ for exmNum = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
     [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(exmNum);
     % exmPath
     exmPath = ['/data1/liuyincheng/cmip6-process/', level.time1{exmNum}]; %/data1/liuyincheng/cmip6-process/2000-2014/
-    mPath.uniOutput = fullfile('/home/liuyc/Research/P02.Ts_change_research/figure/02.cmip6Result/timeSeriesAns/landMean', level.time1{exmNum});%['dRTs_',lower(mlabels.level)],
+    mPath.uniOutput = fullfile('/home/liuyc/Research/P02.Ts_change_research/figure/02.cmip6Result/timeSeriesAns/timeCC_globalDistribution', level.time1{exmNum});%['dRTs_',lower(mlabels.level)],
     mPath.Output = fullfile(mPath.uniOutput);
     auto_mkdir(mPath.Output)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -106,8 +106,10 @@ for exmNum = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             for varNum = 1:sizeVar
                 varUsedYearly(:, :, :, varNum) = monthlyToYearly(varUsed(:, :, :, varNum));
             end
-            % mask
+            % mask only -60-60 land.
             [varUsedYearly, ~, ~] = maskArea(varUsedYearly,lat_f,latRange,-latRange, 'world');
+            
+            % cal areaMeanLatWeight
             sizeVarUsedYearly=size(varUsedYearly);
             varUsedYearly_weightMean=zeros(sizeVarUsedYearly(3),sizeVar);
             for varNum = 1:sizeVar
@@ -117,9 +119,68 @@ for exmNum = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             end
             time.vec = datevec(time.date);
             timeYearly = unique(time.vec(:, 1));
+            % cal cc of areaMeanLatWeight
+            sizeWeightMean = size(varUsedYearly_weightMean);
+            cc_weightMean=cell(1,sizeWeightMean(2));
+            pp_weightMean=cell(1,sizeWeightMean(2));
+            for varNum = 1 : sizeWeightMean(2)
+                [cc0,pp0] = corrcoef(varUsedYearly_weightMean(:,1),varUsedYearly_weightMean(:,varNum),'Rows','complete');
+                cc_weightMean{varNum} = roundn(cc0(1,2),-2);%保留俩位小数
+                pp_weightMean{varNum} = pp0(1,2);% confidence interval
+            end
+        
+            % cal cc of every point of map
+            cc_global=zeros(nlonf,nlatf,sizeVar);
+            pp_global=zeros(nlonf,nlatf,sizeVar);
+            for varNum = 1 : sizeVar
+                for latNum = 1:nlatf
+                    for lonNum =  1:nlonf
+                        varUsedTemp=squeeze(squeeze(varUsedYearly(lonNum, latNum, :, :)));
+                        [cc0,pp0] = corrcoef(varUsedYearly(lonNum, latNum, :, 1), varUsedYearly(lonNum, latNum, :, varNum), 'Rows', 'complete');
+                        cc_global(lonNum,latNum,varNum)= roundn(cc0(1,2),-2);%保留俩位小数
+                        pp_global(lonNum,latNum,varNum)= pp0(1,2);% confidence interval
+                    end
+                end
+            end
+            
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%
+            % plot cc global
+            f_row = 1; f_col = 1; % 设置画图的行列
+            set(0, 'DefaultFigureVisible', 'on')
+            ss = get(0, 'ScreenSize'); 
+            coef_amplify = 3;
+            h = figure('Position', [ss(4)/2-100 ss(3) / 35 ss(3)/5*f_col*coef_amplify (ss(4)-80)/5*f_row*coef_amplify]);
+            % clf reset;
+            set(h, 'Color', [1 1 1]);
+            f_matrix = reshape(1:f_row*f_col, [f_col, f_row])';
 
-            % plot area weight mean time series and calculate the correlation
-            plotTimeSeries(varUsedYearly_weightMean, varNames, yLabel, timeYearly, toaSfc{2}, level.time1{exmNum}, level.model2{mdlNum}, esmName{esmNum})
+            % figure
+            for varNum = 1:f_row * f_col
+                trendz = squeeze(cc_global(:, :, 2));
+                [plotRow, plotCol] = find(f_matrix == varNum);
+                subplot_yc(f_row, f_col, plotRow, plotCol); 
+                hold on
+                m_proj('Mercator', 'lon_f', lon1, 'lat_f', lat1); %Mercator,Equidistant cylindrical,lambert,Miller Cylindrical
+                m_pcolor(lon_f, lat_f, trendz');
+                colormap(mycolor(18)); %mycolor(100)is soden color????????colormap(flipud(mycolor(13)));%colormap(jet(4))
+                col_SeriesNum=10;
+                % [colorbar_Series] = findSuit_colorInt(trendz, col_SeriesNum);
+                max_color=1;
+                min_color=-max_color;
+                caxis([min_color max_color]);
+                hold on
+                m_line(world_mapx(:), world_mapy(:), 'color', [0 0 0], 'LineWidth', 0.5);
+                m_grid('linestyle', 'none', 'tickdir', 'out', 'yaxislocation', 'left', 'fontsize', 8, 'color', 'k');
+
+                headLineTxt = {'The correlation coefficient of dTs and dRHeating',['Level:', toaSfc{2}, ', Era: ', level.time1{exmNum}(1:end - 1),', Model:', level.model2{mdlNum}, ', Ensemble: ', esmName{esmNum}], ['global mean CC= ',num2str(cc_weightMean{2})]};
+                title(headLineTxt,'Interpreter','none','fontsize', 14); % cc=',num2str(corr))
+                hold on
+                c = colorbar;
+                % c.TickLength = 0.0245;
+                % c.Limits = [min_color min_color];
+            end
+    
+
             % save figures
             figName = [level.time1{exmNum}(1:end - 1), '_', level.model2{mdlNum},'_',esmName{esmNum}];
             figurePath = [mPath.Output, '/', figName, '.png'];
@@ -127,13 +188,6 @@ for exmNum = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             % save_png(figurePath)%high resolution
             close gcf
     
-            % % plot single point time series and calculate the correlation
-            % for latNum = 45:45 %nlatf
-            %     for lonNum =  36: 36%nlonNum
-            %         varUsedTemp=squeeze(squeeze(varUsedYearly(lonNum, latNum, :, :)));
-            %         plotTimeSeries(varUsedTemp, varNames, timeYearly,toaSfc{2})
-            %     end
-            % end
         end
 
     end
@@ -142,77 +196,4 @@ end
 eval(['cd ', nowpath]);
 t = toc; disp(t)
 
-function [] = plotTimeSeries(varUsed, varNames, yLabel, timeYearly, sfcToa, eraName, modelName, esmName)
-    %
-    % description.
-    % varUsed dim is (time,x), x is variable member
-    % yLabel : 一般就是单位, 也可以根据实际情况修改合适的文本
-    sizeVarUsed = size(varUsed);
-    
-    % cal cc
-    var_cc=cell(1,sizeVarUsed(2));
-    var_pp=cell(1,sizeVarUsed(2));
-    for varNum = 1 : sizeVarUsed(2)
-        [cc0,pp0] = corrcoef(varUsed(:,1),varUsed(:,varNum),'Rows','complete');
-        var_cc{varNum}=roundn(cc0(1,2),-2);%保留俩位小数
-        var_pp{varNum} = pp0(1,2);% confidence interval
-    
-    end
-    % time series
-    timeSer=[1985 1990 1995 2000 2005 2010 2015 2025 2035 2045 2055 2065 2075 2085 2095 2105];
-    char_timeSer=cellstr(string(timeSer));
-    % fig set
-    f_row = sizeVarUsed(2); f_col = 1; % 设置画图的行列
-    set(0, 'DefaultFigureVisible', 'on')
-    ss = get(0, 'ScreenSize');
-    coef_amplify = 1.3;
-    h = figure('Position', [ss(4) / 2 - 100 ss(3) / 35 ss(3) / 5 * f_col*coef_amplify (ss(4) - 80) / 5 * f_row*coef_amplify]);
-    % clf reset;
-    set(h, 'Color', [1 1 1]);
-    % zero line
-    zeroLine=zeros(sizeVarUsed(1),1);
-    for varNum = 1:f_row * f_col
-        subplot_yc(f_row, f_col, varNum, f_col);
-        hold on
-        varUsedTemp=squeeze(varUsed(:, varNum));
-        
-        plot(timeYearly, varUsedTemp', 'b','LineWidth',2)
-        hold on
-        plot(timeYearly, zeroLine', 'k--')
-        hold on;
-        % set x axes
-        xticks(timeSer)
-        datetick('x', 'yyyy', 'keepticks'); % 用日期的格式显示横坐标
-        xlim([timeYearly(1) timeYearly(end)])
-        xticklabels('')
-        if varNum==f_row * f_col
-            xlabel('time line')
-            xticklabels(char_timeSer)
-        end
 
-        ylabel(yLabel{varNum})
-        % set y axes
-        ymax=6;
-        if strcmp(varNames{varNum}, 'dTs') == 1
-            ymax=0.5;
-        end
-        ylim([-ymax ymax])
-
-        ax = gca;
-        ax.XMinorTick = 'on'; ax.YMinorTick = 'on'; % 开启次刻度线
-        ax.TickLength = [0.02 0.01]; %刻度线长度      set(gca,'ticklength', [0.02 0.01]);
-        ax.XColor = 'k'; ax.YColor = 'k'; % 设置刻度线颜色
-        title([varNames{varNum},', &',varNames{1},' cc=',num2str(var_cc{varNum})],'FontWeight','normal')
-
-        % ylabel({Level{i}, ' Rad Anomaly (Wm^{-2})'}, 'Fontsize', 10)
-        % legend({Radname{j}, ['Diagnosed cc =', num2str(cc(i, j))], 'Residual'}, 'Fontsize', 8, 'Location', 'northwest')
-        % legend('boxoff')%删除图例背景和轮廓
-    end
-    headLineTxt = {['Level:', num2str(sfcToa), ', Era: ', eraName(1:end - 1)], ['Model:', modelName ', Ensemble: ', esmName],'60N-60S land, global mean'};
-
-    sgtt = sgtitle(headLineTxt, 'Fontsize', 14, 'Interpreter', 'none');
-
-
-
-
-end

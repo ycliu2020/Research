@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-15 10:44:34
-% LastEditTime : 2020-07-23 15:34:11
+% LastEditTime : 2020-09-16 16:39:23
 % LastEditors  : LYC
 % Description  : cal dRvars effect on Ts : according Ts=dRx/Kts
 % FilePath     : /code/p2_processCMIP6Data/s2.radEffTrend/s4_calTsEffect.m
@@ -13,7 +13,7 @@ lon1 = [2.5 357.5]; lat1 = [-latRange + 1 latRange - 1]; % world area
 toaSfc = {'toa', 'sfc'};
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % experiment
-for exmNum = 1:3%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for exmNum = [2 4]%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     nowpath = pwd;
     [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(exmNum);
     % exmPath
@@ -51,18 +51,21 @@ for exmNum = 1:3%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             load([dradEffectPath, 'global_vars.mat'])% lat_f lon_f time plev_k readme
             nlatf = length(lat_f); nlonf = length(lon_f); ntime = length(time.date);
             startmonth = 1;
-            varUsed = zeros(nlonf, nlatf, ntime, 4); % dR
+            varUsed = zeros(nlonf, nlatf, ntime, 5); % dR
             varKerUsed = varUsed; % dR/kernels
 
             for skyLevel = 1:2% 1 mean toa, 2 mean sfc\
                 % load dRx and load to one var
                 load([dradEffectPath, ['dradEfect_', toaSfc{skyLevel}, '_cld.mat']])%albEffect, husEffect, taEffect, mainEffect, totalEffect, tsEffect, talwEffect, taswEffect
                 load([dradEffectPath, ['dR_cloud_', toaSfc{skyLevel}, '.mat']])%dR_cloud_toa
+                load([dradEffectPath, ['dR_residual_cld_', toaSfc{skyLevel}, '.mat']])%dR_residual_cld_sfc/dR_residual_cld_toa
 
                 if strcmp(toaSfc{skyLevel}, 'toa') == 1
                     varUsed(:, :, :, 1) = dR_cloud_toa;
+                    varUsed(:, :, :, 5) = dR_residual_cld_toa;
                 elseif strcmp(toaSfc{skyLevel}, 'sfc') == 1
                     varUsed(:, :, :, 1) = dR_cloud_sfc;
+                    varUsed(:, :, :, 5) = dR_residual_cld_sfc;
                 end
 
                 varUsed(:, :, :, 2) = husEffect;
@@ -98,19 +101,22 @@ for exmNum = 1:3%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
                 dTs_hus = squeeze(varKerUsed(:, :, :, 2));
                 dTs_ta = squeeze(varKerUsed(:, :, :, 3));
                 dTs_alb = squeeze(varKerUsed(:, :, :, 4));
-                save([vsTsEffectPath, 'dTs_x_', toaSfc{skyLevel}, '.mat'], 'dTs_cloud', 'dTs_hus', 'dTs_ta', 'dTs_alb')
+                dTs_residual = squeeze(varKerUsed(:, :, :, 5));
+                save([vsTsEffectPath, 'dTs_x_', toaSfc{skyLevel}, '.mat'], 'dTs_cloud', 'dTs_hus', 'dTs_ta', 'dTs_alb','dTs_residual')
 
                 % cal trend
                 [trendm_dTs_cld, trends_dTs_cld, trendyr_dTs_cld, ~, ~] = autoCalTrend(dTs_cloud, nlonf, nlatf, time.date, startmonth);
                 [trendm_dTs_hus, trends_dTs_hus, trendyr_dTs_hus, ~, ~] = autoCalTrend(dTs_hus, nlonf, nlatf, time.date, startmonth);
                 [trendm_dTs_ta, trends_dTs_ta, trendyr_dTs_ta, ~, ~] = autoCalTrend(dTs_ta, nlonf, nlatf, time.date, startmonth);
                 [trendm_dTs_alb, trends_dTs_alb, trendyr_dTs_alb, ~, ~] = autoCalTrend(dTs_alb, nlonf, nlatf, time.date, startmonth);
+                [trendm_dTs_residual, trends_dTs_residual, trendyr_dTs_residual, ~, ~] = autoCalTrend(dTs_residual, nlonf, nlatf, time.date, startmonth);
                 % save
                 save([vsTsEffectTrendPath, 'trend_dTs_x_', toaSfc{skyLevel}, '.mat'], ...
                     'trendm_dTs_cld', 'trends_dTs_cld', 'trendyr_dTs_cld', ...
                     'trendm_dTs_hus', 'trends_dTs_hus', 'trendyr_dTs_hus', ...
                     'trendm_dTs_ta', 'trends_dTs_ta', 'trendyr_dTs_ta', ...
-                    'trendm_dTs_alb', 'trends_dTs_alb', 'trendyr_dTs_alb')
+                    'trendm_dTs_alb', 'trends_dTs_alb', 'trendyr_dTs_alb',...
+                    'trendm_dTs_residual', 'trends_dTs_residual', 'trendyr_dTs_residual')
             end
             disp([esmName{esmNum,1}, ' ensemble is done!'])
         end

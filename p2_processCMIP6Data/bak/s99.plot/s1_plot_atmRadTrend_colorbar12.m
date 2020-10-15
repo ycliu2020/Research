@@ -13,7 +13,7 @@ clc; clear;
 nowpath = pwd;
 
 for p_1 = 1:2
-    [readme, Experiment, level, tLin, mPlev, vars] = modelParameters(p_1);
+    [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(p_1);
     % inputPath:E:/data/cmip6-process/2000-2014/
     inputPath = ['/data1/liuyincheng/cmip6-process/', level.time1{p_1}];
     % outputPath:a_research/P02.Ts_change_research/figure/04.cmip6Result/2000-2014/
