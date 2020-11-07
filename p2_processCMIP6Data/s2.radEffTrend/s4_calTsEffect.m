@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-15 10:44:34
-% LastEditTime : 2020-09-16 16:39:23
+% LastEditTime : 2020-11-07 11:21:59
 % LastEditors  : LYC
 % Description  : cal dRvars effect on Ts : according Ts=dRx/Kts
 % FilePath     : /code/p2_processCMIP6Data/s2.radEffTrend/s4_calTsEffect.m
@@ -57,7 +57,7 @@ for exmNum = [2 4]%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ss
             for skyLevel = 1:2% 1 mean toa, 2 mean sfc\
                 % load dRx and load to one var
                 load([dradEffectPath, ['dradEfect_', toaSfc{skyLevel}, '_cld.mat']])%albEffect, husEffect, taEffect, mainEffect, totalEffect, tsEffect, talwEffect, taswEffect
-                load([dradEffectPath, ['dR_cloud_', toaSfc{skyLevel}, '.mat']])%dR_cloud_toa
+                load([dradEffectPath, ['dR_cloud.mat']])%dR_cloud_toa
                 load([dradEffectPath, ['dR_residual_cld_', toaSfc{skyLevel}, '.mat']])%dR_residual_cld_sfc/dR_residual_cld_toa
 
                 if strcmp(toaSfc{skyLevel}, 'toa') == 1

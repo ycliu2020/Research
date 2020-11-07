@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-07-10 17:14:07
+% LastEditTime : 2020-11-03 17:14:39
 % LastEditors  : LYC
 % Description  : cal mainly alb include 1.regrid vars, 2.vars anomly
 %                CMIP6 mothly data
@@ -15,19 +15,19 @@
 %%---------------------------------------------------------
 clear; clc; tic;
 nowpath = pwd;
-outPath = '/data1/liuyincheng/cmip6-process/';
+outPath = '/data1/liuyincheng/CMIP6-process/';
 alb_names = {'alb'};
 var_state = {'d', 'clim_', 'trendm_d', 'trends_d', 'trendyr_d'}; % m,s,yr indicate that month, season, year
-kernels_path = '/data1/liuyincheng/y_kernels/kernels_YiH/toa/dp.nc';
+kernels_path = '/data1/liuyincheng/y_kernels/YiH/kernels_YiH/toa/dp.nc';
 lon_k = 0:2.5:357.5; nlonk = length(lon_k);
 lat_k = 90:-2.5:-90; nlatk = length(lat_k);
 lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f); % figure lat lon
 lon_f = lon_k; nlonf = length(lon_f);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % experiment
-for p_1 = 3:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for exmNum = 1:1%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     % model parameters
-    [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(p_1);
+    [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(exmNum);
     % input and output path (tLin:1740)
     inputPath = '/data1/liuyincheng/CMIP6-mirror/';
     exmPath_all = cell(1, length(Experiment));
@@ -36,20 +36,20 @@ for p_1 = 3:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
         exmPath_all{ii} = [inputPath, Experiment{ii}, '/'];
     end
 
-    exmPath = exmPath_all{p_1};
-    time2 = 1:tLin.inter{p_1};
+    exmPath = exmPath_all{exmNum};
+    time2 = 1:tLin.inter{exmNum};
     plev_k = ncread(kernels_path, 'player'); % pay attention to plev_k's range must smaller than plev's
     nplevf = length(plev_k);
-    readme.timeseries = tLin.read{p_1};
+    readme.timeseries = tLin.read{exmNum};
     readme.sfcAlbeo = 'sfc albeo';
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % model
-    for level1 = 1:length(level.model2)% model number
+    for mdlNum = 1:length(level.model2)% model number
         % inputpath
-        mdlPath = fullfile(exmPath, level.model2{level1});
+        mdlPath = fullfile(exmPath, level.model2{mdlNum});
         eval(['cd ', mdlPath]);
         disp(' ')
-        disp([level.model2{level1}, ' model start!'])
+        disp([level.model2{mdlNum}, ' model start!'])
         % ensemble member path
         esmName = getPath_fileName(mdlPath, '.');
 
@@ -59,8 +59,8 @@ for p_1 = 3:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             esmPath = fullfile(mdlPath, esmName{esmNum, 1});
             eval(['cd ', esmPath]);
             % outputpath and make it
-            outPathName{1} = fullfile(outPath, level.time1{p_1}, level.model2{level1}, esmName{esmNum,1}, level.process3{1}); %'model/ensemble member/rawdata_regrid/'
-            outPathName{2} = fullfile(outPath, level.time1{p_1}, level.model2{level1}, esmName{esmNum,1}, level.process3{2}); %'model/ensemble member/anomaly/'
+            outPathName{1} = fullfile(outPath, level.time1{exmNum}, level.model2{mdlNum}, esmName{esmNum,1}, level.process3{1}); %'model/ensemble member/rawdata_regrid/'
+            outPathName{2} = fullfile(outPath, level.time1{exmNum}, level.model2{mdlNum}, esmName{esmNum,1}, level.process3{2}); %'model/ensemble member/anomaly/'
             auto_mkdir(outPathName{1})
             auto_mkdir(outPathName{2})
 
@@ -68,19 +68,19 @@ for p_1 = 3:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             % locate first year
             temp = dir(fullfile(esmPath,[vars.D3{1}, '_Amon*.nc']));
             formatOut = 'yyyy-mm';
-            startT = cdftime2loc(temp, formatOut, tLin.start{p_1});
+            startT = cdftime2loc(temp, formatOut, tLin.start{exmNum});
             % read time
-            startLoc = startT; count = tLin.inter{p_1}; stride = 1;
+            startLoc = startT; count = tLin.inter{exmNum}; stride = 1;
             time = cmipTimeRead(temp.name,startLoc,count,stride); %date, Units, Calendar, length 
             % test time line consistence
-            startYear = str2num(tLin.time{p_1}(1:4)); endYear = str2num(tLin.time{p_1}(end - 3:end));
+            startYear = str2double(tLin.time{exmNum}(1:4)); endYear = str2double(tLin.time{exmNum}(end - 3:end));
             disp('Time line check:')
             testTime(time.date, startYear, endYear, 1)
 
             %% check2:  plev
             temp = dir(fullfile(esmPath,[vars.D4{1}, '_Amon*.nc']));
             % test plev consistence
-            testPlev(temp, mPlev, p_1)
+            testPlev(temp, mPlev, exmNum)
 
             %% 2) read data
             % find only rsds and rsus.4D and 3D vars exist or not
@@ -88,7 +88,7 @@ for p_1 = 3:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             var1Num = find(strcmp(vars.all, 'rsdscs'));
             var2Num = find(strcmp(vars.all, 'rsuscs'));
 
-            for ii = [var1Num var2Num]% only 'rsds', 'rsus',
+            for ii = [var1Num var2Num]  % only 'rsds', 'rsus',
                 temp = dir([esmPath,'/', vars.all{ii}, '_Amon*.nc']);
                 tt = size(temp);
 
@@ -105,13 +105,13 @@ for p_1 = 3:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             dalb_names = strcat(var_state{1}, alb_names); clim_alb_names = strcat(var_state{2}, alb_names);
 
             %% read 'rsds' and 'rsus',
-            startLoc = [1 1 startT]; count = [inf inf tLin.inter{p_1}]; stride = [1 1 1];
+            startLoc = [1 1 startT]; count = [inf inf tLin.inter{exmNum}]; stride = [1 1 1];
             temp = dir([esmPath,'/', v_names{1}, '_Amon*.nc']);
             lon_v = ncread(temp.name, 'lon'); lat_v = ncread(temp.name, 'lat');
             lat_v = lat_v(end:-1:1);
-            temp_v3 = zeros(length(v_names), length(lon_v), length(lat_v), tLin.inter{p_1});
+            temp_v3 = zeros(length(v_names), length(lon_v), length(lat_v), tLin.inter{exmNum});
 
-            for i1 = 1:length(v_names)%1.'rsds', 2.'rsus',
+            for i1 = 1:length(v_names) % 1.'rsds', 2.'rsus',
                 temp = dir([esmPath,'/', v_names{i1}, '_Amon*.nc']);
                 temp_v3(i1, :, :, :) = ncread(temp.name, v_names{i1}, startLoc, count, stride);
             end
@@ -121,11 +121,11 @@ for p_1 = 3:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             %% check and fix cal alb
             %1.'rsds', 2.'rsus',
             if ~isempty(find(temp_v3(2, :, :, :) < 0, 1))
-                disp([level.model2{level1}, ' model var rsus<0, now replace <0 with 0;'])
+                disp([level.model2{mdlNum}, ' model var rsus<0, now replace <0 with 0;'])
             end
 
             if ~isempty(find(temp_v3(1, :, :, :) < 0, 1))
-                disp([level.model2{level1}, ' model var rsds<0, now replace <0 with 0!!!'])
+                disp([level.model2{mdlNum}, ' model var rsds<0, now replace <0 with 0!!!'])
             end
 
             fix_1 = squeeze(temp_v3(1, :, :, :));
@@ -140,7 +140,7 @@ for p_1 = 3:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             temp_alb(temp_v3(1, :, :, :) == eps(0)) = 0;
 
             if ~isempty(find(temp_alb > 1, 1))
-                disp([level.model2{level1}, ' model have some area up greater than down radiation, now replace alb >1 or inf with 1;'])
+                disp([level.model2{mdlNum}, ' model have some area up greater than down radiation, now replace alb >1 or inf with 1;'])
             end
 
             fix_3 = temp_alb;
@@ -163,20 +163,20 @@ for p_1 = 3:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             eval([clim_alb_names{1}, '= alb_clim;']); %
             save([outPathName{2}, dalb_names{1}], dalb_names{1}, clim_alb_names{1});
             % save grobal vars
-            timeseries = tLin.time{p_1};
-            modelname = level.model2{level1}(1:end);
+            timeseries = tLin.time{exmNum};
+            modelname = level.model2{mdlNum}(1:end);
             save([outPathName{1}, 'global_vars.mat'], 'lon_k', 'lat_k', 'time', 'plev_k', 'readme', 'timeseries', 'modelname')
             save([outPathName{2}, 'global_vars.mat'], 'lon_k', 'lat_k', 'time', 'plev_k', 'readme', 'timeseries', 'modelname')
             
             disp([esmName{esmNum,1}, ' ensemble is done!'])
         end
 
-        disp([level.model2{level1}, ' model is done!'])
+        disp([level.model2{mdlNum}, ' model is done!'])
         disp(' ')
 
     end
 
-    disp([level.time1{p_1}, ' era is done!'])
+    disp([level.time1{exmNum}, ' era is done!'])
     disp(' ')
 end
 

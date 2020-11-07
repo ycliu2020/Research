@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-07-12 09:26:19
+% LastEditTime : 2020-11-07 09:51:41
 % LastEditors  : LYC
 % Description  : includ sfc and toa trend of vars
 %                cal mainly include 1.regrid vars, 2.vars anomly
@@ -23,22 +23,22 @@ lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f); % figure lat lon
 lon_f = lon_k; nlonf = length(lon_f);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % experiment
-for p_1 = 3:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for exmNum = 3:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     % model parameters
-    [~, modlist_Experiment, level, tLin, mPlev, vars] = cmipParameters(p_1);
+    [~, modlist_Experiment, level, tLin, mPlev, vars] = cmipParameters(exmNum);
     % chose right month, very important !!!
     startmonth = 1;
     % input path
-    exmPath = ['/data1/liuyincheng/cmip6-process/', level.time1{p_1}]; %~/data/cmip6/2000-2014/
+    exmPath = ['/data1/liuyincheng/cmip6-process/', level.time1{exmNum}]; %~/data/cmip6/2000-2014/
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % model
-    for level1 = 1:length(level.model2)% model numbers
+    for mdlNum = 1:length(level.model2)% model numbers
         % model path
-        mdlPath = fullfile(exmPath, level.model2{level1});
+        mdlPath = fullfile(exmPath, level.model2{mdlNum});
         eval(['cd ', mdlPath]);
         disp(' ')
-        disp([level.model2{level1}, ' model start!'])
+        disp([level.model2{mdlNum}, ' model start!'])
         % ensemble member path
         esmName = getPath_fileName(mdlPath, '.');
 
@@ -100,12 +100,12 @@ for p_1 = 3:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             disp([esmName{esmNum, 1}, ' ensemble is done!'])
         end
 
-        disp([level.model2{level1}, ' model is done!'])
+        disp([level.model2{mdlNum}, ' model is done!'])
         disp(' ')
     end
 
-    disp([level.time1{p_1}, ' era is done!'])
+    disp([level.time1{exmNum}, ' era is done!'])
     disp(' ')
 end
 
-t = toc; disp(t)
+t = toc; tikTok(t)

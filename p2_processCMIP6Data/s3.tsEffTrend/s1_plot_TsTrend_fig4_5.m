@@ -85,10 +85,10 @@ for exmNum = exmStart:exmEnd
             load([dvarsTrendPath, 'trend_drhsPlus.mat'])% trendyr_dhFlux
             load([dvarsTrendPath, 'trend_dts.mat'])% trendyr_dts
             load([vsTsEffectTrendPath, ['trend_dTs_x_', lower(mlabels.level), '.mat']])% trendm_dTs_alb, trendm_dTs_cld, trendm_dTs_hus, trendm_dTs_ta, trends_dTs_alb, trends_dTs_cld, trends_dTs_hus, trends_dTs_ta, trendyr_dTs_alb, trendyr_dTs_cld, trendyr_dTs_hus, trendyr_dTs_ta
-            nlon = length(lon_f); nlat = length(lat_f);
+            nlonf = length(lon_f); nlatf = length(lat_f);
 
             % use one var to plot
-            trendyr = zeros(nlon, nlat, 6);
+            trendyr = zeros(nlonf, nlatf, 6);
             trendyr(:,:,1)=trendyr_dts;
             trendyr(:,:,2)=trendyr_dTs_cld;
             trendyr(:,:,3)=trendyr_dTs_ta;
