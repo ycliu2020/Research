@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-08-31 17:00:15
-% LastEditTime : 2020-11-15 18:29:05
+% LastEditTime : 2020-11-15 10:41:40
 % LastEditors  : LYC
 % Description  : 同时画时间序列和相关性分布图
-% FilePath     : /code/p2_processCMIP6Data/s2.radEffTrend/timeSeriAnalysis/timeSeriANS_tsVsRheatingRad_fig1_2.m
+% FilePath     : /code/p2_processCMIP6Data/s2.radEffTrend/timeSeriAnalysis/timeSeriANS_tsVsRheatingRad_fig1_2_Robinson.m
 %
 %%---------------------------------------------------------
 clc; clear; tic;
@@ -16,7 +16,7 @@ load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/correct_worl
 load('/home/liuyc/lib/tools/matlab/plot/myMap/01.china_map/mat_file/mask14472.mat')
 
 latRange = 90; % Latitude range
-lon1 = [2.5 357.5]; lat1 = [-latRange latRange]; % world area
+lon1 = [2.5 357.5]; lat1 = [-latRange + 1 latRange - 1]; % world area
 toaSfc = {'toa', 'sfc'};
 lon_k = 0:2.5:357.5; nlonk = length(lon_k); % kernel lat lon
 lat_k = 90:-2.5:-90; nlatk = length(lat_k);
@@ -25,7 +25,7 @@ lon_f = lon_k; nlonf = length(lon_f);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % experiment
-for exmNum = 1:1%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for exmNum = 3:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     %CAMS-CSM1-0 didn't have sfc clear sky radiation, delete it
     [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(exmNum);
     % exmPath
@@ -48,7 +48,6 @@ for exmNum = 1:1%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
 
         % ensemble member path
         esmName = getPath_fileName(mdlPath, '.');
-        eval(['cd ', nowpath]);
 
         %% 暂时只看esm实验
         esm = 'r1i1p1f1';
@@ -124,7 +123,7 @@ for exmNum = 1:1%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
 
             % mask land.
             for varNum = 1:sizeVar
-                [varUsedYearly(:,:,:,varNum), ~, ~] = maskArea(squeeze(varUsedYearly(:,:,:,varNum)), lat_f, latRange, -latRange, 'world');
+                [varUsedYearly(:, :, :, varNum), ~, ~] = maskArea(squeeze(varUsedYearly(:, :, :, varNum)), lat_f, latRange, -latRange, 'world');
             end
 
             % cal areaMeanLatWeight
@@ -221,28 +220,33 @@ for exmNum = 1:1%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
 
             %%%%%%%%%%%%%%%%%%%%%%%%%%%
             % cal cc of every point of map
-            cc_global=zeros(nlonf,nlatf,sizeVar);
-            pp_global=zeros(nlonf,nlatf,sizeVar);
-            for varNum = 1 : sizeVar
+            cc_global = zeros(nlonf, nlatf, sizeVar);
+            pp_global = zeros(nlonf, nlatf, sizeVar);
+
+            for varNum = 1:sizeVar
+
                 for latNum = 1:nlatf
-                    for lonNum =  1:nlonf
-                        varUsedTemp=squeeze(squeeze(varUsedYearly(lonNum, latNum, :, :)));
-                        [cc0,pp0] = corrcoef(varUsedYearly(lonNum, latNum, :, 1), varUsedYearly(lonNum, latNum, :, varNum), 'Rows', 'complete');
-                        cc_global(lonNum,latNum,varNum)= roundn(cc0(1,2),-2);%保留俩位小数
-                        pp_global(lonNum,latNum,varNum)= pp0(1,2);% confidence interval
+
+                    for lonNum = 1:nlonf
+                        varUsedTemp = squeeze(squeeze(varUsedYearly(lonNum, latNum, :, :)));
+                        [cc0, pp0] = corrcoef(varUsedYearly(lonNum, latNum, :, 1), varUsedYearly(lonNum, latNum, :, varNum), 'Rows', 'complete');
+                        cc_global(lonNum, latNum, varNum) = roundn(cc0(1, 2), -2); %保留俩位小数
+                        pp_global(lonNum, latNum, varNum) = pp0(1, 2); % confidence interval
                     end
+
                 end
+
             end
 
             % plot cc global
             f_row = 1; f_col = 1; % 设置画图的行列
-            set(0, 'DefaultFigureVisible', 'on')
+            set(0, 'DefaultFigureVisible', 'off')
             ss = get(0, 'ScreenSize');
             coef_amplify = 3;
-            h = figure('Position', [ss(4)/2-100 ss(3) / 35 ss(3)/5*f_col*coef_amplify (ss(4)-80)/5*f_row*coef_amplify]);
+            h = figure('Position', [-1072 -494 816 451]); %[ss(4) / 2 - 100 ss(3) / 35 ss(3) / 5 * f_col * coef_amplify (ss(4) - 80) / 5 * f_row * coef_amplify]
             % clf reset;
             set(h, 'Color', [1 1 1]);
-            f_matrix = reshape(1:f_row*f_col, [f_col, f_row])';
+            f_matrix = reshape(1:f_row * f_col, [f_col, f_row])';
 
             % figure
             for varNum = 1:f_row * f_col
@@ -250,20 +254,23 @@ for exmNum = 1:1%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
                 [plotRow, plotCol] = find(f_matrix == varNum);
                 subplot_yc(f_row, f_col, plotRow, plotCol);
                 hold on
-                m_proj('Equidistant Cylindrical', 'lon_f', lon1, 'lat_f', lat1); %Mercator,Equidistant cylindrical,lambert,Miller Cylindrical
+                m_proj('robinson', 'lon_f', lon1); %Mercator,Equidistant cylindrical,lambert,Miller Cylindrical
+                m_coast('patch',[0 0 0],'edgecolor','none');
+
                 m_pcolor(lon_f, lat_f, trendz');
                 colormap(mycolor(18)); %mycolor(100)is soden color????????colormap(flipud(mycolor(13)));%colormap(jet(4))
-                col_SeriesNum=10;
+                col_SeriesNum = 10;
                 % [colorbar_Series] = findSuit_colorInt(trendz, col_SeriesNum);
-                max_color=1;
-                min_color=-max_color;
+                max_color = 1;
+                min_color = -max_color;
                 caxis([min_color max_color]);
                 hold on
                 m_line(world_mapx(:), world_mapy(:), 'color', [0 0 0], 'LineWidth', 0.5);
-                m_grid('linestyle', 'none', 'tickdir', 'out', 'yaxislocation', 'left', 'fontsize', 8, 'color', 'k');
+                m_grid('tickdir','out','linewi',2);
+                % m_grid('linestyle', 'none', 'tickdir', 'out', 'yaxislocation', 'left', 'fontsize', 8, 'color', 'k');
 
-                headLineTxt = {'The correlation coefficient of dRTs and dRHeating',['Level:', toaSfc{2}, ', Era: ', level.time1{exmNum}(1:end - 1),', Model:', level.model2{mdlNum}, ', Ensemble: ', esmName{esmNum}], ['global mean CC= ',num2str(cc_weightMean{2})]};
-                title(headLineTxt,'Interpreter','none','fontsize', 14); % cc=',num2str(corr))
+                headLineTxt = {'The correlation coefficient of dRTs and dRHeating', ['Level:', toaSfc{2}, ', Era: ', level.time1{exmNum}(1:end - 1), ', Model:', level.model2{mdlNum}, ', Ensemble: ', esmName{esmNum}], ['global mean CC= ', num2str(cc_weightMean{2})]};
+                title(headLineTxt, 'Interpreter', 'none', 'fontsize', 14); % cc=',num2str(corr))
                 hold on
                 c = colorbar;
                 % c.TickLength = 0.0245;
@@ -271,11 +278,11 @@ for exmNum = 1:1%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             end
 
             % save figures
-            figName = [level.time1{exmNum}(1:end - 1), '_', level.model2{mdlNum},'_',esmName{esmNum}];
+            figName = [level.time1{exmNum}(1:end - 1), '_', level.model2{mdlNum}, '_', esmName{esmNum}];
             figurePath = [mPath.Output2, '/', figName, '.png'];
-            % saveas(gcf, figurePath)
+            saveas(gcf, figurePath)
             % save_png(figurePath)%high resolution
-            % close gcf
+            close gcf
 
         end
 

@@ -29,7 +29,7 @@ set(0, 'defaultfigurecolor', 'w')
 
 % experiment ID
 
-exmStart = 1; exmEnd = 4;
+exmStart = 1; exmEnd = 1;
 
 for exmNum = exmStart:exmEnd
 
@@ -42,7 +42,7 @@ for exmNum = exmStart:exmEnd
     auto_mkdir(mPath.Output)
 
     % model loop
-    mdlStart = 1; mdlEnd = length(level.model2); % differnt models%length(level.model2)
+    mdlStart = 1; mdlEnd = 1;%length(level.model2); % differnt models%length(level.model2)
 
     for mdlNum = mdlStart:mdlEnd
         % model path

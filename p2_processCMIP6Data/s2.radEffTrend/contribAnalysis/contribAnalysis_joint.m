@@ -1,13 +1,13 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-10-14 15:3nValue:49
-% LastEditTime : 2020-11-09 22:33:43
+% LastEditTime : 2020-11-10 11:10:51
 % LastEditors  : LYC
 % Description  :
-% FilePath     : /code/p2_processCMIP6Data/s2.radEffTrend/contribAnalysis/contribAnalysis_eastChina.m
+% FilePath     : /code/p2_processCMIP6Data/s2.radEffTrend/contribAnalysis/contribAnalysis_joint.m
 %
 %%---------------------------------------------------------
-clear;
+clc;clear;
 nowpath = pwd;
 
 %% calculate mask file
@@ -38,7 +38,7 @@ save('/home/liuyc/lib/tools/matlab/plot/myMap/01.china_map/mat_file/mask14472_ea
 [mlabels, areaStr] = cmipPlotParameters('atm', 'land', 'radEffect'); % plot parameters
 
 esm = 'r1i1p1f1';
-exmStart = 2; exmEnd = 2;
+exmStart = 1; exmEnd = 2;
 
 for exmNum = exmStart:exmEnd
     [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(exmNum);
@@ -50,8 +50,8 @@ for exmNum = exmStart:exmEnd
     % auto_mkdir(mPath.Output)
 
     % model loop
-    mdlStart = 3; mdlEnd = 3;%length(level.model2); % differnt models%length(level.model2)
-
+    mdlStart = 1; mdlEnd = length(level.model2);% differnt models%length(level.model2)
+    lineStart = 1; % 写入excel的起始位置
 
     for mdlNum = mdlStart:mdlEnd
         % model path
@@ -74,8 +74,10 @@ for exmNum = exmStart:exmEnd
         end
 
         specificNum = find(strcmp(esmName, 'r1i1p1f1') == 1);
+
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % ensemble member
+
         for esmNum = specificNum:specificNum%1:1%length(esmName)% note that r1i1p1 sometime not the first folder
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %% load and read
@@ -121,7 +123,7 @@ for exmNum = exmStart:exmEnd
             % dTs_x_sfc(:,:,:,4)=dTs_hus;
             % dTs_x_sfc(:,:,:,5)=dTs_alb;
             % dTs_x_sfc(:,:,:,6)=dTs_residual;
-            
+
             %% Test1: Rheating variance of a sum test
             dTs_x_sfc = zeros(nlonf, nlatf, ntime, 2);
             dTs_x_sfc(:, :, :, 1) = drhs;
@@ -131,158 +133,22 @@ for exmNum = exmStart:exmEnd
             dTs_x_sfc(:, :, :, 5) = husEffect;
             dTs_x_sfc(:, :, :, 6) = taEffect;
             % dTs_x_sfc(:,:,:,3)=dR_residual_cld_sfc;
-            size_dTs_x_sfc = size(dTs_x_sfc);
-            nValue = size_dTs_x_sfc(4);
 
-            % mask east china
+            %
+            % cal Function
             latRange = 90;
-            areaStr = 'EUR west';
+            areaStr = {'world', 'china east', 'USA east', 'EUR west'};
+            outPutFile = ['/home/liuyc/Research/P02.Ts_change_research/figure/proj2_cmip6Result/Radiation_Tscontribution/radContrib_', level.time1{exmNum}(1:end - 1), '.xlsx'];
 
-            for x_ind = 1:nValue
-                [dTs_x_sfc(:, :, :, x_ind), ~, ~] = maskArea(dTs_x_sfc(:, :, :, x_ind), lat_f, latRange, -latRange, areaStr);
+            for areaNum = 1:length(areaStr)
+                [lineStart] = calCovContribution(latRange, lat_f, ntime, level.model2{mdlNum}, areaStr, areaNum, dTs_x_sfc, outPutFile, lineStart);
             end
-
-            % cal the weight average value of east china
-
-            glb_dTs_x_sfc = zeros(ntime, nValue);
-
-            for timeNum = 1:ntime
-
-                for x_ind = 1:nValue
-                    glb_dTs_x_sfc(timeNum, x_ind) = areaMeanLatWeight(dTs_x_sfc(:, :, timeNum, x_ind), lat_f);
-                end
-
-            end
-
-            % % cal intel annual mean
-            % ntime_year = ntime / 12; % year num
-            % glbMoth_dTs_x_sfc = zeros(ntime_year, nValue);
-            % countNum = 1;
-
-            % for timeNum = 1:ntime_year
-            %     glbMoth_dTs_x_sfc(timeNum, :) = sum(glb_dTs_x_sfc(countNum:countNum + 12 - 1, :), 1);
-            %     countNum = countNum + 12;
-            % end
-
-            glbMoth_dTs_x_sfc=glb_dTs_x_sfc;
-            % test sum = 0
-            % for timeNum = 1:ntime
-            %     glb_dTs_x_sfc_test(timeNum)=sum(glb_dTs_x_sfc(timeNum,:));
-
-            % end
-
-            %% cal variance and covariance
-            cov_glbMoth_dTs_x_sfc = cov(glbMoth_dTs_x_sfc(:, 2:end));
-            var_glbMoth_dTs_sfc = var(glbMoth_dTs_x_sfc(:, 1));
-            cov_glbMoth_dTs_x_sfc = cov_glbMoth_dTs_x_sfc ./ var_glbMoth_dTs_sfc;
-            % transfor into paper used(lower triangular matrix)
-            cov_triu1 = triu(cov_glbMoth_dTs_x_sfc, 1) .* 2;
-            cov_diag = diag(diag(cov_glbMoth_dTs_x_sfc));
-            cov_glbMoth_dTs_x_sfc = cov_triu1 + cov_diag;
-            cov_glbMoth_dTs_x_sfc = fliplr(cov_glbMoth_dTs_x_sfc);
-            disp('Rheating decompose: ')
-            disp(cov_glbMoth_dTs_x_sfc)
-            % check sum equal to 1
-            check_sum=sum(sum(cov_glbMoth_dTs_x_sfc));
-            disp('check sum: ')
-            disp(check_sum)
-
-            % save as to excel
-            % add var annotation
-            % outPutTxt={level.model2{mdlNum};'Res';'Alb';'Cld';'WV';'Ta'};
-            % outPutTxt_rev=fliplr(outPutTxt');
-            % outPutFile=['/home/liuyc/Research/P02.Ts_change_research/figure/proj2_cmip6Result/Radiation_Tscontribution/radContrib_',level.time1{exmNum}(1:end-1),'.xlsx'];
-            % lineStart=8*(mdlNum-1)+1;
-            % writecell(outPutTxt,outPutFile,'Sheet',1,'Range',['A',num2str(lineStart),':A',num2str(lineStart+6)])
-            % writecell(outPutTxt_rev(1:end-1),outPutFile,'Sheet',1,'Range',['B',num2str(lineStart+nValue),':G',num2str(lineStart+nValue)])
-            % writematrix(cov_glbMoth_dTs_x_sfc,outPutFile,'Sheet',1,'Range',['B',num2str(lineStart+1),':G',num2str(lineStart+6)])
-
-
-
-            % %% Test2: netRad variance of a sum test
-            % dTs_x_sfc = zeros(nlonf, nlatf, ntime, 2);
-            % dTs_x_sfc(:, :, :, 1) = squeeze(dR_allsky(:,:,:,1));
-            % dTs_x_sfc(:, :, :, 2) = squeeze(dR_allsky(:,:,:,1)) - mainEffect - dR_cloud_sfc - tsEffect; % or -squeeze(dR_allsky(:,:,:,1))+dR_residual_cld_sfc;
-            % dTs_x_sfc(:, :, :, 3) = albEffect;
-            % dTs_x_sfc(:, :, :, 4) = dR_cloud_sfc;
-            % dTs_x_sfc(:, :, :, 5) = husEffect;
-            % dTs_x_sfc(:, :, :, 6) = taEffect;
-            % dTs_x_sfc(:, :, :, 7) = tsEffect;
-            % % dTs_x_sfc(:,:,:,3)=dR_residual_cld_sfc;
-            % size_dTs_x_sfc = size(dTs_x_sfc);
-            % nValue = size_dTs_x_sfc(4);
-
-            % % mask east china
-            % latRange = 80;
-
-            % for x_ind = 1:nValue
-            %     [dTs_x_sfc(:, :, :, x_ind), ~, ~] = maskArea(dTs_x_sfc(:, :, :, x_ind), lat_f, latRange, -latRange, areaStr);
-            % end
-
-            % % cal the weight average value of east china
-
-            % glb_dTs_x_sfc = zeros(ntime, nValue);
-
-            % for timeNum = 1:ntime
-
-            %     for x_ind = 1:nValue
-            %         glb_dTs_x_sfc(timeNum, x_ind) = areaMeanLatWeight(dTs_x_sfc(:, :, timeNum, x_ind), lat_f);
-            %     end
-
-            % end
-
-            % % % cal intel annual mean
-            % % ntime_year = ntime / 12; % year num
-            % % glbMoth_dTs_x_sfc = zeros(ntime_year, nValue);
-            % % countNum = 1;
-
-            % % for timeNum = 1:ntime_year
-            % %     glbMoth_dTs_x_sfc(timeNum, :) = sum(glb_dTs_x_sfc(countNum:countNum + 12 - 1, :), 1);
-            % %     countNum = countNum + 12;
-            % % end
-
-            % glbMoth_dTs_x_sfc=glb_dTs_x_sfc;
-            % % % test sum = 0
-            % % for timeNum = 1:ntime
-            % %     glb_dTs_x_sfc_test(timeNum)=sum(glb_dTs_x_sfc(timeNum,:));
-
-            % % end
-
-            % %% cal variance and covariance
-            % cov_glbMoth_dTs_x_sfc = cov(glbMoth_dTs_x_sfc(:, 2:end));
-            % var_glbMoth_dTs_sfc = var(glbMoth_dTs_x_sfc(:, 1));
-            % cov_glbMoth_dTs_x_sfc = cov_glbMoth_dTs_x_sfc ./ var_glbMoth_dTs_sfc;
-            % % transfor into paper used(lower triangular matrix)
-            % cov_triu1 = triu(cov_glbMoth_dTs_x_sfc, 1) .* 2;
-            % cov_diag = diag(diag(cov_glbMoth_dTs_x_sfc));
-            % cov_glbMoth_dTs_x_sfc = cov_triu1 + cov_diag;
-            % cov_glbMoth_dTs_x_sfc = fliplr(cov_glbMoth_dTs_x_sfc);
-            % disp('netRad decompose: ')
-            % disp(cov_glbMoth_dTs_x_sfc)
-            % % check sum equal to 1
-            % check_sum=sum(sum(cov_glbMoth_dTs_x_sfc));
-            % disp('check sum: ')
-            % disp(check_sum)
-
-            % save as to excel
-            % add var annotation
-            % outPutTxt={level.model2{mdlNum};'Res';'Alb';'Cld';'WV';'Ta'};
-            % outPutTxt_rev=fliplr(outPutTxt');
-            % outPutFile=['/home/liuyc/Research/P02.Ts_change_research/figure/proj2_cmip6Result/Radiation_Tscontribution/radContrib_',level.time1{exmNum}(1:end-1),'.xlsx'];
-            % lineStart=8*(mdlNum-1)+1;
-            % writecell(outPutTxt,outPutFile,'Sheet',1,'Range',['A',num2str(lineStart),':A',num2str(lineStart+6)])
-            % writecell(outPutTxt_rev(1:end-1),outPutFile,'Sheet',1,'Range',['B',num2str(lineStart+nValue),':G',num2str(lineStart+nValue)])
-            % writematrix(cov_glbMoth_dTs_x_sfc,outPutFile,'Sheet',1,'Range',['B',num2str(lineStart+1),':G',num2str(lineStart+6)])
-
-
-
-
 
 
             disp([esmName{esmNum, 1}, ' ensemble is done!'])
 
         end
-
+        lineStart = lineStart+1; % 每个模型算完后空一行
         disp([level.model2{mdlNum}, ' model is done!'])
         disp(' ')
     end
@@ -292,3 +158,80 @@ for exmNum = exmStart:exmEnd
 end
 
 eval(['cd ', nowpath]);
+
+function [lineStart] = calCovContribution(latRange, lat_f, ntime, mdlName, areaStr, areaNum, dTs_x_sfc, outPutFile, lineStart)
+
+    size_dTs_x_sfc = size(dTs_x_sfc);
+    nValue = size_dTs_x_sfc(4);
+    % Mask Part
+    for x_ind = 1:nValue
+        [dTs_x_sfc(:, :, :, x_ind), ~, ~] = maskArea(dTs_x_sfc(:, :, :, x_ind), lat_f, latRange, -latRange, areaStr{areaNum});
+    end
+
+    % cal the weight average value of east china
+
+    glb_dTs_x_sfc = zeros(ntime, nValue);
+
+    for timeNum = 1:ntime
+
+        for x_ind = 1:nValue
+            glb_dTs_x_sfc(timeNum, x_ind) = areaMeanLatWeight(dTs_x_sfc(:, :, timeNum, x_ind), lat_f);
+        end
+
+    end
+
+    % % cal intel annual mean
+    % ntime_year = ntime / 12; % year num
+    % glbMoth_dTs_x_sfc = zeros(ntime_year, nValue);
+    % countNum = 1;
+
+    % for timeNum = 1:ntime_year
+    %     glbMoth_dTs_x_sfc(timeNum, :) = sum(glb_dTs_x_sfc(countNum:countNum + 12 - 1, :), 1);
+    %     countNum = countNum + 12;
+    % end
+
+    glbMoth_dTs_x_sfc = glb_dTs_x_sfc;
+    % test sum = 0
+    % for timeNum = 1:ntime
+    %     glb_dTs_x_sfc_test(timeNum)=sum(glb_dTs_x_sfc(timeNum,:));
+
+    % end
+
+    %% cal variance and covariance
+    cov_glbMoth_dTs_x_sfc = cov(glbMoth_dTs_x_sfc(:, 2:end));
+    var_glbMoth_dTs_sfc = var(glbMoth_dTs_x_sfc(:, 1));
+    cov_glbMoth_dTs_x_sfc = cov_glbMoth_dTs_x_sfc ./ var_glbMoth_dTs_sfc;
+    % transfor into paper used(lower triangular matrix)
+    cov_triu1 = triu(cov_glbMoth_dTs_x_sfc, 1) .* 2;
+    cov_diag = diag(diag(cov_glbMoth_dTs_x_sfc));
+    cov_glbMoth_dTs_x_sfc = cov_triu1 + cov_diag;
+    cov_glbMoth_dTs_x_sfc = fliplr(cov_glbMoth_dTs_x_sfc);
+    disp([areaStr{areaNum}, ' Rheating decompose: '])
+    disp(cov_glbMoth_dTs_x_sfc)
+    % check sum equal to 1
+    check_sum = sum(sum(cov_glbMoth_dTs_x_sfc));
+    disp('check sum: ')
+    disp(check_sum)
+
+    % save as to excel
+
+    % Model and regional name
+
+    % value name
+    if areaNum==1
+        outPutTxt = {mdlName; 'Res'; 'Alb'; 'Cld'; 'WV'; 'Ta'};
+    else
+        outPutTxt = {''; 'Res'; 'Alb'; 'Cld'; 'WV'; 'Ta'};
+    end
+    outPutTxt_rev = fliplr(outPutTxt');
+    nValue=nValue-1; % 减去方程左式的一项
+    writecell(outPutTxt, outPutFile, 'Sheet', 1, 'Range', ['A', num2str(lineStart), ':A', num2str(lineStart + nValue)])
+    writecell(outPutTxt_rev(1:end-1), outPutFile, 'Sheet', 1, 'Range', ['B', num2str(lineStart + nValue + 1), ':G', num2str(lineStart + nValue + 1)])
+    writematrix(cov_glbMoth_dTs_x_sfc, outPutFile, 'Sheet', 1, 'Range', ['B', num2str(lineStart + 1), ':G', num2str(lineStart + nValue)])
+
+    regionTxt=areaStr{areaNum};
+    writematrix(regionTxt, outPutFile, 'Sheet', 1, 'Range', ['B', num2str(lineStart), ':B', num2str(lineStart)])
+
+    lineStart = lineStart + 7;
+
+end

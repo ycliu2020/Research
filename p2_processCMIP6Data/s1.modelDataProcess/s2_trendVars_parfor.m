@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-11-07 10:35:44
+% LastEditTime : 2020-11-07 14:53:19
 % LastEditors  : LYC
 % Description  : includ sfc and toa trend of vars
 %                cal mainly include 1.regrid vars, 2.vars anomly
@@ -96,7 +96,7 @@ eval(['cd ', nowpath]);
 t = toc; tickTok(t)
 
 function [] = esmFun(mdlPath, esmPath, exmNum, mdlNum, esmNum)
-    
+
     %% parameters and path
     lon_k = 0:2.5:357.5; nlonk = length(lon_k);
     lat_k = 90:-2.5:-90; nlatk = length(lat_k);
@@ -109,66 +109,61 @@ function [] = esmFun(mdlPath, esmPath, exmNum, mdlNum, esmNum)
     startmonth = 1;
     % ensemble member path
     esmName = getPath_fileName(mdlPath, '.');
-    eval(['cd ', esmPath]);
     disp([level.model2{mdlNum}, ', ', level.time1{exmNum}, ', ', esmName{esmNum, 1}, ' ensemble start!'])
 
+    % input and output Path
+    esmPath = fullfile(mdlPath, esmName{esmNum, 1});
+    inputPath = [esmPath, '/', level.process3{2}]; %~/data/CMIP6/2000-2014/MRI-ESM2-0/ensemble member/anomaly
+    anomTrendPath = [esmPath, '/', level.process3{3}]; %/home/lyc/data/CMIP6/2000-2014/MIROC6/anomaly_trend
+    auto_mkdir(anomTrendPath)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % ensemble member
-    for esmNum = 1:length(esmName)
-        % input and output Path
-        esmPath = fullfile(mdlPath, esmName{esmNum, 1});
-        inputPath = [esmPath, '/', level.process3{2}]; %~/data/CMIP6/2000-2014/MRI-ESM2-0/ensemble member/anomaly
-        anomTrendPath = [esmPath, '/', level.process3{3}]; %/home/lyc/data/CMIP6/2000-2014/MIROC6/anomaly_trend
-        auto_mkdir(anomTrendPath)
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        % SFC vars trend
-        % load
-        load([inputPath, 'global_vars.mat'])
-        load([inputPath, 'dts.mat'])
-        load([inputPath, 'drlds.mat'])% surface_downwelling_longwave_flux_in_air
-        load([inputPath, 'drsds.mat'])% surface_downwelling_shortwave_flux_in_air
-        load([inputPath, 'drsus.mat'])% surface_upwelling_shortwave_flux_in_air
-        load([inputPath, 'dhfls.mat'])% Surface Upward Latent Heat Flux
-        load([inputPath, 'dhfss.mat'])% Surface Upward Sensible Heat Flux
-        % unite define a vector component which is positive when directed downward
-        dhFlux = -dhfls - dhfss; % LH+SH
-        dR_swnet = drsds - drsus; % sfc net shortwave flux
-        drhs = drlds + dR_swnet; % equilibrium equation's RHS, nearly equal to sfc upward rad
-        drhsPlus = drhs + dhFlux; % should more equal to sfc upward rad
-        %regrid 144x72(unite grids)
-        dhFlux = autoRegrid3(lon_k, lat_k, time.date, dhFlux, lon_f, lat_f, time.date);
-        dts = autoRegrid3(lon_k, lat_k, time.date, dts, lon_f, lat_f, time.date);
-        drhs = autoRegrid3(lon_k, lat_k, time.date, drhs, lon_f, lat_f, time.date);
-        drhsPlus = autoRegrid3(lon_k, lat_k, time.date, drhsPlus, lon_f, lat_f, time.date);
-        % cal the trend
-        [trendm_dts, trends_dts, trendyr_dts, p_dts, cons_dts] = autoCalTrend(dts, nlonf, nlatf, time.date, startmonth);
-        [trendm_drhs, trends_drhs, trendyr_drhs, p_drhs, cons_drhs] = autoCalTrend(drhs, nlonf, nlatf, time.date, startmonth);
-        [trendm_drhsPlus, trends_drhsPlus, trendyr_drhsPlus, p_drhsPlus, cons_drhsPlus] = autoCalTrend(drhsPlus, nlonf, nlatf, time.date, startmonth);
-        [trendm_dhFlux, trends_dhFlux, trendyr_dhFlux, p_dhFlux, cons_dhFlux] = autoCalTrend(dhFlux, nlonf, nlatf, time.date, startmonth);
-        % now we done all the job, now save and output.
-        save([anomTrendPath, 'trend_dts.mat'], 'trendm_dts', 'cons_dts', 'p_dts', 'trends_dts', 'trendyr_dts');
-        save([anomTrendPath, 'trend_drhs.mat'], 'trendm_drhs', 'cons_drhs', 'p_drhs', 'trends_drhs', 'trendyr_drhs');
-        save([anomTrendPath, 'trend_drhsPlus.mat'], 'trendm_drhsPlus', 'cons_drhsPlus', 'p_drhsPlus', 'trends_drhsPlus', 'trendyr_drhsPlus');
-        save([anomTrendPath, 'trend_dhFlux.mat'], 'trendm_dhFlux', 'cons_dhFlux', 'p_dhFlux', 'trends_dhFlux', 'trendyr_dhFlux');
-        save([anomTrendPath, 'global_vars.mat'], 'lon_f', 'lat_f', 'time', 'plev_k', 'readme', 'timeseries', 'modelname')
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        % TOA vars trend
-        % load
-        load([inputPath, 'global_vars.mat'])
-        load([inputPath, 'drlut.mat'])% toa_outgoing_longwave_flux
-        load([inputPath, 'drsut.mat'])% toa_outgoing_shortwave_flux
-        load([inputPath, 'drsdt.mat'])% toa_incoming_shortwave_flux
-        % unite define a vector component which is positive when directed downward
-        dnetTOA = drsdt - drlut - drsut; % net radiation in toa
-        %regrid 144x72(unite grids)
-        dnetTOA = autoRegrid3(lon_k, lat_k, time.date, dnetTOA, lon_f, lat_f, time.date);
-        % cal the trend
-        [trendm_dnetTOA, trends_dnetTOA, trendyr_dnetTOA, p_dnetTOA, cons_dnetTOA] = autoCalTrend(dnetTOA, nlonf, nlatf, time.date, startmonth);
-        % now we done all the job, now save and output.
-        save([anomTrendPath, 'trend_dnetTOA.mat'], 'trendm_dnetTOA', 'cons_dnetTOA', 'p_dnetTOA', 'trends_dnetTOA', 'trendyr_dnetTOA');
-        
-        disp([level.model2{mdlNum}, ', ', level.time1{exmNum}, ', ', esmName{esmNum, 1}, ' ensemble is done!'])
-        disp(' ')
-    end
+    % SFC vars trend
+    % load
+    load([inputPath, 'global_vars.mat'])
+    load([inputPath, 'dts.mat'])
+    load([inputPath, 'drlds.mat'])% surface_downwelling_longwave_flux_in_air
+    load([inputPath, 'drsds.mat'])% surface_downwelling_shortwave_flux_in_air
+    load([inputPath, 'drsus.mat'])% surface_upwelling_shortwave_flux_in_air
+    load([inputPath, 'dhfls.mat'])% Surface Upward Latent Heat Flux
+    load([inputPath, 'dhfss.mat'])% Surface Upward Sensible Heat Flux
+    % unite define a vector component which is positive when directed downward
+    dhFlux = -dhfls - dhfss; % LH+SH
+    dR_swnet = drsds - drsus; % sfc net shortwave flux
+    drhs = drlds + dR_swnet; % equilibrium equation's RHS, nearly equal to sfc upward rad
+    drhsPlus = drhs + dhFlux; % should more equal to sfc upward rad
+    %regrid 144x72(unite grids)
+    dhFlux = autoRegrid3(lon_k, lat_k, time.date, dhFlux, lon_f, lat_f, time.date);
+    dts = autoRegrid3(lon_k, lat_k, time.date, dts, lon_f, lat_f, time.date);
+    drhs = autoRegrid3(lon_k, lat_k, time.date, drhs, lon_f, lat_f, time.date);
+    drhsPlus = autoRegrid3(lon_k, lat_k, time.date, drhsPlus, lon_f, lat_f, time.date);
+    % cal the trend
+    [trendm_dts, trends_dts, trendyr_dts, p_dts, cons_dts] = autoCalTrend(dts, nlonf, nlatf, time.date, startmonth);
+    [trendm_drhs, trends_drhs, trendyr_drhs, p_drhs, cons_drhs] = autoCalTrend(drhs, nlonf, nlatf, time.date, startmonth);
+    [trendm_drhsPlus, trends_drhsPlus, trendyr_drhsPlus, p_drhsPlus, cons_drhsPlus] = autoCalTrend(drhsPlus, nlonf, nlatf, time.date, startmonth);
+    [trendm_dhFlux, trends_dhFlux, trendyr_dhFlux, p_dhFlux, cons_dhFlux] = autoCalTrend(dhFlux, nlonf, nlatf, time.date, startmonth);
+    % now we done all the job, now save and output.
+    save([anomTrendPath, 'trend_dts.mat'], 'trendm_dts', 'cons_dts', 'p_dts', 'trends_dts', 'trendyr_dts');
+    save([anomTrendPath, 'trend_drhs.mat'], 'trendm_drhs', 'cons_drhs', 'p_drhs', 'trends_drhs', 'trendyr_drhs');
+    save([anomTrendPath, 'trend_drhsPlus.mat'], 'trendm_drhsPlus', 'cons_drhsPlus', 'p_drhsPlus', 'trends_drhsPlus', 'trendyr_drhsPlus');
+    save([anomTrendPath, 'trend_dhFlux.mat'], 'trendm_dhFlux', 'cons_dhFlux', 'p_dhFlux', 'trends_dhFlux', 'trendyr_dhFlux');
+    save([anomTrendPath, 'global_vars.mat'], 'lon_f', 'lat_f', 'time', 'plev_k', 'readme', 'timeseries', 'modelname')
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % TOA vars trend
+    % load
+    load([inputPath, 'global_vars.mat'])
+    load([inputPath, 'drlut.mat'])% toa_outgoing_longwave_flux
+    load([inputPath, 'drsut.mat'])% toa_outgoing_shortwave_flux
+    load([inputPath, 'drsdt.mat'])% toa_incoming_shortwave_flux
+    % unite define a vector component which is positive when directed downward
+    dnetTOA = drsdt - drlut - drsut; % net radiation in toa
+    %regrid 144x72(unite grids)
+    dnetTOA = autoRegrid3(lon_k, lat_k, time.date, dnetTOA, lon_f, lat_f, time.date);
+    % cal the trend
+    [trendm_dnetTOA, trends_dnetTOA, trendyr_dnetTOA, p_dnetTOA, cons_dnetTOA] = autoCalTrend(dnetTOA, nlonf, nlatf, time.date, startmonth);
+    % now we done all the job, now save and output.
+    save([anomTrendPath, 'trend_dnetTOA.mat'], 'trendm_dnetTOA', 'cons_dnetTOA', 'p_dnetTOA', 'trends_dnetTOA', 'trendyr_dnetTOA');
+
+    disp([level.model2{mdlNum}, ', ', level.time1{exmNum}, ', ', esmName{esmNum, 1}, ' ensemble is done!'])
+    disp(' ')
 
 end

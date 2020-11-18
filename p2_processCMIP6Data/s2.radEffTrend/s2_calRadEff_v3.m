@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-11-07 09:49:45
+% LastEditTime : 2020-11-08 22:00:07
 % LastEditors  : LYC
 % Description  : cal mainly include 1.regrid vars, 2.vars anomly
 %                CMIP6 mothly data
@@ -47,7 +47,7 @@ lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f); % figure lat lon
 lon_f = lon_k; nlonf = length(lon_f);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % experiment
-for exmNum = 1:1%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for exmNum = 2:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     %CAMS-CSM1-0 didn't have sfc clear sky radiation, delete it
     [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(exmNum);
     % exmPath
@@ -116,6 +116,13 @@ for exmNum = 1:1%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             % loop kernels in differnt conditions( 1sfc cld,2sfc clr,3toa cld,4toa clr)
             kernelPath = fullfile(esmPath, level.process3{5}); %/data1/liuyincheng/CMIP6-process/2000-2014/MRI-ESM2-0/kernelsCal
             % dR_tas=zeros(144,72,ntime,2);dR_taOnly=dR_tas;
+            
+            % store vars in one var( 1sfc cld,2sfc clr,3toa cld,4toa clr)
+            dR_hus = zeros(144, 72, ntime, 4);
+            dR_alb = dR_hus; dR_ts = dR_hus; dR_ta = dR_hus; dR_nonCloud = dR_hus; dR_nonCloudAndTs = dR_hus;
+            lw_dR_hus = dR_hus; lw_dR_ta = dR_hus; lw_dR_ts = dR_hus; sw_dR_hus = dR_hus; sw_dR_alb = dR_hus;
+            lw_nonCloud = dR_hus; sw_nonCloud = dR_hus;
+            lw_nonCloudAndTs = dR_hus; sw_nonCloudAndTs = dR_hus;
 
             for property_of_LevelSKy = 1:4%( 1sfc cld,2sfc clr,3toa cld,4toa clr)
                 load([kernelPath, kernelsName{property_of_LevelSKy}])% read kernel
@@ -221,13 +228,6 @@ for exmNum = 1:1%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
                         'nonCloudAndTsEffect', 'lw_nonCloudAndTsEffect', 'sw_nonCloudAndTsEffect');
                 end
 
-                % store vars in one var( 1sfc cld,2sfc clr,3toa cld,4toa clr)
-                dR_hus = zeros(144, 72, ntime, 4);
-                dR_alb = dR_hus; dR_ts = dR_hus; dR_ta = dR_hus; dR_nonCloud = dR_hus; dR_nonCloudAndTs = dR_hus;
-                lw_dR_hus = dR_hus; lw_dR_ta = dR_hus; lw_dR_ts = dR_hus; sw_dR_hus = dR_hus; sw_dR_alb = dR_hus;
-                lw_nonCloud = dR_hus; sw_nonCloud = dR_hus;
-                lw_nonCloudAndTs = dR_hus; sw_nonCloudAndTs = dR_hus;
-
                 dR_hus(:, :, :, property_of_LevelSKy) = husEffect; % q
                 lw_dR_hus(:, :, :, property_of_LevelSKy) = lw_husEffect; % lw_q
                 sw_dR_hus(:, :, :, property_of_LevelSKy) = sw_husEffect; % sw_q
@@ -323,12 +323,12 @@ for exmNum = 1:1%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             end
 
             dR_residual_clr = dR_net_clr - dR_nonCloud(:, :, :, [2 4]);
-            lw_residual_clr = lw_net(:,:,:,[2 4]) - lw_nonCloud(:, :, :, [2 4]);
-            sw_residual_clr = sw_net(:,:,:,[2 4]) - sw_nonCloud(:, :, :, [2 4]);
+            lw_residual_clr = lw_net(:, :, :, [2 4]) - lw_nonCloud(:, :, :, [2 4]);
+            sw_residual_clr = sw_net(:, :, :, [2 4]) - sw_nonCloud(:, :, :, [2 4]);
 
             dR_residual_cld = dR_net_cld - dR_nonCloud(:, :, :, [1 3]) - dR_cloud; % r terms, indicate co2/aerosol forcing
-            lw_residual_cld = lw_net(:,:,:,[1 3]) - lw_nonCloud(:, :, :, [1 3]) - lw_cloud;
-            sw_residual_cld = sw_net(:,:,:,[1 3]) - sw_nonCloud(:, :, :, [1 3]) - sw_cloud;
+            lw_residual_cld = lw_net(:, :, :, [1 3]) - lw_nonCloud(:, :, :, [1 3]) - lw_cloud;
+            sw_residual_cld = sw_net(:, :, :, [1 3]) - sw_nonCloud(:, :, :, [1 3]) - sw_cloud;
 
             dR_residual_cld1 = dR_net_cld - dR_nonCloud(:, :, :, [1 3]); % r terms, indicate cloud feedback and co2/aerosol forcing
 
@@ -360,10 +360,10 @@ for exmNum = 1:1%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             'dCRF_sfc', 'lw_dCRF_sfc', 'sw_dCRF_sfc', ...% CRF_sfc
             'dCRF_toa', 'lw_dCRF_toa', 'sw_dCRF_toa'); % CRF_toa
             save([radEfectPath, 'dvarsFeedback.mat'], 'dvarsFeedback', 'lw_dvarsFeedback', 'sw_dvarsFeedback');
-           
-            save([radEfectPath, 'dR_cloud.mat'], 'dR_cloud_sfc', 'lw_cloud_sfc', 'sw_cloud_sfc',...
-            'dR_cloud_toa', 'lw_cloud_toa', 'sw_cloud_toa');
-            
+
+            save([radEfectPath, 'dR_cloud.mat'], 'dR_cloud_sfc', 'lw_cloud_sfc', 'sw_cloud_sfc', ...
+                'dR_cloud_toa', 'lw_cloud_toa', 'sw_cloud_toa');
+
             save([radEfectPath, 'dR_residual_cld_sfc.mat'], 'dR_residual_cld_sfc', 'lw_residual_cld_sfc', 'sw_residual_cld_sfc');
             save([radEfectPath, 'dR_residual_cld_toa.mat'], 'dR_residual_cld_toa', 'lw_residual_cld_toa', 'sw_residual_cld_toa');
             save([radEfectPath, 'dR_residual_clr_sfc.mat'], 'dR_residual_clr_sfc', 'lw_residual_clr_sfc', 'sw_residual_clr_sfc');
@@ -400,4 +400,3 @@ for exmNum = 1:1%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
 end
 
 t = toc; tickTok(t)
-

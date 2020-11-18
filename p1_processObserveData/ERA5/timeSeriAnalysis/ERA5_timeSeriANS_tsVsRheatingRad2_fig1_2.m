@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-09-13 19:06:17
-% LastEditTime : 2020-09-22 11:05:52
+% LastEditTime : 2020-11-16 22:16:50
 % LastEditors  : LYC
 % Description  : paper用图: ERA5 dataset timeSeries analyse(dR_ts and rhs)
 % FilePath     : /code/p1_processObserveData/ERA5/timeSeriAnalysis/ERA5_timeSeriANS_tsVsRheatingRad2_fig1_2.m
@@ -17,7 +17,7 @@ load('/home/liuyc/lib/tools/matlab/plot/myMap/01.china_map/mat_file/mask14472.ma
 [mlabels, areaNum] = obsPlotParameters('sfc', 'land', 'ERA5-radEffect-ts');
 [readme, level, tLin, vars] = obsParameters('ERA5');
 
-latRange = 60; % Latitude range
+latRange = 90; % Latitude range
 lon1 = [2.5 357.5]; lat1 = [-latRange + 1 latRange - 1]; % world area
 toaSfc = {'toa', 'sfc'};
 lon_k = 0:2.5:357.5; nlonk = length(lon_k); % kernel lat lon
@@ -92,71 +92,71 @@ for exmNum = 1:2
         pp_weightMean{varNum} = pp0(1, 2); % confidence interval
     end
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % plot time series and CC
-    % time series
-    timeSer = [1985 1990 1995 2000 2005 2010 2015 2020 2025 2035 2045 2055 2065 2075 2085 2095 2105];
-    char_timeSer = cellstr(string(timeSer));
-    % fig set
-    f_row = 1; f_col = 1; % 设置画图的行列
-    set(0, 'DefaultFigureVisible', 'on')
-    ss = get(0, 'ScreenSize');
-    coef_amplify = 1.5;
-    % h = figure('Position', [ss(4) / 2 - 100 ss(3) / 35 ss(3) / 5 * f_col * coef_amplify (ss(4) - 80) / 5 * f_row * coef_amplify]);
-    h = figure('Position', [317 203 672 384]);
-    % clf reset;
-    set(h, 'Color', [1 1 1]);
-    % zero line
-    zeroLine = zeros(length(timeYearly), 1);
+    % %%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % % plot time series and CC
+    % % time series
+    % timeSer = [1985 1990 1995 2000 2005 2010 2015 2020 2025 2035 2045 2055 2065 2075 2085 2095 2105];
+    % char_timeSer = cellstr(string(timeSer));
+    % % fig set
+    % f_row = 1; f_col = 1; % 设置画图的行列
+    % set(0, 'DefaultFigureVisible', 'on')
+    % ss = get(0, 'ScreenSize');
+    % coef_amplify = 1.5;
+    % % h = figure('Position', [ss(4) / 2 - 100 ss(3) / 35 ss(3) / 5 * f_col * coef_amplify (ss(4) - 80) / 5 * f_row * coef_amplify]);
+    % h = figure('Position', [317 203 672 384]);
+    % % clf reset;
+    % set(h, 'Color', [1 1 1]);
+    % % zero line
+    % zeroLine = zeros(length(timeYearly), 1);
 
-    varUsedTemp1 = squeeze(varUsedYearly_weightMean(:, 1));
-    varUsedTemp2 = squeeze(varUsedYearly_weightMean(:, 2));
+    % varUsedTemp1 = squeeze(varUsedYearly_weightMean(:, 1));
+    % varUsedTemp2 = squeeze(varUsedYearly_weightMean(:, 2));
 
-    plot(timeYearly, varUsedTemp1', 'b', 'LineWidth', 1.5)
-    hold on
-    plot(timeYearly, varUsedTemp2', 'r', 'LineWidth', 1.5)
-    hold on
-    plot(timeYearly, zeroLine', 'k--')
-    hold on;
-    % set x axes
-    xticks(timeSer)
-    datetick('x', 'yyyy', 'keepticks'); % 用日期的格式显示横坐标
-    xlim([timeYearly(1) timeYearly(end)])
-    xlabel('time line')
-    xticklabels(char_timeSer)
+    % plot(timeYearly, varUsedTemp1', 'b', 'LineWidth', 1.5)
+    % hold on
+    % plot(timeYearly, varUsedTemp2', 'r', 'LineWidth', 1.5)
+    % hold on
+    % plot(timeYearly, zeroLine', 'k--')
+    % hold on;
+    % % set x axes
+    % xticks(timeSer)
+    % datetick('x', 'yyyy', 'keepticks'); % 用日期的格式显示横坐标
+    % xlim([timeYearly(1) timeYearly(end)])
+    % xlabel('time line')
+    % xticklabels(char_timeSer)
 
-    ylabel(yLabel{2})
-    % set y axes
-    ymax = 2;
+    % ylabel(yLabel{2})
+    % % set y axes
+    % ymax = 5;
 
-    if strcmp(varNames{2}, 'dTs') == 1
-        ymax = 0.5;
-    end
+    % if strcmp(varNames{2}, 'dTs') == 1
+    %     ymax = 0.5;
+    % end
 
-    ylim([-ymax ymax])
+    % ylim([-ymax ymax])
 
-    ax = gca;
-    ax.XMinorTick = 'on'; ax.YMinorTick = 'on'; % 开启次刻度线
-    ax.TickLength = [0.02 0.01]; %刻度线长度      set(gca,'ticklength', [0.02 0.01]);
-    ax.XColor = 'k'; ax.YColor = 'k'; % 设置刻度线颜色
-    title({['Data: ', mlabels.dataName{1}, ', Level: ', mlabels.level, ', Era: ', tLin.time{exmNum}], '60N-60S land, global mean', [varNames{2}, ' & ', varNames{1}, ' cc=', num2str(cc_weightMean{2})]}, 'FontWeight', 'normal')
-    % title(['60N-60S land, global mean: ', varNames{2}, '&', varNames{1}, ' cc=', num2str(cc_weightMean{2})], 'FontWeight', 'normal')
+    % ax = gca;
+    % ax.XMinorTick = 'on'; ax.YMinorTick = 'on'; % 开启次刻度线
+    % ax.TickLength = [0.02 0.01]; %刻度线长度      set(gca,'ticklength', [0.02 0.01]);
+    % ax.XColor = 'k'; ax.YColor = 'k'; % 设置刻度线颜色
+    % title({['Data: ', mlabels.dataName{1}, ', Level: ', mlabels.level, ', Era: ', tLin.time{exmNum}], '60N-60S land, global mean', [varNames{2}, ' & ', varNames{1}, ' cc=', num2str(cc_weightMean{2})]}, 'FontWeight', 'normal')
+    % % title(['60N-60S land, global mean: ', varNames{2}, '&', varNames{1}, ' cc=', num2str(cc_weightMean{2})], 'FontWeight', 'normal')
 
-    % ylabel({Level{i}, ' Rad Anomaly (Wm^{-2})'}, 'Fontsize', 10)
-    lgd = legend('dR_{Ts}', 'dRHeating', 'Fontsize', 8, 'Location', 'northwest');
-    legend('boxoff')%删除图例背景和轮廓
-    lgd_inf = get(lgd);
-    text(lgd_inf.Position(1) - 0.12, lgd_inf.Position(2) + 0.095, ['cc= ', num2str(cc_weightMean{2})], 'FontWeight', 'normal', 'Interpreter', 'none', 'Units', 'normalized')
-    hold on
+    % % ylabel({Level{i}, ' Rad Anomaly (Wm^{-2})'}, 'Fontsize', 10)
+    % lgd = legend('dR_{Ts}', 'dRHeating', 'Fontsize', 8, 'Location', 'northwest');
+    % legend('boxoff')%删除图例背景和轮廓
+    % lgd_inf = get(lgd);
+    % text(lgd_inf.Position(1) - 0.12, lgd_inf.Position(2) + 0.095, ['cc= ', num2str(cc_weightMean{2})], 'FontWeight', 'normal', 'Interpreter', 'none', 'Units', 'normalized')
+    % hold on
 
-    % save figures
-    figName = [mlabels.dataName{1}, '_', tLin.time{exmNum}, '_', mlabels.area, '_', mlabels.level, '_globalLandMeanTimeSeries'];
-    figPath = [outPutPath, '/', figName, '.png'];
-    saveas(gcf, figPath)
+    % % save figures
+    % figName = [mlabels.dataName{1}, '_', tLin.time{exmNum}, '_', mlabels.area, '_', mlabels.level, '_globalLandMeanTimeSeries'];
+    % figPath = [outPutPath, '/', figName, '.png'];
+    % saveas(gcf, figPath)
     % save_png(figPath)%high resolution
-    close gcf
+    % close gcf
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % %%%%%%%%%%%%%%%%%%%%%%%%%%%
     % cal cc of every point of map
     cc_global = zeros(nlonf, nlatf, sizeVar);
     pp_global = zeros(nlonf, nlatf, sizeVar);

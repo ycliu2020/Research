@@ -162,7 +162,7 @@ for exmNum = exmStart:exmEnd
             sgtt = sgtitle(headLineTxt, 'Fontsize', 14, 'Interpreter', 'none');
             figTitle = [level.time1{exmNum}(1:end - 1), '_', level.model2{mdlNum}, '_', mlabels.fileN1, '_', esm];
             figurename = [mPath.Output, '/', figTitle, '.png'];
-            saveas(gcf, figurename)
+            % saveas(gcf, figurename)
             % save_png(figurename)%high resolution
             % close gcf
 

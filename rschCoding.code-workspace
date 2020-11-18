@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "../../../lib/tools/matlab/myTools"
+		},
+		{
+			"path": "../figure"
 		}
 	],
 	"settings": {}
