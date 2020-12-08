@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-09-22 21:51:51
-% LastEditTime : 2020-09-23 11:21:20
-% LastEditors  : LYC
+% LastEditTime : 2020-12-01 11:31:27
+% LastEditors  : Please set LastEditors
 % Description  :
-% FilePath     : /code/p2_processCMIP6Data/s4.nonLocalCld/plot/s_plot_nonLocalCld3_methodShow_fig8.m
+% FilePath     : /code/p3_paperFigIntegrate/Fig10_nonLocalCld3_methodShow.m
 %
 %%---------------------------------------------------------
 clear; clc; tic;
@@ -16,6 +16,7 @@ lat_k = 90:-2.5:-90; nlatk = length(lat_k);
 lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f); % figure lat lon
 lon_f = lon_k; nlonf = length(lon_f);
 load('/data1/liuyincheng/cmip6-process/z_globalVar/ERF_rec.mat')% 'ERF_rec', 'timeERF_rec'
+outPutPath = '/home/liuyc/Research/P02.Ts_change_research/figure/proj3_PaperFig/v0.0/Fig10_CMIP6_showNonLocalCldCalcProcess/';
 
 for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     nowpath = pwd;
@@ -155,76 +156,65 @@ for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             [integral_ts, integral_RnetTOA, dtd_ctrl, integral_td, delta_td, integral_delta_td, gammaa] = EBMLayer2_gamma(C_ref, Cd_ref, gblM_R_netTOA, dts_ctrl, b_td0, startY, endY, interY);
             %%%%%%%%%%%%%%%%%%%%%%%%%%
             % Fig1 :plot delta Td
-            set(0, 'DefaultFigureVisible', 'on')
-            ss = get(0, 'ScreenSize');
-            h1 = figure('Position', [-1021 -743 843 545]);
-            set(h1, 'Color', [1 1 1]);
-
             xdata = 2015:1:2099;
             ydata = integral_delta_td';
 
-            timeSer = [1985 1990 1995 2000 2005 2010 2015 2025 2035 2045 2055 2065 2075 2085 2095 2105];
-            char_timeSer = cellstr(string(timeSer));
+            timeSer = [1985 1990 1995 2000 2005 2015 2025 2035 2045 2055 2065 2075 2085 2095 2105];
 
             yLabel = '\DeltaT_d (K)';
             xLabel = 'time line';
 
-            plot(xdata, ydata, 'o', 'Color', '#377EB8', 'LineWidth', 2,'MarkerSize',8)
+            unitePlot(xdata, ydata, xLabel, yLabel, timeSer, 'on');
 
-            % set x axes
-            xticks(timeSer)
-            datetick('x', 'yyyy', 'keepticks'); % 用日期的格式显示横坐标
-            xlim([xdata(1) xdata(end)])
-            xlabel(xLabel)
-            xticklabels(char_timeSer)
-            ylabel(yLabel)
             title({['ssp370 Model: ', mdlName]; ['T\_deep(2015): ', num2str(b_td0), '  T\_deep(2099): ', num2str(ydata(end))]; ['T(2015): ', num2str(bts0), '  T(2099): ', num2str(dts_ctrl(end)), ' (均相对于1850年)']})
 
-            figName = ['/home/liuyc/Research/P02.Ts_change_research/figure/proj2_cmip6Result/NonLocal_cloudEffect/nonLocalCld3/showCalculationProcess/Td/ssp370_r1i1p1f1_', mdlName, '_Jim.png'];
+            figName = [outPutPath, 'Td/ssp370_r1i1p1f1_', mdlName, '_Jim.png'];
             saveas(gcf, figName)
+            close gcf
 
             %%%%%%%%%%%%%%%%%%%%%%%%%%
             % Fig2 :plot delta gamma
-            h2 = figure('Position', [-1021 -743 843 545]);
-            set(h2, 'Color', [1 1 1]);
-
             xdata = integral_ts - integral_td;
             ydata = integral_delta_td .* Cd_ref;
             xdata = xdata(40:end);
             ydata = ydata(40:end);
-            xLabel='\Sigma(T-T_d)';
-            yLabel='C_d\DeltaT_d';
+            xLabel = '\Sigma(T-T_d)';
+            yLabel = 'C_d\DeltaT_d';
+
+            unitePlot(xdata, ydata, xLabel, yLabel, timeSer, 'off');
+            hold on
 
             kb = polyfit(xdata, ydata, 1);
             k = kb(1);
             b = kb(2);
-            yfit = polyval(kb, xdata);
-            plot(xdata, ydata, 'o', 'Color', '#377EB8', 'LineWidth', 2, 'MarkerSize', 8)
-            hold on
-            plot(xdata, yfit, '-','LineWidth', 2)
-            xlabel(xLabel)
-            ylabel(yLabel)
+            yfitPlot = polyval(kb, 1:1000);
+            plot(1:1000, yfitPlot, '-k', 'LineWidth', 3)
+
             title({['ssp370 Model: ', mdlName]; ['斜率: ', num2str(k), ' 截距: ', num2str(b), '取后44年结果拟合']})
-            
+
+            lgd=legend('data', 'Linear fit', 'Fontsize', 14, 'Location', 'northwest');
+            lgd_inf = get(lgd);
+
             % 计算r2并标注
+            yfit = polyval(kb, xdata);
             yresid = ydata - yfit; %将残差值计算为有符号数的向量：
             SSresid = sum(yresid.^2); %计算残差的平方并相加，以获得残差平方和：
             SStotal = (length(ydata) - 1) * var(ydata); %通过将观测次数减 1(自由度) 再乘以 y 的方差，计算 y 的总平方和：
             rsq = 1 - SSresid / SStotal; %计算r2
-            text_ant={['R^2= ', num2str(rsq)],['\gamma=slope=',num2str(k)]};
-            text(0.03, 0.85, text_ant, 'units', 'normalized');
+            text_ant = {['R^2= ', num2str(rsq)], ['\gamma=slope=', num2str(k)]};
+
+            text(lgd_inf.Position(1) - 0.12, lgd_inf.Position(2), text_ant, 'Fontsize', 14, 'units', 'normalized');
             hold on
-            legend('data', 'Linear fit','Location','northwest')
-        
+
             disp([esmName{esmNum, 1}, ' ensemble is done!'])
-            figName = ['/home/liuyc/Research/P02.Ts_change_research/figure/proj2_cmip6Result/NonLocal_cloudEffect/nonLocalCld3/showCalculationProcess/Gamma/ssp370_r1i1p1f1_', mdlName, '_Jim.png'];
+            figName = [outPutPath, 'Gamma/ssp370_r1i1p1f1_', mdlName, '_Jim.png'];
             saveas(gcf, figName)
+            
             %%%%%%%%%%%%%%%%%%%%%%%%%%
             % Fig3 :plot Tnc
             %% 2) 计算delta_dtnc, dtnc_ctrl, integral_dtnc(积分)  通过迭代的方法计算
             [integral_ERF, dtnc_ctrl, integral_dtnc, delta_dtnc, Delta_dtnc] = EBMLayer2_tnc(ERForcing, lamda_nonCld, gammaa, integral_td, bts0, C_ref, startY, endY, interY);
-            h3 = figure('Position', [-1021 -743 843 545]);
-            set(h3, 'Color', [1 1 1]);
+
             xdata = 2015:1:2099;
             ydata = dtnc_ctrl';
 
@@ -234,21 +224,15 @@ for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             k = kb(1);
             b = kb(2);
             yfit = polyval(kb, xdata);
-            plot(xdata, ydata, 'o', 'Color', '#377EB8', 'LineWidth', 2, 'MarkerSize', 8)
-            xticks(timeSer)
-            datetick('x', 'yyyy', 'keepticks'); % 用日期的格式显示横坐标
-            xlim([xdata(1) xdata(end)])
-            xlabel(xLabel)
-            xticklabels(char_timeSer)
 
-            xlabel(xLabel)
-            ylabel(yLabel)
+            unitePlot(xdata, ydata, xLabel, yLabel, timeSer, 'on');
             DeltaTsg_cld = DeltaTsg - Delta_dtnc;
 
-            title({['ssp370 Model: ', mdlName]; ['斜率: ', num2str(k), ' T_{nc}(2015): ', num2str(ydata(1)), ' T_{nc}(2099): ', num2str(ydata(end))];['T(2015): ', num2str(bts0), '  T(2099): ', num2str(dts_ctrl(end)), ' (均相对于1850年)'];['无云情况下温度变化:', num2str(Delta_dtnc), '云致温度变化:', num2str(DeltaTsg_cld)]})
-            figName = ['/home/liuyc/Research/P02.Ts_change_research/figure/proj2_cmip6Result/NonLocal_cloudEffect/nonLocalCld3/showCalculationProcess/Tnc/ssp370_r1i1p1f1_', mdlName, '_Jim.png'];
-            saveas(gcf, figName)
+            title({['ssp370 Model: ', mdlName]; ['斜率: ', num2str(k), ' T_{nc}(2015): ', num2str(ydata(1)), ' T_{nc}(2099): ', num2str(ydata(end))]; ['T(2015): ', num2str(bts0), '  T(2099): ', num2str(dts_ctrl(end)), ' (均相对于1850年)']; ['无云情况下温度变化:', num2str(Delta_dtnc), '云致温度变化:', num2str(DeltaTsg_cld)]})
 
+            figName = [outPutPath, 'Tnc/ssp370_r1i1p1f1_', mdlName, '_Jim.png'];
+            saveas(gcf, figName)
+            close gcf
 
         end
 
@@ -357,16 +341,46 @@ function [integral_ERF, dtnc_ctrl, integral_dtnc, delta_dtnc, Delta_dtnc] = EBML
 
     dtnc_ctrl(1) = bts0;
     integral_dtnc(1) = bts0;
-    integral_delta_dtnc(1)=0;
+    integral_delta_dtnc(1) = 0;
+
     for gridNum = 2:sum_timeExamp + 1
-        delta_dtnc(gridNum) = (integral_ERF(gridNum) + gammaa * integral_td(gridNum) - (lamda_nonCld + gammaa) * (integral_dtnc(gridNum - 1) + dtnc_ctrl(gridNum - 1))) / (C_ref + lamda_nonCld + gammaa)-integral_delta_dtnc(gridNum-1);
+        delta_dtnc(gridNum) = (integral_ERF(gridNum) + gammaa * integral_td(gridNum) - (lamda_nonCld + gammaa) * (integral_dtnc(gridNum - 1) + dtnc_ctrl(gridNum - 1))) / (C_ref + lamda_nonCld + gammaa) - integral_delta_dtnc(gridNum - 1);
         dtnc_ctrl(gridNum) = dtnc_ctrl(gridNum - 1) + delta_dtnc(gridNum);
         integral_dtnc(gridNum) = integral_dtnc(gridNum - 1) + dtnc_ctrl(gridNum);
-        integral_delta_dtnc(gridNum)=integral_delta_dtnc(gridNum-1)+delta_dtnc(gridNum);
+        integral_delta_dtnc(gridNum) = integral_delta_dtnc(gridNum - 1) + delta_dtnc(gridNum);
     end
+
     timeSeries = startY:interY:endY;
 
     k_dtnc = polyfit(timeSeries(40:end)', dtnc_ctrl(40:end), 1);
-    Delta_dtnc= k_dtnc(1) * (timeSeries(end)-timeSeries(1));
+    Delta_dtnc = k_dtnc(1) * (timeSeries(end) - timeSeries(1));
+
+end
+
+function [] = unitePlot(xdata, ydata, xLabel, yLabel, timeSer, axtickSwich)
+
+    char_timeSer = cellstr(string(timeSer));
+
+    set(0, 'DefaultFigureVisible', 'off')
+    ss = get(0, 'ScreenSize');
+    h1 = figure('Position', [-1021 -743 843 545]);
+    set(h1, 'Color', [1 1 1]);
+    plot(xdata, ydata, 'o', 'MarkerEdgeColor','k','MarkerFaceColor', '#67C1EE', 'LineWidth', 2, 'MarkerSize', 8)
+
+    % set x axes
+    if strcmp(axtickSwich,'on')
+        datetick('x', 'yyyy', 'keepticks'); % 用日期的格式显示横坐标
+        xticks(timeSer)
+        xticklabels(char_timeSer)
+    end
+    xlim([xdata(1)-5 xdata(end)+5])
+    ylim([min(ydata)-0.05*(max(ydata)-min(ydata)) max(ydata)+0.05*(max(ydata)-min(ydata))])
+    xlabel(xLabel)
+    ylabel(yLabel)
+    
+    ax = gca;
+    % ax.TickLength = [0.02 0.01]; %刻度线长度      set(gca,'ticklength', [0.02 0.01]);
+    ax.XColor = 'k'; ax.YColor = 'k'; % 设置刻度线颜色
+    ax.FontSize = 13;
 
 end

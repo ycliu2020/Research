@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-08-31 17:00:15
-% LastEditTime : 2020-11-09 15:29:04
-% LastEditors  : LYC
+% LastEditTime : 2020-12-08 13:32:47
+% LastEditors  : Please set LastEditors
 % Description  : 同时画时间序列和相关性分布图
-% FilePath     : /code/p2_processCMIP6Data/s2.radEffTrend/timeSeriAnalysis/timeSeriANS_tsVsVarsRad_fig6_7.m
+% FilePath     : /code/p3_paperFigIntegrate/Fig6_7CMIP6_timeSeriANS_tsVsVarsRad.m
 %
 %%---------------------------------------------------------
 clc; clear; tic;
@@ -25,20 +25,17 @@ lon_f = lon_k; nlonf = length(lon_f);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % experiment
-for exmNum = 1:1%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for exmNum = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     %CAMS-CSM1-0 didn't have sfc clear sky radiation, delete it
     [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(exmNum);
     % exmPath
     exmPath = ['/data1/liuyincheng/cmip6-process/', level.time1{exmNum}]; %/data1/liuyincheng/cmip6-process/2000-2014/
-    mPath.uniOutput1 = fullfile('/home/liuyc/Research/P02.Ts_change_research/figure/proj2_cmip6Result/TimeSeries_analysis/landMean_RadEffectAll', level.time1{exmNum}); %['dRTs_', lower(mlabels.level)],
-    mPath.uniOutput2 = fullfile('/home/liuyc/Research/P02.Ts_change_research/figure/proj2_cmip6Result/TimeSeries_analysis/timeCC_globalDistribution', level.time1{exmNum}); %['dRTs_', lower(mlabels.level)],
-    mPath.Output1 = fullfile(mPath.uniOutput1);
-    mPath.Output2 = fullfile(mPath.uniOutput2);
+    mPath.uniOutput = fullfile('/home/liuyc/Research/P02.Ts_change_research/figure/proj3_PaperFig/v0.0/Fig6_7TimeSeries_analysis_landMean_RadEffectAll', level.time1{exmNum}); %['dRTs_', lower(mlabels.level)],
+    mPath.Output1 = fullfile(mPath.uniOutput);
     auto_mkdir(mPath.Output1)
-    auto_mkdir(mPath.Output2)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % model
-    for mdlNum = 9:9%length(level.model2)
+    for mdlNum = 1:length(level.model2)
         % model path
         mdlName = level.model2{mdlNum};
         mdlPath = fullfile(exmPath, level.model2{mdlNum});
@@ -98,7 +95,6 @@ for exmNum = 1:1%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             load([dradEffectPath, 'dradEfect_sfc_cld.mat'])% 'totalEffect', 'wvlwEffect', 'wvswEffect', 'tsEffect', 'albEffect', 'husEffect', 'taEffect', 'tasEffect2', 'taOnlyEffect2', 'totalEffect', 'mainEffect'
             load([dradEffectPath, 'real_dradEfect.mat'])% 'dR_allsky', 'l_rad', 's_rad', 'dR_clr', 'readme_realradEfect'
             load([dradEffectPath, 'dR_residual_cld_sfc.mat'])% dR_residual_cld_sfc
-            load([dradEffectPath, 'dR_residual_clr_sfc.mat'])% dR_residual_cld_sfc
             load([dradEffectPath, 'dR_residual_cld_toa.mat'])% dR_residual_cld_toa
             dR_netSfc = squeeze(dR_allsky(:, :, :, 1));
             dR_netTOA = squeeze(dR_allsky(:, :, :, 2));
@@ -124,8 +120,8 @@ for exmNum = 1:1%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             varUsed(:, :, :, 2) = husEffect;
             varUsed(:, :, :, 3) = taEffect;
             varUsed(:, :, :, 4) = albEffect;
-            varUsed(:, :, :, 5) = dR_residual_cld_sfc-(dhfls+dhfss);
-            varUsed(:, :, :, 6) = dR_residual_cld_toa;
+            varUsed(:, :, :, 5) = dR_residual_cld_sfc;
+            varUsed(:, :, :, 6) = dR_cloud_sfc;
             % varUsed(:, :, :, 7) = dhfls.mat+dhfss;
 
             % varUsed(:, :, :, 7) = dR_netSfc; %sum(varUsed(:,:,:,1:6),4);
@@ -192,9 +188,13 @@ for exmNum = 1:1%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             % plot time series and CC
             % time series
             timeSer = [1985 1990 1995 2000 2005 2010 2015 2025 2035 2045 2055 2065 2075 2085 2095 2105];
+            if exmNum==1
+                timeSer = [1980 1985 1990 1995 2002 2006 2010 2014 2018 2025 2035 2045 2055 2065 2075 2085 2095 2105];
+            end
+        
             char_timeSer = cellstr(string(timeSer));
             % fig set
-            set(0, 'DefaultFigureVisible', 'on')
+            set(0, 'DefaultFigureVisible', 'off')
             ss = get(0, 'ScreenSize');
             coef_amplify = 1.5;
             % h = figure('Position', [ss(4) / 2 - 100 ss(3) / 35 ss(3) / 5 * f_col * coef_amplify (ss(4) - 80) / 5 * f_row * coef_amplify]);
@@ -235,10 +235,13 @@ for exmNum = 1:1%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
 
             ax = gca;
             ax.XMinorTick = 'on'; ax.YMinorTick = 'on'; % 开启次刻度线
+            ax.XAxis.MinorTickValues = (1980:1:2105);
             ax.TickLength = [0.02 0.01]; %刻度线长度      set(gca,'ticklength', [0.02 0.01]);
             ax.XColor = 'k'; ax.YColor = 'k'; % 设置刻度线颜色
+            ax.FontSize = 13;
+
             title_txt = {['Level:', num2str(toaSfc{2}), ', Era: ', level.time1{exmNum}(1:end - 10),' ',level.time1{exmNum}(end - 9:end-1)], ['Model:', level.model2{mdlNum} ', Ensemble: ', esmName{esmNum}], [num2str(latRange),'N-',num2str(latRange),'S land, global mean ']};
-            title(title_txt, 'FontWeight', 'normal')
+            title(title_txt, 'FontWeight', 'normal')%,'Units', 'normalized', 'position', [0.5,0.98]
 
             % lgdTxtTmp(1:6)={',cc='};
             % cc_weightMeanTxt=cellfun(@num2str,cc_weightMean,'UniformOutput',false);
@@ -253,9 +256,10 @@ for exmNum = 1:1%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             % save figures
             figName = [level.time1{exmNum}(1:end - 1), '_', level.model2{mdlNum}, '_', esmName{esmNum}];
             figurePath = [mPath.Output1, '/', figName, '.png'];
+
             % saveas(gcf, figurePath)
-            % save_png(figurePath)%high resolution
-            % close gcf
+            save_png(figurePath)%high resolution
+            close gcf
 
         end
 

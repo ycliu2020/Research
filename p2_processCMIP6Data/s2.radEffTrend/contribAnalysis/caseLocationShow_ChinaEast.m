@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-10-15 18:42:44
-% LastEditTime : 2020-10-15 19:37:27
+% LastEditTime : 2020-11-18 19:52:23
 % LastEditors  : LYC
 % Description  : plot the exact area of east china 
-% FilePath     : /code/p2_processCMIP6Data/s2.radEffTrend/contribAnalysis/caseLocationShow.m
+% FilePath     : /code/p2_processCMIP6Data/s2.radEffTrend/contribAnalysis/caseLocationShow_ChinaEast.m
 %  
 %%---------------------------------------------------------
 clc; clear;
@@ -29,7 +29,12 @@ bou_chinaProvince=shaperead('/home/liuyc/lib/tools/matlab/plot/myMap/01.china_ma
 bou_chinaProvinceX=[bou_chinaProvince(:).X];bou_chinaProvinceY=[bou_chinaProvince(:).Y];
 
 %%  plot test
-lon1 = [65 144]; lat1 = [12 55]; % world area
+% world
+% latRange = 90;
+% lon1 = [2.5 357.5]; lat1 = [-latRange + 1 latRange - 1]; 
+% china east
+lon1 = [65 144]; lat1 = [12 55]; 
+% the Northern Hemisphere
 % lon1 = [60 150]; lat1 = [0 60]; % world area
 set(0, 'defaultfigurecolor', 'w')
 set(0, 'DefaultFigureVisible', 'off')
@@ -40,6 +45,7 @@ set(h, 'Color', [1 1 1]);
 
 m_proj('Mercator', 'lon', lon1, 'lat', lat1); %Mercator,Equidistant cylindrical,lambert,Miller Cylindrical
 
+% 填色
 % m_line(world_mapx(:), world_mapy(:), 'color', [0 0 0], 'LineWidth', 0.5);  % world boudary
 maskchina_cpNum=double(mask1);
 
@@ -69,7 +75,7 @@ m_plot([112, 125],[20,20],'linestyle','-','color','r','LineWidth',1.5);
 hold on
 m_grid('linestyle', 'none', 'tickdir', 'out', 'yaxislocation', 'left', 'fontsize', 10, 'color', 'k'); %
 
-
+% 设置南海区域
 h1=axes('Position',[0.8 0.2 0.09 0.2]);%创建坐标系时返回它的句柄[left bottom width height]
 axes(h1);%将坐标系h1置为当前坐标系
 set(gcf,'PaperPositionMode','auto')

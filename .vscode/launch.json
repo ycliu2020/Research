@@ -9,7 +9,7 @@
         {
             "name": "Python3.6",
             "type": "python",
-            "pythonPath": "/home/liuyc/usr/local/anaconda3/envs/python36/bin/python3.6", //python3的安装路径
+            "python": "/home/liuyc/usr/local/anaconda3/envs/python36/bin/python3.6", //python3的安装路径
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal"

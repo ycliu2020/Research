@@ -1,38 +1,14 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-10-14 15:3nValue:49
-% LastEditTime : 2020-11-10 11:10:51
-% LastEditors  : LYC
+% LastEditTime : 2020-11-26 22:18:59
+% LastEditors  : Please set LastEditors
 % Description  :
 % FilePath     : /code/p2_processCMIP6Data/s2.radEffTrend/contribAnalysis/contribAnalysis_joint.m
 %
 %%---------------------------------------------------------
-clc;clear;
+clc; clear;
 nowpath = pwd;
-
-%% calculate mask file
-% load mask map
-load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/mask/mask_cp144.mat')% load word land mask
-load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/mask/mask_ce72.mat')% load word land mask
-load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/correct_worldmap.mat')
-load('/home/liuyc/lib/tools/matlab/plot/myMap/01.china_map/mat_file/mask14472.mat')
-load('/home/liuyc/lib/tools/matlab/plot/myMap/01.china_map/mat_file/中国干湿以及青藏高原分区地图/main_use/mask720.mat')
-% 国境线
-bou_china = shaperead('/home/liuyc/lib/tools/matlab/plot/myMap/01.china_map/map_data/中国及各省shp/国界线/bou1_4p.shp'); % load china  boundary
-bou_chinaX = [bou_china(:).X]; bou_chinaY = [bou_china(:).Y];
-% 国境线(带南海线)
-bou_china_line = shaperead('/home/liuyc/lib/tools/matlab/plot/myMap/01.china_map/map_data/中国及各省shp/国界线/bou1_4l.shp'); % load china  boundary
-bou_china_lineX = [bou_china_line(:).X]; bou_china_lineY = [bou_china_line(:).Y];
-% 省界线
-bou_chinaProvince = shaperead('/home/liuyc/lib/tools/matlab/plot/myMap/01.china_map/map_data/中国及各省shp/省界线/bou2_4p.shp'); % load china  boundary
-bou_chinaProvinceX = [bou_chinaProvince(:).X]; bou_chinaProvinceY = [bou_chinaProvince(:).Y];
-
-%save maskFile to area of china east
-maskchina_east = maskchina_cp;
-maskchina_east(lonw < 112, :) = 0;
-maskchina_east(:, latw > 38) = 0;
-readme_mask_CN_east = 'area of east China, Range: lonw>112E,latw<38N; Based on maskchina_cp(lon, lat same as it)';
-save('/home/liuyc/lib/tools/matlab/plot/myMap/01.china_map/mat_file/mask14472_east.mat', 'maskchina_east', 'lat14472', 'lon14472', 'readme_mask_CN_east')
 
 %% loop and process
 [mlabels, areaStr] = cmipPlotParameters('atm', 'land', 'radEffect'); % plot parameters
@@ -50,7 +26,7 @@ for exmNum = exmStart:exmEnd
     % auto_mkdir(mPath.Output)
 
     % model loop
-    mdlStart = 1; mdlEnd = length(level.model2);% differnt models%length(level.model2)
+    mdlStart = 1; mdlEnd = length(level.model2); % differnt models%length(level.model2)
     lineStart = 1; % 写入excel的起始位置
 
     for mdlNum = mdlStart:mdlEnd
@@ -133,6 +109,15 @@ for exmNum = exmStart:exmEnd
             dTs_x_sfc(:, :, :, 5) = husEffect;
             dTs_x_sfc(:, :, :, 6) = taEffect;
             % dTs_x_sfc(:,:,:,3)=dR_residual_cld_sfc;
+            if exmNum == 1
+                % cut to 2000.03-2014.02
+                timeStr = string(datestr(datenum(time.date), 'yyyy-mm'));
+                cutStart = find(timeStr == '2000-03');
+                cutEnd = find(timeStr == '2014-02');
+                time = time.date(cutStart:cutEnd);
+                ntime = length(time);
+                dTs_x_sfc=dTs_x_sfc(:,:,cutStart:cutEnd,:);
+            end
 
             %
             % cal Function
@@ -144,11 +129,11 @@ for exmNum = exmStart:exmEnd
                 [lineStart] = calCovContribution(latRange, lat_f, ntime, level.model2{mdlNum}, areaStr, areaNum, dTs_x_sfc, outPutFile, lineStart);
             end
 
-
             disp([esmName{esmNum, 1}, ' ensemble is done!'])
 
         end
-        lineStart = lineStart+1; % 每个模型算完后空一行
+
+        lineStart = lineStart + 1; % 每个模型算完后空一行
         disp([level.model2{mdlNum}, ' model is done!'])
         disp(' ')
     end
@@ -218,18 +203,19 @@ function [lineStart] = calCovContribution(latRange, lat_f, ntime, mdlName, areaS
     % Model and regional name
 
     % value name
-    if areaNum==1
+    if areaNum == 1
         outPutTxt = {mdlName; 'Res'; 'Alb'; 'Cld'; 'WV'; 'Ta'};
     else
         outPutTxt = {''; 'Res'; 'Alb'; 'Cld'; 'WV'; 'Ta'};
     end
+
     outPutTxt_rev = fliplr(outPutTxt');
-    nValue=nValue-1; % 减去方程左式的一项
+    nValue = nValue - 1; % 减去方程左式的一项
     writecell(outPutTxt, outPutFile, 'Sheet', 1, 'Range', ['A', num2str(lineStart), ':A', num2str(lineStart + nValue)])
-    writecell(outPutTxt_rev(1:end-1), outPutFile, 'Sheet', 1, 'Range', ['B', num2str(lineStart + nValue + 1), ':G', num2str(lineStart + nValue + 1)])
+    writecell(outPutTxt_rev(1:end - 1), outPutFile, 'Sheet', 1, 'Range', ['B', num2str(lineStart + nValue + 1), ':G', num2str(lineStart + nValue + 1)])
     writematrix(cov_glbMoth_dTs_x_sfc, outPutFile, 'Sheet', 1, 'Range', ['B', num2str(lineStart + 1), ':G', num2str(lineStart + nValue)])
 
-    regionTxt=areaStr{areaNum};
+    regionTxt = areaStr{areaNum};
     writematrix(regionTxt, outPutFile, 'Sheet', 1, 'Range', ['B', num2str(lineStart), ':B', num2str(lineStart)])
 
     lineStart = lineStart + 7;
