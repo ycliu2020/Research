@@ -15,7 +15,7 @@ for exmNum in [4]:  # [1,2,3,4]:
     # [readme, Experiment, level, tLin, mPlev, vars]
     glbParm = eng.cmipParameters(exmNum, nargout=6)
     mdlName = glbParm[2]['model2']
-    for mdlNum in range(1,len(mdlName)+1):  # range(1,len(mdlName)+1): # len(mdlName)+1
+    for mdlNum in range(4,5):  # range(1,len(mdlName)+1): # len(mdlName)+1
         # mdlNum = 1
 
         # function [lon_f, lat_f, trendyr,figTitle, figPath, colorLab] = Pyn_figure3(exmNum, mdlNum)

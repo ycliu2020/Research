@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-08-31 17:00:15
-% LastEditTime : 2020-12-08 13:32:47
+% LastEditTime : 2021-01-18 14:15:11
 % LastEditors  : Please set LastEditors
 % Description  : 同时画时间序列和相关性分布图
 % FilePath     : /code/p3_paperFigIntegrate/Fig6_7CMIP6_timeSeriANS_tsVsVarsRad.m
@@ -25,7 +25,7 @@ lon_f = lon_k; nlonf = length(lon_f);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % experiment
-for exmNum = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     %CAMS-CSM1-0 didn't have sfc clear sky radiation, delete it
     [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(exmNum);
     % exmPath
@@ -35,7 +35,7 @@ for exmNum = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
     auto_mkdir(mPath.Output1)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % model
-    for mdlNum = 1:length(level.model2)
+    for mdlNum = 4:4%1:length(level.model2)
         % model path
         mdlName = level.model2{mdlNum};
         mdlPath = fullfile(exmPath, level.model2{mdlNum});
@@ -116,7 +116,7 @@ for exmNum = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             % fig1
             dRheating=dR_cloud_sfc+husEffect+taEffect+albEffect+dR_residual_cld_sfc;
             
-            varUsed(:, :, :, 1) = tsEffect;
+            varUsed(:, :, :, 1) = -tsEffect;
             varUsed(:, :, :, 2) = husEffect;
             varUsed(:, :, :, 3) = taEffect;
             varUsed(:, :, :, 4) = albEffect;
@@ -128,8 +128,8 @@ for exmNum = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             % varUsed(:, :, :, 8) = tsEffect+dRheating;
             % varUsed(:, :, :, 9) = dRheating;
 
-            varNames = {'dR_{Ts}', 'dR_{q}', 'dR_{ta}', 'dR_{albedo}', 'dR_{residual}', 'dR_{cloud}'};
-            yLabel = {'Wm-2', 'Wm-2', 'Wm-2', 'Wm-2', 'Wm-2', 'Wm-2', 'Wm-2', 'Wm-2', 'Wm-2'};
+            varNames = {['d','\itLW','\rm_{up}'], ['d','\itR','\rm_{WV}'], ['d','\itR','\rm_{Ta}'], ['d','\itR','\rm_{Alb}'], ['d','\itR','\rm_{Residual}'], ['d','\itR','\rm_{cld}']};
+            yLabel = {'W m^{-2}', 'W m^{-2}'};
             varColor = { '#F08212', '#4450A1', '#67C1EE',  '#90C64D', '#000000', '#C2162E'}; %橘色 深蓝 浅蓝 浅绿 黑色 红色
 
             % fig2
@@ -189,16 +189,17 @@ for exmNum = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             % time series
             timeSer = [1985 1990 1995 2000 2005 2010 2015 2025 2035 2045 2055 2065 2075 2085 2095 2105];
             if exmNum==1
-                timeSer = [1980 1985 1990 1995 2002 2006 2010 2014 2018 2025 2035 2045 2055 2065 2075 2085 2095 2105];
+                timeSer = [1980 1985 1990 1995 2000 2002 2004 2006 2008 2010 2012 2014 2018 2025 2035 2045 2055 2065 2075 2085 2095 2105];
+                % timeSer = [1980 1985 1990 1995 2002 2006 2010 2014 2018 2025 2035 2045 2055 2065 2075 2085 2095 2105];
             end
         
             char_timeSer = cellstr(string(timeSer));
             % fig set
-            set(0, 'DefaultFigureVisible', 'off')
+            set(0, 'DefaultFigureVisible', 'on')
             ss = get(0, 'ScreenSize');
             coef_amplify = 1.5;
             % h = figure('Position', [ss(4) / 2 - 100 ss(3) / 35 ss(3) / 5 * f_col * coef_amplify (ss(4) - 80) / 5 * f_row * coef_amplify]);
-            h = figure('Position', [84 246 889 514]);
+            h = figure('Position', [-998 220 889 570]);
             % clf reset;
             set(h, 'Color', [1 1 1]);
 
@@ -234,14 +235,25 @@ for exmNum = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             ylim([-ymax ymax])
 
             ax = gca;
-            ax.XMinorTick = 'on'; ax.YMinorTick = 'on'; % 开启次刻度线
-            ax.XAxis.MinorTickValues = (1980:1:2105);
-            ax.TickLength = [0.02 0.01]; %刻度线长度      set(gca,'ticklength', [0.02 0.01]);
-            ax.XColor = 'k'; ax.YColor = 'k'; % 设置刻度线颜色
-            ax.FontSize = 13;
+            ax.FontName='Microsoft YaHei';% Microsoft YaHei 'Time New Roman'
 
-            title_txt = {['Level:', num2str(toaSfc{2}), ', Era: ', level.time1{exmNum}(1:end - 10),' ',level.time1{exmNum}(end - 9:end-1)], ['Model:', level.model2{mdlNum} ', Ensemble: ', esmName{esmNum}], [num2str(latRange),'N-',num2str(latRange),'S land, global mean ']};
+            ax.XMinorTick = 'off'; ax.YMinorTick = 'off'; % 开启次刻度线
+            ax.XAxis.MinorTickValues = (1980:1:2105);
+            ax.TickLength = [0.015 0.01]; %刻度线长度      set(gca,'ticklength', [0.02 0.01]);
+            ax.XColor = 'k'; ax.YColor = 'k'; % 设置刻度线颜色
+            ax.FontSize = 14;
+            ax.LineWidth = 1.5;
+
+
+            title_txt = {['Level:', num2str(toaSfc{2}), ', Era: ', level.time1{exmNum}(1:end - 10),' ',level.time1{exmNum}(end - 9:end-1)], ['Model:', level.model2{mdlNum} ', Ensemble: ', esmName{esmNum}], [num2str(latRange),'N-',num2str(latRange),'S land, global mean '],''};
             title(title_txt, 'FontWeight', 'normal')%,'Units', 'normalized', 'position', [0.5,0.98]
+
+            % 去掉上边框和右边框的刻度
+            box off
+            xtick = get(gca, 'XTick');
+            ytick = get(gca, 'YTick');
+            line([xtick(1), xtick(end)], [ytick(end) ytick(end)], 'Color', 'k', 'LineWidth', 1.5)
+            line([timeYearly(end), timeYearly(end)], [ytick(end) ytick(1)], 'Color', 'k', 'LineWidth', 1.5)
 
             % lgdTxtTmp(1:6)={',cc='};
             % cc_weightMeanTxt=cellfun(@num2str,cc_weightMean,'UniformOutput',false);
@@ -255,11 +267,12 @@ for exmNum = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
 
             % save figures
             figName = [level.time1{exmNum}(1:end - 1), '_', level.model2{mdlNum}, '_', esmName{esmNum}];
-            figurePath = [mPath.Output1, '/', figName, '.png'];
+            figurePath = [mPath.Output1, '/', figName, '.eps'];
+            export_fig(gcf,figurePath,'-r600','-cmyk')
 
             % saveas(gcf, figurePath)
-            save_png(figurePath)%high resolution
-            close gcf
+            % save_png(figurePath)%high resolution
+            % close gcf
 
         end
 

@@ -1,7 +1,16 @@
 %%---------------------------------------------------------
 % Author       : LYC
+% Date         : 2020-11-26 16:07:41
+% LastEditTime : 2021-02-04 01:16:12
+% LastEditors  : LYC
+% Description  : 
+% FilePath     : /code/p3_paperFigIntegrate/Fig8_radContribAnalysis_caseLocShow_All.m
+%  
+%%---------------------------------------------------------
+%%---------------------------------------------------------
+% Author       : LYC
 % Date         : 2020-10-15 18:42:44
-% LastEditTime : 2020-12-08 15:00:35
+% LastEditTime : 2021-01-18 21:05:54
 % LastEditors  : Please set LastEditors
 % Description  : plot the exact area of east china 
 % FilePath     : /code/p3_paperFigIntegrate/Fig8_radContribAnalysis_caseLocShow_All.m
@@ -88,8 +97,10 @@ EURwest_bndry_lat=[latEUR(1) latEUR(2) latEUR(2) latEUR(1) latEUR(1)];
 m_line(EURwest_bndry_lon, EURwest_bndry_lat, 'linewi',linWi,'color','r')
 hold on
 
-save_png('/home/liuyc/Research/P02.Ts_change_research/figure/proj3_PaperFig/v0.0/Fig8_caseShow.png')%high resolution
+figPath='/home/liuyc/Research/P02.Ts_change_research/figure/proj3_PaperFig/v0.0/Fig8_caseShow.eps';
+export_fig(gcf,figPath,'-r600','-cmyk')
 
+% save_png('/home/liuyc/Research/P02.Ts_change_research/figure/proj3_PaperFig/v0.0/Fig8_caseShow.png')%high resolution
 
 
 

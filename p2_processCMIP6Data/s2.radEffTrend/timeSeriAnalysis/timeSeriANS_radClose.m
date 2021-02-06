@@ -1,8 +1,8 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-08-31 17:00:15
-% LastEditTime : 2020-11-10 21:13:19
-% LastEditors  : LYC
+% LastEditTime : 2021-01-14 16:37:25
+% LastEditors  : Please set LastEditors
 % Description  : 同时画时间序列和相关性分布图
 % FilePath     : /code/p2_processCMIP6Data/s2.radEffTrend/timeSeriAnalysis/timeSeriANS_radClose.m
 %
@@ -27,7 +27,7 @@ lon_f = lon_k; nlonf = length(lon_f);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % experiment
-for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for exmNum = 2:2%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     %CAMS-CSM1-0 didn't have sfc clear sky radiation, delete it
     [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(exmNum);
     % exmPath
@@ -37,7 +37,7 @@ for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
     auto_mkdir(mPath.Output)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % model
-    for mdlNum = 4:4%length(level.model2)
+    for mdlNum = 3:3%length(level.model2)
         % model path
         mdlName = level.model2{mdlNum};
         mdlPath = fullfile(exmPath, level.model2{mdlNum});
@@ -121,16 +121,16 @@ for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             % fig1
             dRheating=dR_cloud_sfc+husEffect+taEffect+albEffect+dR_residual_cld_sfc;
             
-            varUsed(:, :, :, 1) = dR_net_clr_sfc+dhFlux;
-            varUsed(:, :, :, 2) = tsEffect+husEffect+taEffect+albEffect;
-            varUsed(:, :, :, 3) = varUsed(:, :, :, 1)-varUsed(:, :, :, 2);
+            varUsed(:, :, :, 2) = dR_net_clr_sfc;
+            varUsed(:, :, :, 1) = tsEffect+husEffect+taEffect+albEffect;
+            varUsed(:, :, :, 3) = varUsed(:, :, :, 2)-varUsed(:, :, :, 1);
     
             sizeVarUsed = size(varUsed);
             sizeLon = sizeVarUsed(1); sizeLat = sizeVarUsed(2); sizeTime = sizeVarUsed(3); sizeVar = sizeVarUsed(4);
 
-            varNames = {'dR_{net}', 'dR_{all}', 'dR_{res}'};%, 'dR_{albedo}', 'dR_{residual}', 'dR_{cloud}'
-            yLabel = {'Wm-2', 'Wm-2', 'Wm-2', 'Wm-2', 'Wm-2', 'Wm-2', 'Wm-2', 'Wm-2', 'Wm-2'};
-            varColor = { '#F08212', '#4450A1', '#000000',  '#90C64D', '#000000', '#C2162E'}; %橘色 深蓝 浅蓝 浅绿 黑色 红色
+            varNames = { ['d','\itR','\rm_{net}(kernel calc)'], ['d','\itR','\rm_{net}'], 'Residual'};%, 'dR_{albedo}', 'dR_{residual}', 'dR_{cloud}'
+            yLabel = {'W m^{-2}', 'W m^{-2}', 'W m^{-2}', 'W m^{-2}', 'W m^{-2}', 'W m^{-2}', 'W m^{-2}', 'W m^{-2}', 'W m^{-2}'};
+            varColor = { '#F08212', '#C2162E', '#000000', '#4450A1',  '#90C64D', '#000000', '#C2162E'}; %橘色 深红 黑色 深蓝 浅蓝 浅绿 红色
 
  
             varUsedYearly=varUsed;
@@ -168,12 +168,14 @@ for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             %%%%%%%%%%%%%%%%%%%%%%%%%%%
             % plot time series and CC
             % time series
-            timeSer = [1985 1990 1995 2000 2005 2010 2015 2025 2035 2045 2055 2065 2075 2085 2095 2105];
+            timeSer = [1980 1985 1990 1995 2000 2005 2010 2015 2025 2035 2045 2055 2065 2075 2085 2095 2105];
             char_timeSer = cellstr(string(timeSer));
             timeNum = zeros(length(timeSer),1);
             for timeCount = 1:length(timeSer)
                 timeNum(timeCount,1) =datenum(timeSer(timeCount),01,01);
             end
+            timeNum(1)=timeYearly(1);
+            timeNum(8)=timeYearly(end);
             % fig set
             set(0, 'DefaultFigureVisible', 'on')
             ss = get(0, 'ScreenSize');
@@ -183,16 +185,16 @@ for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             % clf reset;
             set(h, 'Color', [1 1 1]);
 
+            pPlot=cell(1,3);
             for varNum = 1:sizeWeightMean(2)
                 varUsedTemp = squeeze(varUsedYearly_weightMean(:, varNum));
-                plot(timeYearly, varUsedTemp', 'color', varColor{varNum}, 'LineWidth', 2)
+                pPlot{varNum}=plot(timeYearly, varUsedTemp', 'color', varColor{varNum}, 'LineWidth', 2);
                 hold on
-
             end
 
             % zero line
             zeroLine = zeros(length(timeNum), 1);
-            plot(timeNum, zeroLine', '--k','LineWidth', 1)
+            plot(timeNum, zeroLine', '--k','LineWidth', 2)
             hold on;
 
             % set x axes
@@ -209,33 +211,50 @@ for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             if exmNum == 1 
                 ymax = 6;
             elseif  exmNum == 2
-                ymax = 8;
+                ymax = 5;
+                yticks([-5 -4 -3 -2 -1 0 1 2 3 4 5])
+                yticklabels({'-5','-4','-3','-2','-1','0','1','2','3','4','5'})
             end
 
             ylim([-ymax ymax])
 
             ax = gca;
-            ax.XMinorTick = 'on'; ax.YMinorTick = 'on'; % 开启次刻度线
-            ax.TickLength = [0.02 0.01]; %刻度线长度      set(gca,'ticklength', [0.02 0.01]);
+            ax.FontName='Microsoft YaHei';% Microsoft YaHei 'Time New Roman'
+            ax.XMinorTick = 'off'; ax.YMinorTick = 'off'; % 开启次刻度线
+            ax.TickLength = [0.015 0.01]; %刻度线长度      set(gca,'ticklength', [0.02 0.01]);
             ax.XColor = 'k'; ax.YColor = 'k'; % 设置刻度线颜色
-            title_txt = {['Level:', num2str(toaSfc{2}), ', Era: ', level.time1{exmNum}(1:end - 10),' ',level.time1{exmNum}(end - 9:end-1)], ['Model:', level.model2{mdlNum} ', Ensemble: ', esmName{esmNum}], [num2str(latRange),'N-',num2str(latRange),'S land, global mean ']};
+            ax.FontSize = 18;
+            ax.LineWidth = 1.5;
+            title_txt = {['Level:', num2str(toaSfc{2}), ', Era: ', level.time1{exmNum}(1:end - 10),' ',level.time1{exmNum}(end - 9:end-1)], ['Model:', level.model2{mdlNum} ', Ensemble: ', esmName{esmNum}], [num2str(latRange),'N-',num2str(latRange),'S land, global mean '], ''};
             title(title_txt, 'FontWeight', 'normal')
+            
+            % 去掉上边框和右边框的刻度
+            box off
+            xtick = get(gca,'XTick');
+            ytick = get(gca,'YTick');
+            line([xtick(1),xtick(end)],[ytick(end) ytick(end)],'Color','k','LineWidth', 1.5)
+            line([timeYearly(end),timeYearly(end)],[ytick(end) ytick(1)],'Color','k','LineWidth', 1.5)
 
+            
             % lgdTxtTmp(1:6)={',cc='};
             % cc_weightMeanTxt=cellfun(@num2str,cc_weightMean,'UniformOutput',false);
             % lgdTxt=cellfun(@strcat,varNames,lgdTxtTmp,cc_weightMeanTxt,'UniformOutput',false);
             % lgd = legend(lgdTxt, 'Fontsize', 8, 'Location', 'northwest', 'NumColumns', 3);
-            lgd = legend(varNames, 'Fontsize', 12, 'Location', 'north', 'NumColumns', 3);
+            lgd = legend([pPlot{1} pPlot{2} pPlot{3}], varNames, 'Fontsize', 16, 'Location', 'northwest', 'NumColumns', 1);
             legend('boxoff')%删除图例背景和轮廓
             lgd_inf = get(lgd);
-            text(lgd_inf.Position(1) - 0.12, lgd_inf.Position(2) + 0.085, ['cc= ', num2str(cc_weightMean{2})], 'FontWeight', 'normal', 'Interpreter', 'none', 'Units', 'normalized')
+            % text(lgd_inf.Position(1) - 0.12, lgd_inf.Position(2) + 0.085, ['cc= ', num2str(cc_weightMean{2})], 'FontWeight', 'normal', 'Interpreter', 'none', 'Units', 'normalized')
             % hold on
+            
 
             % save figures
             figName = [level.time1{exmNum}(1:end - 1), '_', level.model2{mdlNum}, '_', esmName{esmNum}];
-            figurePath = [mPath.Output, '/', figName, '.png'];
-            % saveas(gcf, figurePath)
-            % % save_png(figurePath)%high resolution
+            figurePath = [mPath.Output, '/', figName,'.eps'];
+ 
+            export_fig(gcf,figurePath,'-r600','-cmyk')
+
+            % save_png(figurePath)%high resolution
+            % print(gcf,figurePath,'-depsc2','-r600')
             % close gcf
 
         end

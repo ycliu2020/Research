@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-08-31 17:00:15
-% LastEditTime : 2020-11-25 17:04:57
+% LastEditTime : 2021-01-15 10:18:15
 % LastEditors  : Please set LastEditors
 % Description  : 同时画时间序列和相关性分布图
 % FilePath     : /code/p3_paperFigIntegrate/Fig1_2_radClosure/CMIP6_plot_RadClos.m
@@ -27,7 +27,8 @@ lon_f = lon_k; nlonf = length(lon_f);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % experiment
-for exmNum = 1:1%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for exmNum = 1:1
+    %1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     %CAMS-CSM1-0 didn't have sfc clear sky radiation, delete it
     [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(exmNum);
     % exmPath
@@ -37,7 +38,7 @@ for exmNum = 1:1%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
     auto_mkdir(mPath.Output)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % model
-    for mdlNum = 1:length(level.model2)
+    for mdlNum = 3:3%1:length(level.model2)
         % model path
         mdlName = level.model2{mdlNum};
         mdlPath = fullfile(exmPath, level.model2{mdlNum});
@@ -184,7 +185,7 @@ for exmNum = 1:1%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             end
 
             sfcToalevel = {'sfc', 'toa'}; upperLevel = upper(sfcToalevel);
-            Radname = {'dR_{NET} ', 'dR_{LW} ', 'dR_{SW} '};
+            Radname = {['d','\itR','\rm_{net} '], ['d','\itR','\rm_{LW} '], ['d','\itR','\rm_{SW} ']};
             set(0, 'defaultfigurecolor', 'w'); %设置画布底色为白色
             set(0, 'DefaultFigureVisible', 'off')
 
@@ -228,32 +229,38 @@ for exmNum = 1:1%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
                         yticklabels([])
                     end
     
+
+                    if waveProp == 1
+                        text(0.45, 1.1, upperLevel{sfcToa}, 'FontName', 'Microsoft YaHei', 'Fontsize', 16, 'units', 'normalized');
+                    end
+    
+                    if sfcToa == 1
+                        ylabel({'Rad Anomaly (W m^{-2})'}, 'Fontsize', 12)
+                    end
+    
+                    legend({Radname{waveProp}, 'Residual', [Radname{waveProp},'(kernel calc) cc =', num2str(cc(sfcToa, waveProp))]}, 'Fontsize', 10, 'Location', 'northwest','NumColumns', 2); %'Location', 'best''FontWeight', 'bold',
+                    legend('boxoff')%删除图例背景和轮廓
+                    
                     ax = gca;
+                    ax.FontName='Microsoft YaHei';% Microsoft YaHei 'Time New Roman'
                     ax.XMinorTick = 'on'; ax.YMinorTick = 'on'; % 开启次刻度线
                     ax.XAxis.MinorTickValues=timeNumFull;
                     ax.TickLength = [0.03 0.02]; %刻度线长度      set(gca,'ticklength', [0.02 0.01]);
                     ax.XColor = 'k'; ax.YColor = 'k'; % 设置刻度线颜色
-                    ax.FontSize=13;
-                    if waveProp == 1
-                        text(0.45, 1.1, upperLevel{sfcToa}, 'Fontsize', 15, 'units', 'normalized');
-                    end
-    
-                    if sfcToa == 1
-                        ylabel({'Rad Anomaly (Wm^{-2})'}, 'Fontsize', 12.5)
-                    end
-    
-                    legend({Radname{waveProp}, 'Residual', ['Kernel calculated, cc =', num2str(cc(sfcToa, waveProp))]}, 'Fontsize', 8,'FontWeight', 'bold', 'Location', 'northwest','NumColumns', 2); %'Location', 'best'
-                    legend('boxoff')%删除图例背景和轮廓
+                    ax.FontSize=12;
+                    ax.LineWidth = 1.5;
                 end
     
             end
             figureTitle = 'Radiation closure experiment (90N-90S mean)';
-            sgtitle({figureTitle, ['Model:', level.model2{mdlNum} ', Ensemble: ', esmName{esmNum},', Era: ', level.time1{exmNum}(1:end - 10),' 2000.03-2014.02']})
+            sgtitle({figureTitle, ['Model:', level.model2{mdlNum} ', Ensemble: ', esmName{esmNum},', Era: ', level.time1{exmNum}(1:end - 10),' 2000.03-2014.02']}, 'FontName', 'Microsoft YaHei', 'Fontsize', 18)
             figureName = ['Fig2_', level.model2{mdlNum}, '_', esmName{esmNum}, '_200003-201402_world_radClos'];
-            saveFileName = [mPath.Output, '/', figureName, '.png'];
+            saveFileName = [mPath.Output, '/', figureName, '.eps'];
+            export_fig(gcf,saveFileName,'-r600','-cmyk')
+
             % saveas(gcf, saveFileName)
-            save_png(saveFileName)%high resolution
-            close gcf
+            % save_png(saveFileName)%high resolution
+            % close gcf
                 
             
         end

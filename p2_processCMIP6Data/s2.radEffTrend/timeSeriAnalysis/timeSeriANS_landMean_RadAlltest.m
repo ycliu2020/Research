@@ -1,8 +1,8 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-08-31 17:00:15
-% LastEditTime : 2020-09-21 21:36:25
-% LastEditors  : LYC
+% LastEditTime : 2021-01-06 14:13:33
+% LastEditors  : Please set LastEditors
 % Description  : 同时画时间序列和相关性分布图
 % FilePath     : /code/p2_processCMIP6Data/s2.radEffTrend/timeSeriAnalysis/timeSeriANS_landMean_RadAlltest.m
 %
@@ -38,7 +38,7 @@ for exmNum = 2:2%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
     auto_mkdir(mPath.Output2)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % model
-    for mdlNum = 1:length(level.model2)
+    for mdlNum = 3:3%length(level.model2)
         % model path
         mdlName = level.model2{mdlNum};
         mdlPath = fullfile(exmPath, level.model2{mdlNum});
@@ -154,7 +154,7 @@ for exmNum = 2:2%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
                 varUsedYearly(:, :, :, varNum) = monthlyToYearly(squeeze(varUsed(:, :, :, varNum)));
             end
 
-            % mask only -60-60 land.
+            % mask only land.
             for varNum = 1:sizeVar
                 [varUsedYearly(:,:,:,varNum), ~, ~] = maskArea(squeeze(varUsedYearly(:,:,:,varNum)), lat_f, latRange, -latRange, 'world');
             end
@@ -245,12 +245,12 @@ for exmNum = 2:2%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             % text(lgd_inf.Position(1) - 0.12, lgd_inf.Position(2) + 0.085, ['cc= ', num2str(cc_weightMean{2})], 'FontWeight', 'normal', 'Interpreter', 'none', 'Units', 'normalized')
             % hold on
 
-            % save figures
-            figName = [level.time1{exmNum}(1:end - 1), '_', level.model2{mdlNum}, '_', esmName{esmNum}];
-            figurePath = [mPath.Output1, '/', figName, '.png'];
-            saveas(gcf, figurePath)
-            % save_png(figurePath)%high resolution
-            close gcf
+            % % save figures
+            % figName = [level.time1{exmNum}(1:end - 1), '_', level.model2{mdlNum}, '_', esmName{esmNum}];
+            % figurePath = [mPath.Output1, '/', figName, '.png'];
+            % saveas(gcf, figurePath)
+            % % save_png(figurePath)%high resolution
+            % close gcf
 
         end
 
