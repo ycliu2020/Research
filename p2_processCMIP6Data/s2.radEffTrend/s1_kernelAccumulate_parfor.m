@@ -1,8 +1,8 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-11-07 18:55:22
-% LastEditors  : LYC
+% LastEditTime : 2021-03-16 21:24:32
+% LastEditors  : Please set LastEditors
 % Description  : cal month mean ps and thickness dps, dp
 %                this script mainly include:ps and dps, dp
 %                PS:
@@ -29,8 +29,8 @@ else
 end
 
 %% 预选读取所有的路径
-exm1 = 3; exm2 = 3;
-mdl1 = 5; mdl2 = 'end';
+exm1 = 3; exm2 = 4;
+mdl1 = 1; mdl2 = 'end';
 esm1 = 1; esm2 = 'end';
 esmPath_assmble = cell(2, 1);
 mdlPath_assmble = esmPath_assmble;
@@ -181,7 +181,8 @@ function [] = esmFun(mdlPath, esmPath, exmNum, mdlNum, esmNum)
     month = 1:12;
     % Part2 cal dps,dp
     dp = zeros(nlonk, nlatk, 24, 12); % revise dp in all layers, under the lowest layer are zeros
-    dp_level2 = zeros(nlonk, nlatk, 24, 12); % only contain the near sfc
+    dp_level2 = zeros(nlonk, nlatk, 24, 12); % only contain the near sfc 2 level
+    dp_level1 = zeros(nlonk, nlatk, 24, 12); % only contain the near sfc 1 level
     dps = zeros(nlonk, nlatk, 12);
 
     for i = 1:nlonk
@@ -194,14 +195,17 @@ function [] = esmFun(mdlPath, esmPath, exmNum, mdlNum, esmNum)
                     continue
                 end
 
-                temp = find(player < ps_m(i, j, nt), 1, 'first');
-                dps(i, j, nt) = ps_m(i, j, nt) - plevel(temp + 1);
+                layerSfc = find(player < ps_m(i, j, nt), 1, 'first');
+                dps(i, j, nt) = ps_m(i, j, nt) - plevel(layerSfc + 1);
                 % dps(i, j, nt) = dp_bottom(i,j)123;
-                dp(i, j, temp, nt) = dps(i, j, nt);
-                dp(i, j, temp + 1:24, nt) = dp_raw(temp + 1:24);
+                dp(i, j, layerSfc, nt) = dps(i, j, nt);
+                dp(i, j, layerSfc + 1:24, nt) = dp_raw(layerSfc + 1:24);
                 % near surface level2
-                dp_level2(i, j, temp, nt) = dps(i, j, nt);
-                dp_level2(i, j, temp + 1, nt) = dp_raw(temp + 1);
+                dp_level2(i, j, layerSfc, nt) = dps(i, j, nt);
+                dp_level2(i, j, layerSfc + 1, nt) = dp_raw(layerSfc + 1);
+                % near surface level1
+                dp_level1(i, j, layerSfc, nt) = dps(i, j, nt);
+
             end
 
         end
@@ -209,7 +213,7 @@ function [] = esmFun(mdlPath, esmPath, exmNum, mdlNum, esmNum)
     end
 
     save([kernelsOutPath, 'global_vars.mat'], 'lon_k', 'lat_k', 'time', 'plev_k', 'readme', 'timeseries', 'modelname')
-    save([kernelsOutPath, 'kernel_dp.mat'], 'dps', 'dp', 'dp_level2');
+    save([kernelsOutPath, 'kernel_dp.mat'], 'dps', 'dp', 'dp_level2','dp_level1');
     save([kernelsOutPath, 'kernel_ps_m.mat'], 'ps_m');
     disp('ps is done!')
     %%%%% Part2 kernel accumlate
@@ -219,6 +223,7 @@ function [] = esmFun(mdlPath, esmPath, exmNum, mdlNum, esmNum)
         ts_lwkernel = ts_lwkernel_copy{sfcToa};
         t_lwkernel = t_lwkernel_copy{sfcToa};
         t_level2_lwkernel = t_lwkernel_copy{sfcToa}; % only contain near surface 2 levels
+        t_level1_lwkernel = t_lwkernel_copy{sfcToa}; % only contain near surface 1 levels
         wv_lwkernel = wv_lwkernel_copy{sfcToa};
         wv_swkernel = wv_swkernel_copy{sfcToa};
         numdp = 24;
@@ -227,12 +232,14 @@ function [] = esmFun(mdlPath, esmPath, exmNum, mdlNum, esmNum)
             % handle and unified unit: W/m2, note variable T is special
             t_lwkernel(:, :, 1, :) = squeeze(t_lwkernel(:, :, 1, :)) .* dps / 100;
             t_level2_lwkernel(:, :, 1, :) = squeeze(t_level2_lwkernel(:, :, 1, :)) .* dps / 100;
+            t_level1_lwkernel(:, :, 1, :) = squeeze(t_level1_lwkernel(:, :, 1, :)) .* dps / 100;
 
             for i = 1:numdp
                 wv_lwkernel(:, :, i, :) = wv_lwkernel(:, :, i, :) .* dp(:, :, i, :) / 100;
                 wv_swkernel(:, :, i, :) = wv_swkernel(:, :, i, :) .* dp(:, :, i, :) / 100;
                 t_lwkernel(:, :, i + 1, :) = t_lwkernel(:, :, i + 1, :) .* dp(:, :, i, :) / 100;
                 t_level2_lwkernel(:, :, i + 1, :) = t_level2_lwkernel(:, :, i + 1, :) .* dp_level2(:, :, i, :) / 100;
+                t_level1_lwkernel(:, :, i + 1, :) = t_level1_lwkernel(:, :, i + 1, :) .* dp_level1(:, :, i, :) / 100;
             end
 
         else
@@ -242,12 +249,13 @@ function [] = esmFun(mdlPath, esmPath, exmNum, mdlNum, esmNum)
                 wv_swkernel(:, :, i, :) = wv_swkernel(:, :, i, :) .* dp(:, :, i, :) / 100;
                 t_lwkernel(:, :, i, :) = t_lwkernel(:, :, i, :) .* dp(:, :, i, :) / 100;
                 t_level2_lwkernel(:, :, i, :) = t_level2_lwkernel(:, :, i, :) .* dp_level2(:, :, i, :) / 100;
+                t_level1_lwkernel(:, :, i, :) = t_level1_lwkernel(:, :, i, :) .* dp_level1(:, :, i, :) / 100;
             end
 
         end
 
         % save([kernelsOutPath,'global_vars.mat'], 'lon_k', 'lat_k', 'time','plev_k','readme','timeseries','modelname')
-        save([kernelsOutPath, saveName{sfcToa}], 'alb_swkernel', 'ts_lwkernel', 't_lwkernel', 't_level2_lwkernel', 'wv_lwkernel', 'wv_swkernel');
+        save([kernelsOutPath, saveName{sfcToa}], 'alb_swkernel', 'ts_lwkernel', 't_lwkernel', 't_level2_lwkernel', 't_level1_lwkernel', 'wv_lwkernel', 'wv_swkernel');
     end
     disp([level.model2{mdlNum}, ', ', level.time1{exmNum}, ', ', esmName{esmNum, 1}, ' ensemble is done!'])
     disp(' ')

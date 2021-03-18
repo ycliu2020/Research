@@ -34,8 +34,8 @@ shopt -s extglob # enable extended globbing
 # grd: grid_label
 
 locPath='/data1/liuyincheng/CMIP6-mirror/' # Directory of input files
-exp_set='historical ssp370'               # Experiment ( could be more )
-tab_set='Amon Omon'                               # table_ID
+exp_set='amip'               # Experiment ( could be more )
+tab_set='Amon'                               # table_ID
 var_set=("hus" "ta" "ts" "ps" "hfls" "hfss"\
     "rlus" "rsus" "rsds" "rlds" "rsuscs" "rsdscs" "rldscs" \
     "rlut" "rsut" "rsdt" "rlutcs" "rsutcs" "clisccp" "ua" "va" "wap" \

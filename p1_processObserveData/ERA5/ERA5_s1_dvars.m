@@ -1,8 +1,8 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-02 15:23:02
-% LastEditTime : 2020-07-08 10:02:18
-% LastEditors  : LYC
+% LastEditTime : 2021-03-17 19:10:25
+% LastEditors  : Please set LastEditors
 % Description  : process ERA5 data to anomaly (includ meto vars and rad)
 %                time line: 1. 2000-03 to 2018-02(18*12) 2. 200207-201706(15*12)
 %                note that all vertical fluxes is positive downwards.
@@ -12,7 +12,7 @@
 clc; clear; tic;
 % constant
 sigma = 5.67e-8; % Stefan-Boltzmann constant: Wm-2K-4
-kernels_path = '/data1/liuyincheng/y_kernels/kernels_YiH/toa/dp.nc';
+kernels_path = '/data1/liuyincheng/y_kernels/YiH/kernels_YiH/toa/dp.nc';
 lon_k = 0:2.5:357.5; nlonk = length(lon_k); % kernel lat lon
 lat_k = 90:-2.5:-90; nlatk = length(lat_k);
 lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f); % figure lat lon
@@ -33,8 +33,8 @@ ts_Path = fullfile(metoVarsPath, 'ts_1979-2019.nc');
 % read time
 % locate first year
 formatOut = 'yyyy-mm';
-temp_dir = dir(alb_Path);
-startT = cdftime2loc(temp_dir, formatOut, '2000-01');
+layerSfc_dir = dir(alb_Path);
+startT = cdftime2loc(layerSfc_dir, formatOut, '2000-01');
 % read time and transfor mat time
 startLoc = startT; count = 19 * 12; stride = 1;
 time0 = cmipTimeRead(alb_Path, startLoc, count, stride); %time.date, Units, Calendar, length
@@ -78,13 +78,13 @@ end
 % read level
 plev_ori = ncread(TQ_Path, 'level');
 plev_ori = double(plev_ori);
-plev_ori=plev_ori(end:-1:1);
-plev_k = ncread('/data1/liuyincheng/y_kernels/kernels_YiH/toa/dp.nc', 'player'); % player 最大1000符合条件pay attention to plev_k's range must smaller than plev_ori's
+plev_ori = plev_ori(end:-1:1);
+plev_k = ncread('/data1/liuyincheng/y_kernels/YiH/kernels_YiH/toa/dp.nc', 'player'); % player 最大1000符合条件pay attention to plev_k's range must smaller than plev_ori's
 nplevk = length(plev_k);
 
 % transform plev direction
-hus0=hus0(:,:,end:-1:1,:);
-ta0=ta0(:,:,end:-1:1,:);
+hus0 = hus0(:, :, end:-1:1, :);
+ta0 = ta0(:, :, end:-1:1, :);
 
 % Regrid to 2.5*2.5
 % 4D meto vars
@@ -155,6 +155,7 @@ for p_1 = 1:2% 1 mean 200003-201802
     dp_raw = ncread(kernels_path, 'dp');
     dp = zeros(nlonk, nlatk, 24, 12); %revise dp in all layers, under the lowest layer are zeros
     dp_level2 = zeros(nlonk, nlatk, 24, 12); % only contain the near sfc
+    dp_level1 = zeros(nlonk, nlatk, 24, 12); % only contain the near sfc
     dps = zeros(nlonk, nlatk, 12);
 
     for i = 1:nlonk
@@ -162,14 +163,17 @@ for p_1 = 1:2% 1 mean 200003-201802
         for j = 1:nlatk
 
             for nt = 1:12
-                temp = find(player < ps_m(i, j, nt), 1, 'first');
-                dps(i, j, nt) = ps_m(i, j, nt) - plevel(temp + 1);
+                layerSfc = find(player < ps_m(i, j, nt), 1, 'first');
+                dps(i, j, nt) = ps_m(i, j, nt) - plevel(layerSfc + 1);
                 % dps(i, j, nt) = dp_bottom(i,j)123;
-                dp(i, j, temp, nt) = dps(i, j, nt);
-                dp(i, j, temp + 1:24, nt) = dp_raw(temp + 1:24);
+                dp(i, j, layerSfc, nt) = dps(i, j, nt);
+                dp(i, j, layerSfc + 1:24, nt) = dp_raw(layerSfc + 1:24);
                 % near surface level2
-                dp_level2(i, j, temp, nt) = dps(i, j, nt);
-                dp_level2(i, j, temp + 1, nt) = dp_raw(temp + 1);
+                dp_level2(i, j, layerSfc, nt) = dps(i, j, nt);
+                dp_level2(i, j, layerSfc + 1, nt) = dp_raw(layerSfc + 1);
+                % near surface level1
+                dp_level1(i, j, layerSfc, nt) = dps(i, j, nt);
+
             end
 
         end
@@ -182,7 +186,7 @@ for p_1 = 1:2% 1 mean 200003-201802
     readme_ps_m.longName = 'Surface Pressure(monthly mean of mutiple years)';
     save([kernelCalPath, 'global_vars.mat'], 'lon_k', 'lat_k', 'time', 'plev_k')
     save([kernelCalPath, 'kernel_ps_m.mat'], 'ps_m', 'readme_ps_m')
-    save([kernelCalPath, 'kernel_dp.mat'], 'dps', 'dp', 'dp_level2');
+    save([kernelCalPath, 'kernel_dp.mat'], 'dps', 'dp', 'dp_level2', 'dp_level1');
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Part2: deseasonlize vars
     % meto vars
@@ -207,16 +211,16 @@ for p_1 = 1:2% 1 mean 200003-201802
     dvars.toaRad = strcat(var_state{1}, vars.toaRad); clim_vars.toaRad = strcat(var_state{2}, vars.toaRad);
 
     for radVarNum = 1:length(vars.sfcRad)
-        eval([vars.sfcRad{radVarNum},'=squeeze(rad_sfc(:,:,:,radVarNum));']); %
+        eval([vars.sfcRad{radVarNum}, '=squeeze(rad_sfc(:,:,:,radVarNum));']); %
         save([regridPath, vars.sfcRad{radVarNum}], vars.sfcRad{radVarNum});
 
         eval(['[', dvars.sfcRad{radVarNum}, ', ', clim_vars.sfcRad{radVarNum}, ']=monthlyAnomaly3D(nlonk, nlatk, time, squeeze(rad_sfc(:,:,:,radVarNum)), startMonth);']); %
         save([anomPath, dvars.sfcRad{radVarNum}], dvars.sfcRad{radVarNum}, clim_vars.sfcRad{radVarNum});
-        
+
     end
 
     for radVarNum = 1:length(vars.toaRad)
-        eval([vars.toaRad{radVarNum},'=squeeze(rad_toa(:,:,:,radVarNum));']); %
+        eval([vars.toaRad{radVarNum}, '=squeeze(rad_toa(:,:,:,radVarNum));']); %
         save([regridPath, vars.toaRad{radVarNum}], vars.toaRad{radVarNum});
 
         eval(['[', dvars.toaRad{radVarNum}, ', ', clim_vars.toaRad{radVarNum}, ']=monthlyAnomaly3D(nlonk, nlatk, time, squeeze(rad_toa(:,:,:,radVarNum)), startMonth);']); %

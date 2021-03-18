@@ -7,15 +7,6 @@
 % FilePath     : /code/p3_paperFigIntegrate/Fig8_radContribAnalysis_caseLocShow_All.m
 %  
 %%---------------------------------------------------------
-%%---------------------------------------------------------
-% Author       : LYC
-% Date         : 2020-10-15 18:42:44
-% LastEditTime : 2021-01-18 21:05:54
-% LastEditors  : Please set LastEditors
-% Description  : plot the exact area of east china 
-% FilePath     : /code/p3_paperFigIntegrate/Fig8_radContribAnalysis_caseLocShow_All.m
-%  
-%%---------------------------------------------------------
 clc; clear;
 nowpath = pwd;
 

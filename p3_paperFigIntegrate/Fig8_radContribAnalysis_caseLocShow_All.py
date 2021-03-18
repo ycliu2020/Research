@@ -1,7 +1,7 @@
 '''
 Author       : LYC
 Date         : 2021-01-24 23:17:56
-LastEditTime : 2021-02-06 10:38:53
+LastEditTime : 2021-02-06 11:11:20
 LastEditors  : LYC
 Description  : 
 FilePath     : /code/p3_paperFigIntegrate/Fig8_radContribAnalysis_caseLocShow_All.py
@@ -113,7 +113,7 @@ lnid = Ngl.add_polyline(wks, plot, EURwest_bndry_lon, EURwest_bndry_lat, lnres)
 
 Ngl.draw(plot)
 Ngl.frame(wks) # 翻页操作
-# # Ngl.destroy(wks)
+Ngl.destroy(wks)
 
 
 Ngl.end()

@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-08-31 17:00:15
-% LastEditTime : 2021-01-14 16:41:19
-% LastEditors  : Please set LastEditors
+% LastEditTime : 2021-02-09 00:10:20
+% LastEditors  : LYC
 % Description  : 同时画时间序列和相关性分布图
-% FilePath     : /code/p3_paperFigIntegrate/Fig3_timeSeries_tsVsRheatingRad/CMIP6_plot_fig3.m
+% FilePath     : /P02.Ts_change_research/code/p3_paperFigIntegrate/Fig3_timeSeries_tsVsRheatingRad/CMIP6_plot_fig3.m
 %
 %%---------------------------------------------------------
 clc; clear; tic;

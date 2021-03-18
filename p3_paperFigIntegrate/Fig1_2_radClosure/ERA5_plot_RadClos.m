@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-08 19:48:12
-% LastEditTime : 2021-01-15 10:06:44
-% LastEditors  : Please set LastEditors
+% LastEditTime : 2021-02-09 00:15:31
+% LastEditors  : LYC
 % Description  : plot radClos
-% FilePath     : /code/p3_paperFigIntegrate/Fig1_2_radClosure/ERA5_plot_RadClos.m
+% FilePath     : /P02.Ts_change_research/code/p3_paperFigIntegrate/Fig1_2_radClosure/ERA5_plot_RadClos.m
 %
 %%---------------------------------------------------------
 clc; clear;

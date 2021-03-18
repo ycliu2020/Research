@@ -1,13 +1,12 @@
 %%---------------------------------------------------------
 % Author       : LYC
-% Date         : 2020-08-09 14:58:33
-% LastEditTime : 2021-03-11 20:42:26
+% Date         : 2020-09-22 21:51:51
+% LastEditTime : 2021-03-12 16:59:31
 % LastEditors  : Please set LastEditors
-% Description  : v2 和 v1 最大的不同就在于v2采用了散点累积的积分, 而v1采用了线性关系的假设.
-% FilePath     : /code/p2_processCMIP6Data/s4.nonLocalCld/s2_nonLocalCld_method3_v2.m
+% Description  :
+% FilePath     : /code/p3_paperFigIntegrate/Fig11_nonLocalCld3_methodShow.m
 %
 %%---------------------------------------------------------
-
 clear; clc; tic;
 latRange = 88.75; % Latitude range
 lon1 = [2.5 357.5]; lat1 = [-latRange + 1 latRange - 1]; % world area
@@ -17,6 +16,7 @@ lat_k = 90:-2.5:-90; nlatk = length(lat_k);
 lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f); % figure lat lon
 lon_f = lon_k; nlonf = length(lon_f);
 load('/data1/liuyincheng/CMIP6-process/z_globalVar/ERF_rec.mat')% 'ERF_rec', 'timeERF_rec'
+outPutPath = '/home/liuyc/Research/P02.Ts_change_research/figure/proj3_PaperFig/v0.0/Fig11_CMIP6_showNonLocalCldCalcProcess/';
 
 for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     nowpath = pwd;
@@ -81,6 +81,9 @@ for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
 
             load([dradEffectPath, 'global_vars.mat'])% lat_f lon_f time plev_k readme
             ntime = length(time.date);
+
+            load([dnonLocalCldPath, 'lamda_nonCld.mat'])% lat_f lon_f time plev_k readme
+
             % load dtsg and DeltaTsg
             load([dvarsPath, 'dtsg_nomask.mat'])% dtsg
             load([dvarsTrendPath, 'DeltaTsg_nomask.mat'])% DeltaTsg, DeltaTsgMeaning
@@ -135,10 +138,17 @@ for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             dts_ctrl = gblM_ts -ts15fix - T_ref1850;
             % comput C and Cd
             [C_ref_Jim, Cd_ref_Jim, C_ref_Geo, Cd_ref_Geo] = calCCd();
-            C_ref = C_ref_Jim;
-            Cd_ref = Cd_ref_Jim; 
+            C_name = 'Jim';
+            if strcmp(C_name, 'Jim') == 1
+                C_ref = C_ref_Jim;
+                Cd_ref = Cd_ref_Jim;
+            elseif strcmp(C_name, 'Geo') == 1
+                C_ref = C_ref_Geo;
+                Cd_ref = Cd_ref_Geo;
+            end
+
             % 计算初始深海温度(估计方法及计算模块设计见oceanVarEst文件夹)
-            [b_td0] = calTd0F(Cd_ref);% Jim=0.1393 Geo=0.34895
+            [b_td0] = calTd0F(Cd_ref); % Jim=0.1393K Geo=0.34895K
             % b_td0 = 0.412; % 2015年相对于1850年(该预设过时且可能存在错误)
 
             %% Step2: 划分时间段以求拟合线
@@ -146,117 +156,90 @@ for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             %% 多个不同时间段的变化
             startY = 0; endY = 84; interY = 1;
             % 计算gamma值以及其他的积分值等
-            [integral_ts, integral_RnetTOA, dtd_ctrl, integral_td, gammaa] = EBMLayer2_gamma(C_ref, Cd_ref, gblM_R_netTOA, dts_ctrl, b_td0, startY, endY, interY);
+            [integral_ts, integral_RnetTOA, dtd_ctrl, integral_td, delta_td, integral_delta_td, gammaa] = EBMLayer2_gamma(C_ref, Cd_ref, gblM_R_netTOA, dts_ctrl, b_td0, startY, endY, interY);
+            %%%%%%%%%%%%%%%%%%%%%%%%%%
+            % Fig1 :plot delta Td
+            xdata = 2015:1:2099;
+            ydata = integral_delta_td';
 
-            %% step3: 计算没有云情况下的温度变化
-            %% 1) 计算非云气候反馈因子/参数
-            kb_RnonCld = polyfit(gblM_dts, gblM_dR_nonCloud, 1);
-            lamda_nonCld = abs(kb_RnonCld(1)); % 注意符号(根据反馈因子的定义)
+            timeSer = [1985 1990 1995 2000 2005 2015 2025 2035 2045 2055 2065 2075 2085 2095 2105];
 
-            % test F-lamda*T
-            % 云lamda
-            kb_RCld = polyfit(gblM_dts, gblM_dR_cloud_toa, 1);
-            lamda_Cld = abs(kb_RCld(1)); % 注意符号(根据反馈因子的定义)
-            % residual lamda
-            kb_Rres = polyfit(gblM_dts, gblM_dR_residual, 1);
-            lamda_res = abs(kb_Rres(1)); % 注意符号(根据反馈因子的定义)
-            dRTOA_cal = ERForcing' - lamda_nonCld .* (dts_ctrl - dts_ctrl(1)) - lamda_Cld .* (dts_ctrl - dts_ctrl(1)) - lamda_res .* (dts_ctrl - dts_ctrl(1));
+            yLabel = '\DeltaT_d (K)';
+            xLabel = 'time line';
 
-            lamda_nonCld = lamda_nonCld + lamda_res;
-            save([dnonLocalCldPath, 'lamda_nonCld.mat'], 'lamda_nonCld');
+            unitePlot(xdata, ydata, xLabel, yLabel, timeSer, 'on');
 
-            %% 2) 计算delta_dtnc, dtnc_ctrl, integral_dtnc(积分)  通过迭代的方法计算
-            [integral_ERF, dtnc_ctrl, integral_dtnc, delta_dtnc, Delta_dtnc] = EBMLayer2_tnc(ERForcing, lamda_nonCld, gammaa, integral_td, bts0, C_ref, startY, endY, interY);
-            % [] = EBMLayer2_tnc_plotTest(startY, endY, interY, dtnc_ctrl, DeltaTsg, Delta_dtnc, gammaa, mdlName);
-            DeltaTsg_cld = DeltaTsg - Delta_dtnc;
-            %%%%%%%%%%%%%%%%%%%%Part2: 计算局地+全球云的作用(cal dRnonLocalCld3 and trendyr_dRnonLocalCld3(unite: per day))%%%%%%%%%%%%%%%%%%%%%%%%%
-            load([dradEffectPath, 'dradEffect_sfc_cld.mat'])%albEffect, husEffect, taEffect, mainEffect, totalEffect, tsEffect, talwEffect, taswEffect
-            load([dradEffectPath, 'dR_residual_cld_sfc.mat'])% dR_residual_cld_sfc
-            varUsed(:, :, :, 1) = husEffect;
-            varUsed(:, :, :, 2) = taEffect;
-            varUsed(:, :, :, 3) = albEffect;
-            varUsed(:, :, :, 4) = dR_residual_cld_sfc;
-            varParitial = zeros(nlonf, nlatf, 4);
-            varKerParitial = varParitial;
-            % Step1: cal trendyr_dRnonLocalCld_toa/sfc(unite: per day)
-            for varNum = 1:4
-                tempTemp = squeeze(varUsed(:, :, :, varNum));
+            title({['ssp370 Model: ', mdlName]; ['T\_deep(2015): ', num2str(b_td0), '  T\_deep(2099): ', num2str(ydata(end))]; ['T(2015): ', num2str(bts0), '  T(2099): ', num2str(dts_ctrl(end)), ' (均相对于1850年)']})
 
-                for latNum = 1:nlatf
+            figName = [outPutPath, 'Td/ssp370_r1i1p1f1_', mdlName,'_',C_name,'.png'];
 
-                    for lonNum = 1:nlonf
-                        tempUsed = squeeze(squeeze(tempTemp(lonNum, latNum, :)));
-                        k = polyfit(dtsg, tempUsed, 1); % 一元一次拟合
-                        varParitial(lonNum, latNum, varNum) = k(1);
-                    end
+            saveas(gcf, figName)
+            close gcf
 
-                end
+            %%%%%%%%%%%%%%%%%%%%%%%%%%
+            % Fig2 :plot delta gamma
+            xdata = integral_ts - integral_td;
+            ydata = integral_delta_td .* Cd_ref;
+            xdata = xdata(40:end);
+            ydata = ydata(40:end);
+            xLabel = '\Sigma(T-T_d)';
+            yLabel = 'C_d\DeltaT_d';
 
-            end
+            unitePlot(xdata, ydata, xLabel, yLabel, timeSer, 'off');
+            hold on
 
-            dRnonLocalCld3_hus = squeeze(varParitial(:, :, 1)) * DeltaTsg_cld;
-            dRnonLocalCld3_ta = squeeze(varParitial(:, :, 2)) * DeltaTsg_cld;
-            dRnonLocalCld3_alb = squeeze(varParitial(:, :, 3)) * DeltaTsg_cld;
-            dRnonLocalCld3_res = squeeze(varParitial(:, :, 4)) * DeltaTsg_cld;
-            dRnonLocalCld3 = dRnonLocalCld3_hus + dRnonLocalCld3_ta + dRnonLocalCld3_alb + dRnonLocalCld3_res;
+            kb = polyfit(xdata, ydata, 1);
+            k = kb(1);
+            b = kb(2);
+            yfitPlot = polyval(kb, 1:1000);
+            plot(1:1000, yfitPlot, '-k', 'LineWidth', 3)
 
-            trendyr_dRnonLocalCld3 = dRnonLocalCld3 ./ (time.date(end) - time.date(1));
-            save([dnonLocalCldPath, 'dRnonLocalCld3_sfc.mat'], 'dRnonLocalCld3_hus', 'dRnonLocalCld3_ta', 'dRnonLocalCld3_alb', 'dRnonLocalCld3_res', 'dRnonLocalCld3')
-            save([dnonLocalCldPath, 'trendyr_dRnonLocalCld3_sfc.mat'], 'trendyr_dRnonLocalCld3')
+            title({['ssp370 Model: ', mdlName]; ['斜率: ', num2str(k), ' 截距: ', num2str(b), '取后44年结果拟合']})
 
-            % Step2: cal trendyr_dTsnonLocalCld3_toa/sfc(unite: per day)
-            % load ts kernel
-            load([kernelPath, '/kernels_sfc_cld'], 'ts_lwkernel');
-            load([kernelPath, '/global_vars.mat']); % lat_k,lon_k,time
-            % regrid ts_lwkernel to 144x72(unite grids)
-            kernelTime = 1:12;
-            [Xlon, Ylat, Ttime] = meshgrid(lat_f, lon_f, kernelTime);
-            [Xlonf, Ylatf, Ttimef] = meshgrid(lat_k, lon_k, kernelTime);
-            ts_lwkernel = interp3(Xlonf, Ylatf, Ttimef, ts_lwkernel, Xlon, Ylat, Ttime);
-            % extend to the whole time series
-            startmonth = 1;
+            lgd = legend('data', 'Linear fit', 'Fontsize', 14, 'Location', 'northwest');
+            lgd_inf = get(lgd);
 
-            if startmonth ~= 1
-                tempK = zeros(nlonf, nlatf, 12);
-                tempK(1:12 - startmonth + 1) = ts_lwkernel(:, :, startmonth:12);
-                tempK(12 - startmonth + 2:12) = ts_lwkernel(:, :, 1:startmonth - 1);
-                ts_lwkernel = tempK;
-            end
+            % 计算r2并标注
+            yfit = polyval(kb, xdata);
+            yresid = ydata - yfit; %将残差值计算为有符号数的向量：
+            SSresid = sum(yresid.^2); %计算残差的平方并相加，以获得残差平方和：
+            SStotal = (length(ydata) - 1) * var(ydata); %通过将观测次数减 1(自由度) 再乘以 y 的方差，计算 y 的总平方和：
+            rsq = 1 - SSresid / SStotal; %计算r2
+            text_ant = {['R^2= ', num2str(rsq)], ['\gamma=slope=', num2str(k)]};
 
-            nyear = ntime / 12;
-            ts_lwkernelSeries = repmat(ts_lwkernel, [1 1 nyear]);
-
-            for varNum = 1:4
-                varKerUsed(:, :, :, varNum) = squeeze(varUsed(:, :, :, varNum)) ./ -ts_lwkernelSeries;
-            end
-
-            for varNum = 1:4
-                tempTemp = squeeze(varKerUsed(:, :, :, varNum));
-
-                for latNum = 1:nlatf
-
-                    for lonNum = 1:nlonf
-                        tempUsed = squeeze(squeeze(tempTemp(lonNum, latNum, :)));
-                        k = polyfit(dtsg, tempUsed, 1); % 一元一次拟合
-                        varKerParitial(lonNum, latNum, varNum) = k(1);
-                    end
-
-                end
-
-            end
-
-            dTsnonLocalCld3_hus = squeeze(varKerParitial(:, :, 1)) * DeltaTsg_cld;
-            dTsnonLocalCld3_ta = squeeze(varKerParitial(:, :, 2)) * DeltaTsg_cld;
-            dTsnonLocalCld3_alb = squeeze(varKerParitial(:, :, 3)) * DeltaTsg_cld;
-            dTsnonLocalCld3_res = squeeze(varKerParitial(:, :, 4)) * DeltaTsg_cld;
-
-            dTsnonLocalCld3 = dTsnonLocalCld3_hus + dTsnonLocalCld3_ta + dTsnonLocalCld3_alb + dTsnonLocalCld3_res;
-            trendyr_dTsnonLocalCld3 = dTsnonLocalCld3 ./ (time.date(end) - time.date(1));
-
-            save([dnonLocalCldPath, 'dTsnonLocalCld3_sfc.mat'], 'dTsnonLocalCld3_hus', 'dTsnonLocalCld3_ta', 'dTsnonLocalCld3_alb', 'dTsnonLocalCld3_res', 'dTsnonLocalCld3')
-            save([dnonLocalCldPath, 'trendyr_dTsnonLocalCld3_sfc.mat'], 'trendyr_dTsnonLocalCld3')
+            text(lgd_inf.Position(1) - 0.12, lgd_inf.Position(2), text_ant, 'Fontsize', 14, 'units', 'normalized');
+            hold on
 
             disp([esmName{esmNum, 1}, ' ensemble is done!'])
+            figName = [outPutPath, 'Gamma/ssp370_r1i1p1f1_', mdlName,'_',C_name,'.png'];
+            saveas(gcf, figName)
+
+            %%%%%%%%%%%%%%%%%%%%%%%%%%
+            % Fig3 :plot Tnc
+            %% 2) 计算delta_dtnc, dtnc_ctrl, integral_dtnc(积分)  通过迭代的方法计算
+            [integral_ERF, dtnc_ctrl, integral_dtnc, delta_dtnc, Delta_dtnc] = EBMLayer2_tnc(ERForcing, lamda_nonCld, gammaa, integral_td, bts0, C_ref, startY, endY, interY);
+
+            xdata = 2015:1:2099;
+            ydata = dtnc_ctrl';
+
+            yLabel = '\T_{nc} (K)';
+            xLabel = 'time line';
+            kb = polyfit(xdata, ydata, 1);
+            k = kb(1);
+            b = kb(2);
+            yfit = polyval(kb, xdata);
+
+            unitePlot(xdata, ydata, xLabel, yLabel, timeSer, 'on');
+            % old measure
+            DeltaTsg_cld = DeltaTsg - Delta_dtnc;
+       
+
+            title({['ssp370 Model: ', mdlName]; ['斜率: ', num2str(k), ' T_{nc}(2015): ', num2str(ydata(1)), ' T_{nc}(2099): ', num2str(ydata(end))]; ['T(2015): ', num2str(bts0), '  T(2099): ', num2str(dts_ctrl(end)), ' (均相对于1850年)']; ['无云情况下温度变化:', num2str(Delta_dtnc), '云致温度变化:', num2str(DeltaTsg_cld)]})
+
+            figName = [outPutPath, 'Tnc/ssp370_r1i1p1f1_', mdlName,'_',C_name,'.png'];
+            saveas(gcf, figName)
+            close gcf
+
         end
 
         disp([mdlName, ' model is done!'])
@@ -268,9 +251,7 @@ for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
 
 end
 
-t = toc; disp(t)
-
-function [integral_ts, integral_RnetTOA, dtd_ctrl, integral_td, gammaa] = EBMLayer2_gamma(C_ref, Cd_ref, gblM_R_netTOA, dts_ctrl, b_td0, startY, endY, interY)
+function [integral_ts, integral_RnetTOA, dtd_ctrl, integral_td, delta_td, integral_delta_td, gammaa] = EBMLayer2_gamma(C_ref, Cd_ref, gblM_R_netTOA, dts_ctrl, b_td0, startY, endY, interY)
     % 计算gamma值
     % switch nargin
     %     case 8
@@ -382,28 +363,32 @@ function [integral_ERF, dtnc_ctrl, integral_dtnc, delta_dtnc, Delta_dtnc] = EBML
 
 end
 
-function [] = EBMLayer2_tnc_plotTest(startY, endY, interY, dtnc_ctrl, DeltaTsg, Delta_dtnc, gammaa, mdlName, figName)
-    % 计算没有云情况下, 温度变化的斜率
-    switch nargin
-        case 8
-            figName = [];
+function [] = unitePlot(xdata, ydata, xLabel, yLabel, timeSer, axtickSwich)
+
+    char_timeSer = cellstr(string(timeSer));
+
+    set(0, 'DefaultFigureVisible', 'off')
+    ss = get(0, 'ScreenSize');
+    h1 = figure('Position', [-1021 -743 843 545]);
+    set(h1, 'Color', [1 1 1]);
+    plot(xdata, ydata, 'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', '#67C1EE', 'LineWidth', 2, 'MarkerSize', 8)
+
+    % set x axes
+    if strcmp(axtickSwich, 'on')
+        datetick('x', 'yyyy', 'keepticks'); % 用日期的格式显示横坐标
+        xticks(timeSer)
+        xticklabels(char_timeSer)
     end
 
-    xdata = startY:interY:endY;
-    ydata = dtnc_ctrl';
-    yLabel = 'tnc(非云致温度变化)';
-    xLabel = 'time';
+    xlim([xdata(1) - 5 xdata(end) + 5])
+    ylim([min(ydata) - 0.05 * (max(ydata) - min(ydata)) max(ydata) + 0.05 * (max(ydata) - min(ydata))])
+    xlabel(xLabel)
+    ylabel(yLabel)
 
-    % 线性拟合
-    [k_fit, ~] = plotLinFit(xdata, ydata, xLabel, yLabel, mdlName, figName);
-
-    k_tnc = k_fit;
-
-    DeltaTsg_cld = DeltaTsg - Delta_dtnc;
-
-    title({['ssp370 Model: ', mdlName]; ['k\_tnc: ', num2str(k_tnc), ' gamma:', num2str(gammaa)]; ['无云情况下温度变化:', num2str(Delta_dtnc), '云致温度变化:', num2str(DeltaTsg_cld)]})
-    figName = ['/home/liuyc/Research/P02.Ts_change_research/figure/02.cmip6Result/1.6/nonLocalCld3/tempChangeTest/ssp370_r1i1p1f1_', mdlName, '_Jim.png'];
-    saveas(gcf, figName)
+    ax = gca;
+    % ax.TickLength = [0.02 0.01]; %刻度线长度      set(gca,'ticklength', [0.02 0.01]);
+    ax.XColor = 'k'; ax.YColor = 'k'; % 设置刻度线颜色
+    ax.FontSize = 13;
 
 end
 

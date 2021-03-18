@@ -1,8 +1,8 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-08-09 14:58:33
-% LastEditTime : 2020-09-23 09:54:14
-% LastEditors  : LYC
+% LastEditTime : 2021-03-11 14:31:56
+% LastEditors  : Please set LastEditors
 % Description  : 这里和1的区别主要采用了离散的计算方式计算gamma项  修正计算非云致温度变化实验可行性分析 feasibility study report
 % FilePath     : /code/p2_processCMIP6Data/s4.nonLocalCld/s2_nonLocalCld_method3_v2_testEBM2_FSR2.m
 %
@@ -113,15 +113,23 @@ for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             
             %% Step2: 划分时间段以求拟合线
             % 二层EBM模型
-            % model parameters
-            D_ref = 55; Dd_ref = 2768; % D_ref = 77; Dd_ref = 1105; in Geoffroy and D_ref = 55; Dd_ref = 2768; in Jiménez-de-la-Cuesta,
+            %% model parameters
+            D_ref_Jim = 55; Dd_ref_Jim = 2768; % D_ref = 77; Dd_ref = 1105; in Geoffroy and D_ref = 55; Dd_ref = 2768; in Jiménez-de-la-Cuesta,
+            D_ref_Geo = 77; Dd_ref_Geo = 1105; 
             cp_water = 4180; % heat capacity J/kg/K
             rho_water = 1030; % desnsity of saltwater kg/m3
             f0 = 0.7; % The proportion of ocean cover the earth surface
             % cal reference C and C0
-            C_ref = (D_ref * rho_water * cp_water * f0) / (86400 * 365.25); % C_ref(upper-ocean) mean the result of formula (22) in reference Geoffroy
-            Cd_ref = (Dd_ref * rho_water * cp_water * f0) / (86400 * 365.25); % Cd_ref(deep-layer ocean) mean the result of formula (22) in reference Geoffroy
+            C_ref_Jim = (D_ref_Jim * rho_water * cp_water * f0) / (86400 * 365.25); % C_ref(upper-ocean) mean the result of formula (22) in reference Geoffroy
+            Cd_ref_Jim = (Dd_ref_Jim * rho_water * cp_water * f0) / (86400 * 365.25); % Cd_ref(deep-layer ocean) mean the result of formula (22) in reference Geoffroy
+
+            C_ref_Geo = (D_ref_Geo * rho_water * cp_water * f0) / (86400 * 365.25); % C_ref(upper-ocean) mean the result of formula (22) in reference Geoffroy
+            Cd_ref_Geo = (Dd_ref_Geo * rho_water * cp_water * f0) / (86400 * 365.25); % Cd_ref(deep-layer ocean) mean the result of formula (22) in reference Geoffroy
             
+            % choose exact guy's parameter
+            C_ref = C_ref_Jim;
+            Cd_ref = Cd_ref_Jim;
+
             %% 多个不同时间段的变化
             startY = 0; endY = 84; interY = 1;
             timeExamp = startY + interY * 2 - 1:interY:endY;

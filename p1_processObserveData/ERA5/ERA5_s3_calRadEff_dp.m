@@ -1,8 +1,8 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-06 08:55:44
-% LastEditTime : 2020-07-09 18:32:32
-% LastEditors  : LYC
+% LastEditTime : 2021-03-17 21:14:54
+% LastEditors  : Please set LastEditors
 % Description  :
 % FilePath     : /code/p1_processObserveData/ERA5/ERA5_s3_calRadEff_dp.m
 %
@@ -81,10 +81,12 @@ for p_1 = 1:2
             taOnlyEffect = zeros(144, 73, plevel, ntime);
             % consider 2 levels near sfc
             tasEffect2 = taEffect;
+            tasEffect1 = taEffect;
         else
             taEffect = zeros(144, 73, plevel, ntime);
             % consider 2 levels near sfc
             tasEffect2 = taEffect;
+            tasEffect1 = taEffect;
         end
 
         % Kernels and mat data are both from bottom to top
@@ -101,29 +103,34 @@ for p_1 = 1:2
                 taEffect(:, :, 1, monNum) = squeeze(t_lwkernel(:, :, 1, mod(monNum + startMonth - 2, 12) + 1)) .* dts(:, :, monNum);
                 tasEffect(:, :, monNum) = taEffect(:, :, 1, monNum);
                 taOnlyEffect(:, :, :, monNum) = taEffect(:, :, 2:end, monNum);
+                
+                % consider 1 levels near sfc
+                tasEffect1(:, :, 2:end, monNum) = t_level1_lwkernel(:, :, 2:end, mod(monNum + startMonth - 2, 12) + 1) .* dta(:, :, :, monNum);
+                tasEffect1(:, :, 1, monNum) = squeeze(t_level1_lwkernel(:, :, 1, mod(monNum + startMonth - 2, 12) + 1)) .* dts(:, :, monNum);
+
                 % consider 2 levels near sfc(have problem)
                 tasEffect2(:, :, 2:end, monNum) = t_level2_lwkernel(:, :, 2:end, mod(monNum + startMonth - 2, 12) + 1) .* dta(:, :, :, monNum);
                 tasEffect2(:, :, 1, monNum) = squeeze(t_level2_lwkernel(:, :, 1, mod(monNum + startMonth - 2, 12) + 1)) .* dts(:, :, monNum);
                 else% toa
                 taEffect(:, :, :, monNum) = t_lwkernel(:, :, :, mod(monNum + startMonth - 2, 12) + 1) .* dta(:, :, :, monNum);
+                
+                % consider 1 levels near sfc
+                tasEffect1(:, :, :, monNum) = t_level1_lwkernel(:, :, :, mod(monNum + startMonth - 2, 12) + 1) .* dta(:, :, :, monNum);
                 % consider 2 levels near sfc
                 tasEffect2(:, :, :, monNum) = t_level2_lwkernel(:, :, :, mod(monNum + startMonth - 2, 12) + 1) .* dta(:, :, :, monNum);
             end
 
         end
 
-        taOnlyEffect2 = taEffect - tasEffect2;
 
         wvlwEffect = squeeze(nansum(wvlwEffect(:, :, :, :), 3));
         wvswEffect = squeeze(nansum(wvswEffect(:, :, :, :), 3));
         taEffect = squeeze(nansum(taEffect(:, :, :, :), 3));
         tasEffect2 = squeeze(nansum(tasEffect2(:, :, :, :), 3));
+        tasEffect1 = squeeze(nansum(tasEffect1(:, :, :, :), 3));
 
         if ii <= 2
             taOnlyEffect = squeeze(nansum(taOnlyEffect(:, :, :, :), 3));
-            taOnlyEffect2 = squeeze(nansum(taOnlyEffect2(:, :, :, :), 3));
-        else
-            taOnlyEffect2 = squeeze(nansum(taOnlyEffect2(:, :, :, :), 3));
         end
 
         % regrid 144x72(unite grids)
@@ -140,21 +147,21 @@ for p_1 = 1:2
 
         if ii <= 2
             taOnlyEffect = autoRegrid3(lon_k, lat_k, time, taOnlyEffect, lon_f, lat_f, time);
-            taOnlyEffect2 = autoRegrid3(lon_k, lat_k, time, taOnlyEffect2, lon_f, lat_f, time);
             tasEffect = autoRegrid3(lon_k, lat_k, time, tasEffect, lon_f, lat_f, time);
             tasEffect2 = autoRegrid3(lon_k, lat_k, time, tasEffect2, lon_f, lat_f, time);
+            tasEffect1 = autoRegrid3(lon_k, lat_k, time, tasEffect1, lon_f, lat_f, time);
 
             % save the radEffect: dradEfect_sfc_cld.mat
             save([radEfectPath, 'global_vars.mat'], 'lon_f', 'lat_f', 'lon_k', 'lat_k', 'plev_k', 'time')
             save([radEfectPath, saveradEfectName{ii}], 'wvlwEffect', 'wvswEffect', 'tsEffect', 'albEffect', 'husEffect', ...
-                'taEffect', 'taOnlyEffect', 'tasEffect', 'tasEffect2', 'taOnlyEffect2', 'totalEffect', 'mainEffect');
+                'taEffect', 'taOnlyEffect', 'tasEffect', 'tasEffect2','tasEffect1', 'totalEffect', 'mainEffect');
         else
-            taOnlyEffect2 = autoRegrid3(lon_k, lat_k, time, taOnlyEffect2, lon_f, lat_f, time);
             tasEffect2 = autoRegrid3(lon_k, lat_k, time, tasEffect2, lon_f, lat_f, time);
+            tasEffect1 = autoRegrid3(lon_k, lat_k, time, tasEffect1, lon_f, lat_f, time);
             % save the radEffect: dradEfect_sfc_cld.mat
             save([radEfectPath, 'global_vars.mat'], 'lon_f', 'lat_f', 'lon_k', 'lat_k', 'plev_k', 'time')
             save([radEfectPath, saveradEfectName{ii}], 'wvlwEffect', 'wvswEffect', 'tsEffect', 'albEffect', 'husEffect', ...
-                'taEffect', 'tasEffect2', 'taOnlyEffect2', 'totalEffect', 'mainEffect');
+                'taEffect', 'tasEffect2', 'tasEffect1', 'totalEffect', 'mainEffect');
         end
 
         % store vars in one var( 1sfc cld,2sfc clr,3toa cld,4toa clr)

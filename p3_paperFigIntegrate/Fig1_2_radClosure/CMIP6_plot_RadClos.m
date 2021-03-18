@@ -1,8 +1,8 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-08-31 17:00:15
-% LastEditTime : 2021-01-15 10:18:15
-% LastEditors  : Please set LastEditors
+% LastEditTime : 2021-02-09 01:44:14
+% LastEditors  : LYC
 % Description  : 同时画时间序列和相关性分布图
 % FilePath     : /code/p3_paperFigIntegrate/Fig1_2_radClosure/CMIP6_plot_RadClos.m
 %

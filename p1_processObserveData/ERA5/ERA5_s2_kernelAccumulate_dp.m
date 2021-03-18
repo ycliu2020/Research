@@ -8,7 +8,7 @@
 clc; clear; tic;
 %% kernel data
 % kernel path
-kernelsPath = '/data1/liuyincheng/y_kernels/kernels_YiH/';
+kernelsPath = '/data1/liuyincheng/y_kernels/YiH/kernels_YiH/';
 kernelsLevel1_hight = {'surface', 'toa'};
 kernelsLevel2_sky = {'cld', 'clr'};
 kernelsLevel3_Vars = {'alb', 'ts', 't', 'wv_lw', 'wv_sw'};
@@ -54,14 +54,14 @@ for sfcToa = 1:4%filename: 1sfc cld,2sfc clr,3toa cld,4toa clr
 end
 
 % read kernels height level
-exampKernelPath = '/data1/liuyincheng/y_kernels/kernels_YiH/surface/';
+exampKernelPath = '/data1/liuyincheng/y_kernels/YiH/kernels_YiH/surface/';
 plevel = ncread([exampKernelPath, 'dp.nc'], 'plevel');
 player = ncread([exampKernelPath, 'dp.nc'], 'player');
 dp_raw = ncread([exampKernelPath, 'dp.nc'], 'dp');
 
 % read lat lon
-lon_k = ncread('/data1/liuyincheng/y_kernels/kernels_YiH/toa/RRTMG_wv_lw_toa_cld_highR.nc', 'lon'); nlonk = length(lon_k);
-lat_k = ncread('/data1/liuyincheng/y_kernels/kernels_YiH/toa/RRTMG_wv_lw_toa_cld_highR.nc', 'lat'); nlatk = length(lat_k);
+lon_k = ncread('/data1/liuyincheng/y_kernels/YiH/kernels_YiH/toa/RRTMG_wv_lw_toa_cld_highR.nc', 'lon'); nlonk = length(lon_k);
+lat_k = ncread('/data1/liuyincheng/y_kernels/YiH/kernels_YiH/toa/RRTMG_wv_lw_toa_cld_highR.nc', 'lat'); nlatk = length(lat_k);
 
 %% different time series, 1mean 2000-03 to 2018-02(18*12). 2 mean 200207-201706(15*12)
 [readme, level, tLin, vars] = obsParameters('ERA5');
@@ -77,6 +77,7 @@ for p_1 = 1:2
         ts_lwkernel = ts_lwkernel_copy{sfcToa};
         t_lwkernel = t_lwkernel_copy{sfcToa};
         t_level2_lwkernel = t_lwkernel_copy{sfcToa}; % only contain near surface 2 levels
+        t_level1_lwkernel = t_lwkernel_copy{sfcToa}; % only contain near surface 2 levels
         wv_lwkernel = wv_lwkernel_copy{sfcToa};
         wv_swkernel = wv_swkernel_copy{sfcToa};
         numdp = 24;
@@ -85,12 +86,14 @@ for p_1 = 1:2
             % handle and unified unit: W/m2, note variable T is special
             t_lwkernel(:, :, 1, :) = squeeze(t_lwkernel(:, :, 1, :)) .* dps / 100;
             t_level2_lwkernel(:, :, 1, :) = squeeze(t_level2_lwkernel(:, :, 1, :)) .* dps / 100;
+            t_level1_lwkernel(:, :, 1, :) = squeeze(t_level1_lwkernel(:, :, 1, :)) .* dps / 100;
 
             for i = 1:numdp
                 wv_lwkernel(:, :, i, :) = wv_lwkernel(:, :, i, :) .* dp(:, :, i, :) / 100;
                 wv_swkernel(:, :, i, :) = wv_swkernel(:, :, i, :) .* dp(:, :, i, :) / 100;
                 t_lwkernel(:, :, i + 1, :) = t_lwkernel(:, :, i + 1, :) .* dp(:, :, i, :) / 100;
                 t_level2_lwkernel(:, :, i + 1, :) = t_level2_lwkernel(:, :, i + 1, :) .* dp_level2(:, :, i, :) / 100;
+                t_level1_lwkernel(:, :, i + 1, :) = t_level1_lwkernel(:, :, i + 1, :) .* dp_level1(:, :, i, :) / 100;
             end
 
         else
@@ -100,12 +103,13 @@ for p_1 = 1:2
                 wv_swkernel(:, :, i, :) = wv_swkernel(:, :, i, :) .* dp(:, :, i, :) / 100;
                 t_lwkernel(:, :, i, :) = t_lwkernel(:, :, i, :) .* dp(:, :, i, :) / 100;
                 t_level2_lwkernel(:, :, i, :) = t_level2_lwkernel(:, :, i, :) .* dp_level2(:, :, i, :) / 100;
+                t_level1_lwkernel(:, :, i, :) = t_level1_lwkernel(:, :, i, :) .* dp_level1(:, :, i, :) / 100;
             end
 
         end
 
         % save([kernelsOutPath,'global_vars.mat'], 'lonf', 'latf', 'time','plevf','readme','timeseries','modelname')
-        save([kernelCalPath, saveName{sfcToa}], 'alb_swkernel', 'ts_lwkernel', 't_lwkernel', 't_level2_lwkernel', 'wv_lwkernel', 'wv_swkernel');
+        save([kernelCalPath, saveName{sfcToa}], 'alb_swkernel', 'ts_lwkernel', 't_lwkernel', 't_level2_lwkernel', 't_level1_lwkernel', 'wv_lwkernel', 'wv_swkernel');
     end
-    clear dp dps dp_level2
+    clear dp dps dp_level2 dp_level1
 end

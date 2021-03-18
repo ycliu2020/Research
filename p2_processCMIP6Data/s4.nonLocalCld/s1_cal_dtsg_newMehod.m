@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-29 09:58:38
-% LastEditTime : 2020-07-29 11:31:46
-% LastEditors  : LYC
+% LastEditTime : 2021-03-11 20:29:43
+% LastEditors  : Please set LastEditors
 % Description  : 相比旧方法, 这里计算地表平均温度时不直接用dts来计算, 而是从ts出发, 先算出总的纬向加权, 然后在进行求anomaly等一系列操作
-% FilePath     : /code/p2_processCMIP6Data/s3.nonLocalCld/s1_cal_dtsg_newMehod.m
+% FilePath     : /code/p2_processCMIP6Data/s4.nonLocalCld/s1_cal_dtsg_newMehod.m
 %
 %%---------------------------------------------------------
 
@@ -23,23 +23,23 @@ lon1 = [2.5 357.5]; lat1 = [-latRange + 1 latRange - 1]; % world area
 toaSfc = {'toa', 'sfc'};
 maskLandSW = 'nomask'; %{'nomask', 'maskLand'};
 areaNum = 1; % world land
-figTestPath = '/data1/liuyincheng/cmip6-process/z_assembleData/figTest/';
+figTestPath = '/data1/liuyincheng/CMIP6-process/z_assembleData/figTest/';
 auto_mkdir(figTestPath)
 % load lamda_cloud
-load('/data1/liuyincheng/cmip6-process/z_globalVar/lamda_cloud.mat')
+load('/data1/liuyincheng/CMIP6-process/z_globalVar/lamda_cloud.mat')
 lon_k = 0:2.5:357.5; nlonk = length(lon_k);
 lat_k = 90:-2.5:-90; nlatk = length(lat_k);
 lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f); % figure lat lon
 lon_f = lon_k; nlonf = length(lon_f);
 startMonth = 1;
 
-for exmNum = 1:3%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     nowpath = pwd;
     [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(exmNum);
 
     % exmPath
-    exmPath = fullfile('/data1/liuyincheng/cmip6-process', level.time1{exmNum}); %/data1/liuyincheng/cmip6-process/amip_2000-2014/
-    dvarsPath = fullfile(exmPath, level.model2{1}, 'r1i1p1f1', level.process3{2}); %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/anomaly
+    exmPath = fullfile('/data1/liuyincheng/CMIP6-process', level.time1{exmNum}); %/data1/liuyincheng/CMIP6-process/amip_2000-2014/
+    dvarsPath = fullfile(exmPath, level.model2{1}, 'r1i1p1f1', level.process3{2}); %/data1/liuyincheng/CMIP6-process/2000-2014/MRI-ESM2-0/anomaly
     load([dvarsPath, 'global_vars.mat'])% lat_k lon_k time plev_k readme
     ntime = length(time.date);
     % model loop
@@ -57,11 +57,11 @@ for exmNum = 1:3%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
         for esmNum = 1:length(esmName)
             esmPath = fullfile(mdlPath, esmName{esmNum, 1});
             % path
-            dvarsPath = fullfile(esmPath, level.process3{2}); %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/anomaly
-            dvarsTrendPath = fullfile(esmPath, level.process3{3}); %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/anomaly_trend
-            varsPath = fullfile(esmPath, level.process3{1}); %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/rawdata
-            dradEffectPath = fullfile(esmPath, level.process3{6}); %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/radEffect/
-            dnonCloudPath = fullfile(esmPath, level.process3{8}); %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/non_localCld/
+            dvarsPath = fullfile(esmPath, level.process3{2}); %/data1/liuyincheng/CMIP6-process/2000-2014/MRI-ESM2-0/anomaly
+            dvarsTrendPath = fullfile(esmPath, level.process3{3}); %/data1/liuyincheng/CMIP6-process/2000-2014/MRI-ESM2-0/anomaly_trend
+            varsPath = fullfile(esmPath, level.process3{1}); %/data1/liuyincheng/CMIP6-process/2000-2014/MRI-ESM2-0/rawdata
+            dradEffectPath = fullfile(esmPath, level.process3{6}); %/data1/liuyincheng/CMIP6-process/2000-2014/MRI-ESM2-0/radEffect/
+            dnonCloudPath = fullfile(esmPath, level.process3{8}); %/data1/liuyincheng/CMIP6-process/2000-2014/MRI-ESM2-0/non_localCld/
             auto_mkdir(dnonCloudPath)
             load([varsPath, 'global_vars.mat'])% lat_k lon_k time plev_k readme
             load([varsPath, 'ts.mat'])%

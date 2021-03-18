@@ -1,8 +1,8 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-11-08 22:06:32
-% LastEditors  : LYC
+% LastEditTime : 2021-03-16 21:19:54
+% LastEditors  : Please set LastEditors
 % Description  : cal mainly include 1.regrid vars, 2.vars anomly
 %                CMIP6 mothly data
 %                time:2000.01-2014.12(interval:15*12);1980.01-2014.12(interval:35*12); 2015.01-2099.12(interval:85*12)
@@ -30,7 +30,7 @@ else
 end
 
 %% 预选读取所有的路径
-exm1 = 1; exm2 = 4;
+exm1 = 3; exm2 = 4;
 mdl1 = 1; mdl2 = 'end';
 esm1 = 1; esm2 = 'end';
 esmPath_assmble = cell(2, 1);
@@ -207,12 +207,14 @@ function [] = esmFun(mdlPath, esmPath, exmNum, mdlNum, esmNum)
             taOnlyEffect = zeros(144, 73, plevel, ntime);
             % consider 2 levels near sfc
             tasEffect2 = taEffect;
+            tasEffect1 = taEffect;
             % taOnlyEffect2 = zeros(144, 73, plevel-2, ntime);
             % t0Effect = zeros(144, 73, ntime);% mean sfc ta radeffect
         else
             taEffect = zeros(144, 73, plevel, ntime);
             % consider 2 levels near sfc
             tasEffect2 = taEffect;
+            tasEffect1 = taEffect;
             % taOnlyEffect2 = zeros(144, 73, plevel - 2, ntime);
         end
 
@@ -231,23 +233,31 @@ function [] = esmFun(mdlPath, esmPath, exmNum, mdlNum, esmNum)
                 taEffect(:, :, 1, monNum) = squeeze(t_lwkernel(:, :, 1, mod(monNum + startMonth - 2, 12) + 1)) .* dts(:, :, monNum);
                 tasEffect(:, :, monNum) = taEffect(:, :, 1, monNum);
                 taOnlyEffect(:, :, :, monNum) = taEffect(:, :, 2:end, monNum);
-                % consider 2 levels near sfc(have problem)
+
+                % consider 1 levels near sfc
+                tasEffect1(:, :, 2:end, monNum) = t_level1_lwkernel(:, :, 2:end, mod(monNum + startMonth - 2, 12) + 1) .* dta(:, :, :, monNum);
+                tasEffect1(:, :, 1, monNum) = squeeze(t_level1_lwkernel(:, :, 1, mod(monNum + startMonth - 2, 12) + 1)) .* dts(:, :, monNum);
+
+                % consider 2 levels near sfc
                 tasEffect2(:, :, 2:end, monNum) = t_level2_lwkernel(:, :, 2:end, mod(monNum + startMonth - 2, 12) + 1) .* dta(:, :, :, monNum);
                 tasEffect2(:, :, 1, monNum) = squeeze(t_level2_lwkernel(:, :, 1, mod(monNum + startMonth - 2, 12) + 1)) .* dts(:, :, monNum);
                 else% toa
+
                 taEffect(:, :, :, monNum) = t_lwkernel(:, :, :, mod(monNum + startMonth - 2, 12) + 1) .* dta(:, :, :, monNum);
+                % consider 1 levels near sfc
+                tasEffect1(:, :, :, monNum) = t_level1_lwkernel(:, :, :, mod(monNum + startMonth - 2, 12) + 1) .* dta(:, :, :, monNum);
                 % consider 2 levels near sfc
                 tasEffect2(:, :, :, monNum) = t_level2_lwkernel(:, :, :, mod(monNum + startMonth - 2, 12) + 1) .* dta(:, :, :, monNum);
             end
 
         end
 
-        taOnlyEffect2 = taEffect - tasEffect2;
 
         lw_husEffect = squeeze(nansum(lw_husEffect(:, :, :, :), 3));
         sw_husEffect = squeeze(nansum(sw_husEffect(:, :, :, :), 3));
         taEffect = squeeze(nansum(taEffect(:, :, :, :), 3));
         tasEffect2 = squeeze(nansum(tasEffect2(:, :, :, :), 3));
+        tasEffect1 = squeeze(nansum(tasEffect1(:, :, :, :), 3));
 
         % regrid to figure lat and lon 144x72
         lw_husEffect = autoRegrid3(lon_k, lat_k, time.date, lw_husEffect, lon_f, lat_f, time.date);
@@ -256,6 +266,7 @@ function [] = esmFun(mdlPath, esmPath, exmNum, mdlNum, esmNum)
         tsEffect = autoRegrid3(lon_k, lat_k, time.date, tsEffect, lon_f, lat_f, time.date);
         albEffect = autoRegrid3(lon_k, lat_k, time.date, albEffect, lon_f, lat_f, time.date);
         tasEffect2 = autoRegrid3(lon_k, lat_k, time.date, tasEffect2, lon_f, lat_f, time.date);
+        tasEffect1 = autoRegrid3(lon_k, lat_k, time.date, tasEffect1, lon_f, lat_f, time.date);
 
         % integration(taEffect,tsEffect,albEffect,nonCloudEffect,husEffect)
         husEffect = lw_husEffect + sw_husEffect;
@@ -272,31 +283,27 @@ function [] = esmFun(mdlPath, esmPath, exmNum, mdlNum, esmNum)
 
         if property_of_LevelSKy <= 2
             taOnlyEffect = squeeze(nansum(taOnlyEffect(:, :, :, :), 3));
-            taOnlyEffect2 = squeeze(nansum(taOnlyEffect2(:, :, :, :), 3));
             % regrid special values to figure lat and lon 144x72
-            taOnlyEffect2 = autoRegrid3(lon_k, lat_k, time.date, taOnlyEffect2, lon_f, lat_f, time.date);
             taOnlyEffect = autoRegrid3(lon_k, lat_k, time.date, taOnlyEffect, lon_f, lat_f, time.date);
             tasEffect = autoRegrid3(lon_k, lat_k, time.date, tasEffect, lon_f, lat_f, time.date);
             % save the radEffect: dradEffect_sfc_cld.mat
             save([radEfectPath, 'global_vars.mat'], 'lon_f', 'lat_f', 'time', 'plev_k', 'readme', 'timeseries', 'modelname')
             save([radEfectPath, saveradEfectName{property_of_LevelSKy}], 'lw_husEffect', 'lw_taEffect', 'lw_tsEffect', 'sw_husEffect', 'sw_albEffect', ...
                 'tsEffect', 'albEffect', 'husEffect', ...
-                'taEffect', 'taOnlyEffect', 'tasEffect', 'tasEffect2', 'taOnlyEffect2', ...
+                'taEffect', 'taOnlyEffect', 'tasEffect', 'tasEffect2', 'tasEffect1', ...
                 'nonCloudEffect', 'lw_nonCloudEffect', 'sw_nonCloudEffect', ...
                 'nonCloudAndTsEffect', 'lw_nonCloudAndTsEffect', 'sw_nonCloudAndTsEffect');
         else
-            taOnlyEffect2 = squeeze(nansum(taOnlyEffect2(:, :, :, :), 3));
-            taOnlyEffect2 = autoRegrid3(lon_k, lat_k, time.date, taOnlyEffect2, lon_f, lat_f, time.date);
             % save the radEffect: dradEffect_sfc_cld.mat
             save([radEfectPath, 'global_vars.mat'], 'lon_f', 'lat_f', 'time', 'plev_k', 'readme', 'timeseries', 'modelname')
             save([radEfectPath, saveradEfectName{property_of_LevelSKy}], 'lw_husEffect', 'lw_taEffect', 'lw_tsEffect', 'sw_husEffect', 'sw_albEffect', ...
                 'tsEffect', 'albEffect', 'husEffect', ...
-                'taEffect', 'tasEffect2', 'taOnlyEffect2', ...
+                'taEffect', 'tasEffect2', 'tasEffect1', ...
                 'nonCloudEffect', 'lw_nonCloudEffect', 'sw_nonCloudEffect', ...
                 'nonCloudAndTsEffect', 'lw_nonCloudAndTsEffect', 'sw_nonCloudAndTsEffect');
         end
 
-        clear tasEffect2 taOnlyEffect2
+        clear tasEffect2 tasEffect1
 
         dR_hus(:, :, :, property_of_LevelSKy) = husEffect; % q
         lw_dR_hus(:, :, :, property_of_LevelSKy) = lw_husEffect; % lw_q

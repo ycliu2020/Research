@@ -1,8 +1,8 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-11-05 22:09:13
-% LastEditors  : LYC
+% LastEditTime : 2021-03-10 21:05:35
+% LastEditors  : Please set LastEditors
 % Description  : cal mainly include 1.regrid vars, 2.vars anomly
 %                CMIP6 mothly data
 %                time:2000.01-2014.12(interval:15*12);1980.01-2014.12(interval:35*12); 2015.01-2099.12(interval:85*12)
@@ -27,8 +27,8 @@ else
 end
 
 %% 预选读取所有的路径
-exm1 = 4; exm2 = 4;
-mdl1 = 6; mdl2 = 'end';
+exm1 = 5; exm2 = 6;
+mdl1 = 1; mdl2 = 'end';
 esm1 = 1; esm2 = 'end';
 esmPath_assmble = cell(2, 1);
 mdlPath_assmble = esmPath_assmble;
@@ -37,7 +37,7 @@ mdlNum_assmble = exmNum_assmble;
 esmNum_assmble = exmNum_assmble;
 esmCount = 0;
 
-for exmNum = exm1:exm2%1 mean amip 2000; 2 mean amip 1980; 3 means ssp245, 4 means ssp370, 6 abrupt-4xCO2_150years
+for exmNum = exm1:exm2%1 mean amip 2000; 2 mean 1980; 3 means ssp245, 4 means ssp370, 5 means CFMIP amip 2000, 6 means 1980, 7 abrupt-4xCO2_150years
     % model parameters
     [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(exmNum);
     % experiment path (tLin:1740)

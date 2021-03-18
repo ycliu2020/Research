@@ -19,7 +19,7 @@ for exmNum in [4]:  # [1,2,3,4]:
         # mdlNum = 1
 
         # function [lon_f, lat_f, trendyr,figTitle, figPath, colorLab] = Pyn_figure3(exmNum, mdlNum)
-        figData = eng.Pyn_figure9(exmNum, mdlNum, nargout=6)
+        figData = eng.Pyn_figure12(exmNum, mdlNum, nargout=6)
         figPath = np.array(figData[4])
         figPath = str(figPath)
 

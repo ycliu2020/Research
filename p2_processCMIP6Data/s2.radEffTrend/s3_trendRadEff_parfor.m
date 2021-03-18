@@ -1,8 +1,8 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2020-11-08 15:58:48
-% LastEditors  : LYC
+% LastEditTime : 2021-03-16 21:22:22
+% LastEditors  : Please set LastEditors
 % Description  : cal mainly include 1.regrid vars, 2.vars anomly
 %                CMIP6 mothly data
 %                time:2000.01-2014.12(interval:15*12);1980.01-2014.12(interval:35*12); 2015.01-2099.12(interval:85*12)
@@ -118,7 +118,7 @@ function [] = esmFun(mdlPath, esmPath, exmNum, mdlNum, esmNum)
     % load radEffect
     load([radEffectPath, 'dCRF.mat'], 'dCRF')% dCRF
     load([radEffectPath, 'global_vars.mat'])% lat_f lon_f time plev_k readme
-    load([radEffectPath, 'dradEffect_sfc_cld.mat'])%'wvlwEffect', 'wvswEffect', 'tsEffect', 'albEffect', 'husEffect', 'taEffect', 'tasEffect', taOnlyEffect', tasEffect2', 'taOnlyEffect2', 'totalEffect'
+    load([radEffectPath, 'dradEffect_sfc_cld.mat'])%'wvlwEffect', 'wvswEffect', 'tsEffect', 'albEffect', 'husEffect', 'taEffect', 'tasEffect', taOnlyEffect', tasEffect2', 'tasEffect1', 'totalEffect'
     load([radEffectPath, 'dR_tsAtom_cld.mat'])% dR_tsAtom_cld(ts effect on atoms)
     load([radEffectPath, 'dR_nonTs_sfc.mat'])%dR_nonTs_sfc (ta+alb+q+clod effect)
     load([radEffectPath, 'dR_residual_cld_sfc.mat'])%dR_residual_cld_sfc(co2 effect)
@@ -131,7 +131,7 @@ function [] = esmFun(mdlPath, esmPath, exmNum, mdlNum, esmNum)
     [trendm_dRsfc_CRF, trends_dRsfc_CRF, trendyr_dRsfc_CRF, ~, ~] = autoCalTrend(dCRF_sfc, nlonf, nlatf, timeDate, startmonth);
     [trendm_dRsfc_ta, trends_dRsfc_ta, trendyr_dRsfc_ta, ~, ~] = autoCalTrend(taEffect, nlonf, nlatf, timeDate, startmonth);
     [trendm_dRsfc_taOnly, trends_dRsfc_taOnly, trendyr_dRsfc_taOnly, ~, ~] = autoCalTrend(taOnlyEffect, nlonf, nlatf, timeDate, startmonth);
-    [trendm_dRsfc_taOnly2, trends_dRsfc_taOnly2, trendyr_dRsfc_taOnly2, ~, ~] = autoCalTrend(taOnlyEffect2, nlonf, nlatf, timeDate, startmonth);
+    [trendm_dRsfc_tas1, trends_dRsfc_tas1, trendyr_dRsfc_tas1, ~, ~] = autoCalTrend(tasEffect1, nlonf, nlatf, timeDate, startmonth);
     [trendm_dRsfc_tas, trends_dRsfc_tas, trendyr_dRsfc_tas, ~, ~] = autoCalTrend(tasEffect, nlonf, nlatf, timeDate, startmonth);
     [trendm_dRsfc_tas2, trends_dRsfc_tas2, trendyr_dRsfc_tas2, ~, ~] = autoCalTrend(tasEffect2, nlonf, nlatf, timeDate, startmonth);
     [trendm_dRatm_tsAtom, trends_dRatm_tsAtom, trendyr_dRatm_tsAtom, ~, ~] = autoCalTrend(dR_tsAtom_cld, nlonf, nlatf, timeDate, startmonth);
@@ -149,7 +149,7 @@ function [] = esmFun(mdlPath, esmPath, exmNum, mdlNum, esmNum)
         'trendm_dRsfc_CRF', 'trends_dRsfc_CRF', 'trendyr_dRsfc_CRF', ...
         'trendm_dRsfc_ta', 'trends_dRsfc_ta', 'trendyr_dRsfc_ta', ...
         'trendm_dRsfc_taOnly', 'trends_dRsfc_taOnly', 'trendyr_dRsfc_taOnly', ...
-        'trendm_dRsfc_taOnly2', 'trends_dRsfc_taOnly2', 'trendyr_dRsfc_taOnly2', ...
+        'trendm_dRsfc_tas1', 'trends_dRsfc_tas1', 'trendyr_dRsfc_tas1', ...
         'trendm_dRsfc_tas', 'trends_dRsfc_tas', 'trendyr_dRsfc_tas', ...
         'trendm_dRsfc_tas2', 'trends_dRsfc_tas2', 'trendyr_dRsfc_tas2', ...
         'trendm_dRatm_tsAtom', 'trends_dRatm_tsAtom', 'trendyr_dRatm_tsAtom', ...
@@ -174,7 +174,7 @@ function [] = esmFun(mdlPath, esmPath, exmNum, mdlNum, esmNum)
     %%%%Part1: cal radEffect
     load([radEffectPath, 'global_vars.mat'])% lat_f lon_f time plev_k readme
     load([radEffectPath, 'dCRF.mat'],'dCRF')% dCRF
-    load([radEffectPath, 'dradEffect_toa_cld.mat'])%'wvlwEffect', 'wvswEffect', 'tsEffect', 'albEffect', 'husEffect', 'taEffect', 'tasEffect2', 'taOnlyEffect2', 'totalEffect'
+    load([radEffectPath, 'dradEffect_toa_cld.mat'])%'wvlwEffect', 'wvswEffect', 'tsEffect', 'albEffect', 'husEffect', 'taEffect', 'tasEffect2', 'tasEffect1', 'totalEffect'
     load([radEffectPath, 'dR_nonTs_toa.mat'])%dR_nonTs_toa (ta+alb+q+clod effect)
     load([radEffectPath, 'dR_residual_cld_toa.mat'])%dR_residual_cld_toa(co2 effect)
     load([radEffectPath, 'dR_cloud.mat'])%dR_residual_cld_toa(co2 effect)
@@ -185,7 +185,7 @@ function [] = esmFun(mdlPath, esmPath, exmNum, mdlNum, esmNum)
     % cal the trend(10 vars)
     [trendm_dRtoa_CRF, trends_dRtoa_CRF, trendyr_dRtoa_CRF, ~, ~] = autoCalTrend(dCRF_toa, nlonf, nlatf, timeDate, startmonth);
     [trendm_dRtoa_ta, trends_dRtoa_ta, trendyr_dRtoa_ta, ~, ~] = autoCalTrend(taEffect, nlonf, nlatf, timeDate, startmonth);
-    [trendm_dRtoa_taOnly2, trends_dRtoa_taOnly2, trendyr_dRtoa_taOnly2, ~, ~] = autoCalTrend(taOnlyEffect2, nlonf, nlatf, timeDate, startmonth);
+    [trendm_dRtoa_tas1, trends_dRtoa_tas1, trendyr_dRtoa_tas1, ~, ~] = autoCalTrend(tasEffect1, nlonf, nlatf, timeDate, startmonth);
     [trendm_dRtoa_tas2, trends_dRtoa_tas2, trendyr_dRtoa_tas2, ~, ~] = autoCalTrend(tasEffect2, nlonf, nlatf, timeDate, startmonth);
     [trendm_dRtoa_nonTs, trends_dRtoa_nonTs, trendyr_dRtoa_nonTs, ~, ~] = autoCalTrend(dR_nonTs_toa, nlonf, nlatf, timeDate, startmonth);
     [trendm_dRtoa_residual, trends_dRtoa_residual, trendyr_dRtoa_residual, ~, ~] = autoCalTrend(dR_residual_cld_toa, nlonf, nlatf, timeDate, startmonth);
@@ -201,7 +201,7 @@ function [] = esmFun(mdlPath, esmPath, exmNum, mdlNum, esmNum)
     save([trend_radEffectPath, 'trend_dradEffect_toa_cld.mat'], ...
         'trendm_dRtoa_CRF', 'trends_dRtoa_CRF', 'trendyr_dRtoa_CRF', ...
         'trendm_dRtoa_ta', 'trends_dRtoa_ta', 'trendyr_dRtoa_ta', ...
-        'trendm_dRtoa_taOnly2', 'trends_dRtoa_taOnly2', 'trendyr_dRtoa_taOnly2', ...
+        'trendm_dRtoa_tas1', 'trends_dRtoa_tas1', 'trendyr_dRtoa_tas1', ...
         'trendm_dRtoa_tas2', 'trends_dRtoa_tas2', 'trendyr_dRtoa_tas2', ...
         'trendm_dRtoa_nonTs', 'trends_dRtoa_nonTs', 'trendyr_dRtoa_nonTs', ...
         'trendm_dRtoa_residual', 'trends_dRtoa_residual', 'trendyr_dRtoa_residual', ...
