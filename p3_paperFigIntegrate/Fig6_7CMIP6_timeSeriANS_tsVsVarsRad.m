@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-08-31 17:00:15
-% LastEditTime : 2021-01-18 14:15:11
+% LastEditTime : 2021-03-25 21:42:57
 % LastEditors  : Please set LastEditors
 % Description  : 同时画时间序列和相关性分布图
 % FilePath     : /code/p3_paperFigIntegrate/Fig6_7CMIP6_timeSeriANS_tsVsVarsRad.m
@@ -25,17 +25,17 @@ lon_f = lon_k; nlonf = length(lon_f);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % experiment
-for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for exmNum = 1:1%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     %CAMS-CSM1-0 didn't have sfc clear sky radiation, delete it
     [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(exmNum);
     % exmPath
-    exmPath = ['/data1/liuyincheng/cmip6-process/', level.time1{exmNum}]; %/data1/liuyincheng/cmip6-process/2000-2014/
-    mPath.uniOutput = fullfile('/home/liuyc/Research/P02.Ts_change_research/figure/proj3_PaperFig/v0.0/Fig6_7TimeSeries_analysis_landMean_RadEffectAll', level.time1{exmNum}); %['dRTs_', lower(mlabels.level)],
+    exmPath = ['/data1/liuyincheng/CMIP6-process/', level.time1{exmNum}]; %/data1/liuyincheng/CMIP6-process/2000-2014/
+    mPath.uniOutput = fullfile('/home/liuyc/Research/P02.Ts_change_research/figure/proj3_PaperFig/v0.3/Fig6_7TimeSeries_analysis_landMean_RadEffectAll', level.time1{exmNum}); %['dRTs_', lower(mlabels.level)],
     mPath.Output1 = fullfile(mPath.uniOutput);
     auto_mkdir(mPath.Output1)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % model
-    for mdlNum = 4:4%1:length(level.model2)
+    for mdlNum = 3:4%1:length(level.model2)
         % model path
         mdlName = level.model2{mdlNum};
         mdlPath = fullfile(exmPath, level.model2{mdlNum});
@@ -63,13 +63,13 @@ for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             %% load and read
             esmPath = fullfile(mdlPath, esmName{esmNum, 1});
             % data path
-            varsPath = fullfile(esmPath, level.process3{1}); %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/rawdata_regrid
-            dvarsPath = fullfile(esmPath, level.process3{2}); %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/anomaly
-            dvarsTrendPath = fullfile(esmPath, level.process3{3}); %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/anomaly_trend
-            kernelPath = fullfile(esmPath, level.process3{5}); %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/kernelsCal
-            dradEffectPath = fullfile(esmPath, level.process3{6}); %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/radEffect/
-            dnonLocalCldPath = fullfile(esmPath, level.process3{8}); %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/non_localCld/
-            dvsTsEffectPath = fullfile(esmPath, level.process3{9}); %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/vsTsEffect/
+            varsPath = fullfile(esmPath, level.process3{1}); %/data1/liuyincheng/CMIP6-process/2000-2014/MRI-ESM2-0/rawdata_regrid
+            dvarsPath = fullfile(esmPath, level.process3{2}); %/data1/liuyincheng/CMIP6-process/2000-2014/MRI-ESM2-0/anomaly
+            dvarsTrendPath = fullfile(esmPath, level.process3{3}); %/data1/liuyincheng/CMIP6-process/2000-2014/MRI-ESM2-0/anomaly_trend
+            kernelPath = fullfile(esmPath, level.process3{5}); %/data1/liuyincheng/CMIP6-process/2000-2014/MRI-ESM2-0/kernelsCal
+            dradEffectPath = fullfile(esmPath, level.process3{6}); %/data1/liuyincheng/CMIP6-process/2000-2014/MRI-ESM2-0/radEffect/
+            dnonLocalCldPath = fullfile(esmPath, level.process3{8}); %/data1/liuyincheng/CMIP6-process/2000-2014/MRI-ESM2-0/non_localCld/
+            dvsTsEffectPath = fullfile(esmPath, level.process3{9}); %/data1/liuyincheng/CMIP6-process/2000-2014/MRI-ESM2-0/vsTsEffect/
             load([dradEffectPath, 'global_vars.mat'])% lat_f lon_f time plev_k readme
             ntime = length(time.date);
 
@@ -88,16 +88,15 @@ for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             drhs = autoRegrid3(lon_k, lat_k, time.date, drhs, lon_f, lat_f, time.date);
 
             % cloud radRffect
-            load([dradEffectPath, 'dR_cloud_toa.mat'])
-            load([dradEffectPath, 'dR_cloud_sfc.mat'])
+            load([dradEffectPath, 'dR_cloud.mat'])
 
             % TotalEffect
-            load([dradEffectPath, 'dradEfect_sfc_cld.mat'])% 'totalEffect', 'wvlwEffect', 'wvswEffect', 'tsEffect', 'albEffect', 'husEffect', 'taEffect', 'tasEffect2', 'taOnlyEffect2', 'totalEffect', 'mainEffect'
-            load([dradEffectPath, 'real_dradEfect.mat'])% 'dR_allsky', 'l_rad', 's_rad', 'dR_clr', 'readme_realradEfect'
+            load([dradEffectPath, 'dradEffect_sfc_cld.mat'])% 'totalEffect', 'wvlwEffect', 'wvswEffect', 'tsEffect', 'albEffect', 'husEffect', 'taEffect', 'tasEffect2', 'taOnlyEffect2', 'totalEffect', 'mainEffect'
+            load([dradEffectPath, 'model_dradEffect.mat'])% 'dR_allsky', 'l_rad', 's_rad', 'dR_clr', 'readme_realradEfect'
             load([dradEffectPath, 'dR_residual_cld_sfc.mat'])% dR_residual_cld_sfc
             load([dradEffectPath, 'dR_residual_cld_toa.mat'])% dR_residual_cld_toa
-            dR_netSfc = squeeze(dR_allsky(:, :, :, 1));
-            dR_netTOA = squeeze(dR_allsky(:, :, :, 2));
+            dR_netSfc = squeeze(dR_net_cld(:, :, :, 1));
+            dR_netTOA = squeeze(dR_net_cld(:, :, :, 2));
 
             % vars tsEffect
             load([dvsTsEffectPath, 'dTs_x_sfc.mat'])% dTs_alb, dTs_cloud, dTs_hus, dTs_ta, dTs_residual
@@ -266,7 +265,7 @@ for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             % hold on
 
             % save figures
-            figName = [level.time1{exmNum}(1:end - 1), '_', level.model2{mdlNum}, '_', esmName{esmNum}];
+            figName = [level.time1{exmNum}(6:end - 1), '_', level.model2{mdlNum}, '_', esmName{esmNum}];
             figurePath = [mPath.Output1, '/', figName, '.eps'];
             export_fig(gcf,figurePath,'-r600','-cmyk')
 

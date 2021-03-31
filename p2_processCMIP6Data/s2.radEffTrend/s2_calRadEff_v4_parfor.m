@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2021-03-25 20:58:42
+% LastEditTime : 2021-03-30 21:25:51
 % LastEditors  : Please set LastEditors
 % Description  : cal mainly include 1.regrid vars, 2.vars anomly
 %                CMIP6 mothly data
@@ -13,6 +13,7 @@
 % inputPath    : /code/p2_processCMIP6Data/s1.modelDataProcess/
 % Attention!!!
 % check lat_f: model lat_f disagree with kernels lat_f (Opposite direction)
+% the change compared v3: fix hus error
 %%---------------------------------------------------------
 clear; clc; tic;
 % pause(9999)
@@ -23,14 +24,14 @@ nowpath = pwd;
 poolobj = gcp('nocreate'); % If no pool,  create new one.
 
 if isempty(poolobj)
-    MyPar = parpool(18);
+    MyPar = parpool(8);
 else
     MyPar = gcp('nocreate');
     disp('Already initialized'); %说明并行环境已经启动。
 end
 
 %% 预选读取所有的路径
-exm1 = 3; exm2 = 4;
+exm1 = 4; exm2 = 6;
 mdl1 = 1; mdl2 = 'end';
 esm1 = 1; esm2 = 'end';
 esmPath_assmble = cell(2, 1);
@@ -40,7 +41,7 @@ mdlNum_assmble = exmNum_assmble;
 esmNum_assmble = exmNum_assmble;
 esmCount = 0;
 
-for exmNum = exm1:exm2%1 mean amip 2000; 2 mean amip 1980; 3 means ssp245, 4 means ssp370, 6 abrupt-4xCO2_150years
+for exmNum = exm1:exm2 %1 mean amip 2000; 2 mean amip 1980; 3 means ssp245, 4 means ssp370, 6 abrupt-4xCO2_150years
     % model parameters
     [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(exmNum);
     % experiment path (tLin:1740)
@@ -62,7 +63,7 @@ for exmNum = exm1:exm2%1 mean amip 2000; 2 mean amip 1980; 3 means ssp245, 4 mea
     end
 
     % mdlPath_assmble=cell((mdl2-mdl1+1)*(exm2-exm1+1),1);
-    for mdlNum = mdl1:mdlR% model number
+    for mdlNum = mdl1:mdlR % model number
         % model path
         mdlPath = fullfile(exmPath, level.model2{mdlNum});
         % ensemble member path
@@ -122,7 +123,7 @@ function [] = esmFun(mdlPath, esmPath, exmNum, mdlNum, esmNum)
     saveTrend_radEfectName = {'trend_dradEffect_sfc_cld.mat', 'trend_dradEffect_toa_cld.mat'};
     plevel = 24; % wv_lwkernel and wv_swkernel level;
     t_scflevel = 25; % sfc t_lwkernel level;
-    load('/data1/liuyincheng/CMIP6-process/z_globalVar/ERF_rec.mat')% 'ERF_rec', 'timeERF_rec'
+    load('/data1/liuyincheng/CMIP6-process/z_globalVar/ERF_rec.mat') % 'ERF_rec', 'timeERF_rec'
     lon_k = 0:2.5:357.5; nlonk = length(lon_k); % kernel lat lon
     lat_k = 90:-2.5:-90; nlatk = length(lat_k);
     lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f); % figure lat lon
@@ -143,7 +144,7 @@ function [] = esmFun(mdlPath, esmPath, exmNum, mdlNum, esmNum)
         disp('this experient doesnt need ERF or havent input ERF Data!')
     end
 
-    if length(ERForcing) ~= 1% if ERForcing=0 mean .eg. abrupt experint
+    if length(ERForcing) ~= 1 % if ERForcing=0 mean .eg. abrupt experint
         ERForcing = repmat(ERForcing, [12 1]);
         ERForcing = reshape(ERForcing, 1, length(ERForcing(:))); % yearx12, assume every month have the same radiative forcing
     end
@@ -160,12 +161,12 @@ function [] = esmFun(mdlPath, esmPath, exmNum, mdlNum, esmNum)
     auto_mkdir(radEfectPath)
     %%%%% step1: cal dReffect
     % load dvars
-    load([dvarsPath, 'global_vars.mat'])% lat_k lon_k time plev_k readme
+    load([dvarsPath, 'global_vars.mat']) % lat_k lon_k time plev_k readme
     load([varsPath, 'hus.mat'])
-    load([dvarsPath, 'dhus.mat'])% dhus and clim_hus
-    load([dvarsPath, 'dalb.mat'])%
-    load([dvarsPath, 'dta.mat'])%
-    load([dvarsPath, 'dts.mat'])%
+    load([dvarsPath, 'dhus.mat']) % dhus and clim_hus
+    load([dvarsPath, 'dalb.mat']) %
+    load([dvarsPath, 'dta.mat']) %
+    load([dvarsPath, 'dts.mat']) %
     dta(isnan(dta)) = 0;
     dalb(isnan(dalb)) = 0; dts(isnan(dts)) = 0;
     ntime = length(time.date);
@@ -173,34 +174,40 @@ function [] = esmFun(mdlPath, esmPath, exmNum, mdlNum, esmNum)
     startMonth = 1;
     dhus2 = zeros(144, 73, 24, ntime);
 
+    %% main change(v3->v4):
+    % dln(q)/dT = Lv/(Rv*T**2)->dT=dln(q)*T^2*Rv/Lv
+    logHus = log(hus);
+    nplevk = length(plev_k);
+    [dlogHus, logHus_clim] = monthlyAnomaly(144, 73, nplevk, time.date, logHus, 1); %[nlongitude,nlatitude,time,var,startmonth]
     for monNum = 1:ntime
-        dhus2(:, :, :, monNum) = (log(hus(:, :, :, monNum)) - log(clim_hus(:, :, :, mod(monNum + startMonth - 2, 12) + 1))) .* clim_ta(:, :, :, mod(monNum + startMonth - 2, 12) + 1).^2 * Rv / Lv;
+        dhus2(:, :, :, monNum) = dlogHus(:, :, :, monNum) .* clim_ta(:, :, :, mod(monNum + startMonth - 2, 12) + 1).^2 * Rv / Lv;
     end
 
-    clear hus dhus clim_hus clim_ta clim_ts clim_alb
+    clear hus dlogHus logHus dhus clim_hus clim_ta clim_ts clim_alb logHus_clim 
 
     dhus2(isnan(dhus2)) = 0;
-    save([dvarsPath, 'dhus2.mat'], 'dhus2');
+    dhus2Infor='Unite: K, according to dln(q)/dT = Lv/(Rv*T**2) equation';
+    save([dvarsPath, 'dhus2.mat'], 'dhus2', 'dhus2Infor');
     % loop kernels in differnt conditions( 1sfc cld,2sfc clr,3toa cld,4toa clr)
     kernelPath = fullfile(esmPath, level.process3{5}); %/data1/liuyincheng/CMIP6-process/2000-2014/MRI-ESM2-0/kernelsCal
     % dR_tas=zeros(144,72,ntime,2);dR_taOnly=dR_tas;
     % store vars in one var( 1sfc cld,2sfc clr,3toa cld,4toa clr)
-    
+
     dR_hus = zeros(144, 72, ntime, 4);
     dR_alb = dR_hus; dR_ts = dR_hus; dR_ta = dR_hus; dR_nonCloud = dR_hus; dR_nonCloudAndTs = dR_hus;
     lw_dR_hus = dR_hus; lw_dR_ta = dR_hus; lw_dR_ts = dR_hus; sw_dR_hus = dR_hus; sw_dR_alb = dR_hus;
     lw_nonCloud = dR_hus; sw_nonCloud = dR_hus;
     lw_nonCloudAndTs = dR_hus; sw_nonCloudAndTs = dR_hus;
 
-    for property_of_LevelSKy = 1:4%( 1sfc cld,2sfc clr,3toa cld,4toa clr)
-        load([kernelPath, kernelsName{property_of_LevelSKy}])% read kernel
+    for property_of_LevelSKy = 1:4 %( 1sfc cld,2sfc clr,3toa cld,4toa clr)
+        load([kernelPath, kernelsName{property_of_LevelSKy}]) % read kernel
         % prepare zero mixre
         lw_husEffect = zeros(144, 73, plevel, ntime);
         sw_husEffect = zeros(144, 73, plevel, ntime);
         tsEffect = zeros(144, 73, ntime);
         albEffect = zeros(144, 73, ntime);
 
-        if property_of_LevelSKy <= 2% sfc
+        if property_of_LevelSKy <= 2 % sfc
             taEffect = zeros(144, 73, t_scflevel, ntime);
             % consider 1 levels near sfc
             tasEffect = zeros(144, 73, ntime);
@@ -228,7 +235,7 @@ function [] = esmFun(mdlPath, esmPath, exmNum, mdlNum, esmNum)
             tsEffect(:, :, monNum) = ts_lwkernel(:, :, mod(monNum + startMonth - 2, 12) + 1) .* dts(:, :, monNum);
             albEffect(:, :, monNum) = alb_swkernel(:, :, mod(monNum + startMonth - 2, 12) + 1) .* dalb(:, :, monNum) * 100; % note that alb kernerl unite: W/m2/0.01
 
-            if property_of_LevelSKy <= 2% sfc
+            if property_of_LevelSKy <= 2 % sfc
                 taEffect(:, :, 2:end, monNum) = t_lwkernel(:, :, 2:end, mod(monNum + startMonth - 2, 12) + 1) .* dta(:, :, :, monNum);
                 taEffect(:, :, 1, monNum) = squeeze(t_lwkernel(:, :, 1, mod(monNum + startMonth - 2, 12) + 1)) .* dts(:, :, monNum);
                 tasEffect(:, :, monNum) = taEffect(:, :, 1, monNum);
@@ -241,7 +248,7 @@ function [] = esmFun(mdlPath, esmPath, exmNum, mdlNum, esmNum)
                 % consider 2 levels near sfc
                 tasEffect2(:, :, 2:end, monNum) = t_level2_lwkernel(:, :, 2:end, mod(monNum + startMonth - 2, 12) + 1) .* dta(:, :, :, monNum);
                 tasEffect2(:, :, 1, monNum) = squeeze(t_level2_lwkernel(:, :, 1, mod(monNum + startMonth - 2, 12) + 1)) .* dts(:, :, monNum);
-                else% toa
+                else % toa
 
                 taEffect(:, :, :, monNum) = t_lwkernel(:, :, :, mod(monNum + startMonth - 2, 12) + 1) .* dta(:, :, :, monNum);
                 % consider 1 levels near sfc
@@ -251,7 +258,6 @@ function [] = esmFun(mdlPath, esmPath, exmNum, mdlNum, esmNum)
             end
 
         end
-
 
         lw_husEffect = squeeze(nansum(lw_husEffect(:, :, :, :), 3));
         sw_husEffect = squeeze(nansum(sw_husEffect(:, :, :, :), 3));
@@ -342,14 +348,14 @@ function [] = esmFun(mdlPath, esmPath, exmNum, mdlNum, esmNum)
     %%%%% step2: cal cloud effect(definen down is postive)
     % load origan model rad dvars
     % 1.sfc dvars(includ cld and clr sky)
-    load([dvarsPath, 'drlus.mat'])% surface_upwelling_longwave_flux_in_air
-    load([dvarsPath, 'drsus.mat']); load([dvarsPath, 'drsuscs.mat'])% surface_upwelling_shortwave_flux_in_air
-    load([dvarsPath, 'drsds.mat']); load([dvarsPath, 'drsdscs.mat'])% surface_downwelling_shortwave_flux_in_air
-    load([dvarsPath, 'drlds.mat']); load([dvarsPath, 'drldscs.mat'])% surface_downwelling_longwave_flux_in_air
+    load([dvarsPath, 'drlus.mat']) % surface_upwelling_longwave_flux_in_air
+    load([dvarsPath, 'drsus.mat']); load([dvarsPath, 'drsuscs.mat']) % surface_upwelling_shortwave_flux_in_air
+    load([dvarsPath, 'drsds.mat']); load([dvarsPath, 'drsdscs.mat']) % surface_downwelling_shortwave_flux_in_air
+    load([dvarsPath, 'drlds.mat']); load([dvarsPath, 'drldscs.mat']) % surface_downwelling_longwave_flux_in_air
     % 2.toa dvars(includ cld and clr sky)
-    load([dvarsPath, 'drsdt.mat'])% toa_incoming_shortwave_flux
-    load([dvarsPath, 'drsut.mat']); load([dvarsPath, 'drsutcs.mat'])% toa_outgoing_shortwave_flux
-    load([dvarsPath, 'drlut.mat']); load([dvarsPath, 'drlutcs.mat'])% toa_outgoing_longwave_flux
+    load([dvarsPath, 'drsdt.mat']) % toa_incoming_shortwave_flux
+    load([dvarsPath, 'drsut.mat']); load([dvarsPath, 'drsutcs.mat']) % toa_outgoing_shortwave_flux
+    load([dvarsPath, 'drlut.mat']); load([dvarsPath, 'drlutcs.mat']) % toa_outgoing_longwave_flux
 
     % model output rad( 1sfc cld,2sfc clr,3toa cld,4toa clr)
     lw_net14473(:, :, :, 1) = drlds - drlus; % Sfc_cld net thermal radiation,
@@ -442,9 +448,9 @@ function [] = esmFun(mdlPath, esmPath, exmNum, mdlNum, esmNum)
     dR_net_cld_sfc = dR_net_cld(:, :, :, 1); dR_net_cld_toa = dR_net_cld(:, :, :, 2);
     dR_net_clr_sfc = dR_net_clr(:, :, :, 1); dR_net_clr_toa = dR_net_clr(:, :, :, 2);
     % save dR_cloud and dR_residual_cld and observe total effect
-    save([radEfectPath, 'dCRF.mat'], 'dCRF', 'lw_dCRF', 'sw_dCRF', ...%CRF_sfc
-    'dCRF_sfc', 'lw_dCRF_sfc', 'sw_dCRF_sfc', ...% CRF_sfc
-    'dCRF_toa', 'lw_dCRF_toa', 'sw_dCRF_toa'); % CRF_toa
+    save([radEfectPath, 'dCRF.mat'], 'dCRF', 'lw_dCRF', 'sw_dCRF', ... %CRF_sfc
+        'dCRF_sfc', 'lw_dCRF_sfc', 'sw_dCRF_sfc', ... % CRF_sfc
+        'dCRF_toa', 'lw_dCRF_toa', 'sw_dCRF_toa'); % CRF_toa
     save([radEfectPath, 'dvarsFeedback.mat'], 'dvarsFeedback', 'lw_dvarsFeedback', 'sw_dvarsFeedback');
     clear dvarsFeedback lw_dvarsFeedback sw_dvarsFeedback
 
