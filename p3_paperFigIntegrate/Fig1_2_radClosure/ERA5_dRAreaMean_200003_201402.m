@@ -1,12 +1,12 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-08 13:09:46
-% LastEditTime : 2020-11-24 21:12:56
-% LastEditors  : LYC
+% LastEditTime : 2021-03-31 19:00:54
+% LastEditors  : Please set LastEditors
 % Description  : cal china(CN) and world(UN-90-90) areamean rad and kernel cal rad 时间序列
 %                注意辐射闭合检查值只适合晴空的情况
 %                时间序列: 2000.03-2014-02
-% FilePath     : /code/p3_paperFigIntegrate/Fig1_2_radClosure/ERA5_dRAreaMean.m
+% FilePath     : /code/p3_paperFigIntegrate/Fig1_2_radClosure/ERA5_dRAreaMean_200003_201402.m
 %
 %%---------------------------------------------------------
 clc; clear; tic;
@@ -26,34 +26,34 @@ for exmNum = 1:1 % only read 2000.03-2018.02 to cut to 2000.03-2014-02
     varsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{exmNum}, 'ERA5', level.standVarPath{1}); %rawdata
     dvarsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{exmNum}, 'ERA5', level.standVarPath{2}); %anomaly
     kernelCalPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{exmNum}, 'ERA5', level.standVarPath{4}); % kernelCal
-    radEfectPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{exmNum}, 'ERA5', level.standVarPath{5}); %radEffect
-    trend_radEfectPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{exmNum}, 'ERA5', level.standVarPath{6}); %/data1/liuyincheng/cmip6-proces/aimp_2000-2014/MRI-ESM2-0/ensemble/radEffect_trend/
+    radEffectPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{exmNum}, 'ERA5', level.standVarPath{5}); %radEffect
+    trend_radEffectPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{exmNum}, 'ERA5', level.standVarPath{6}); %/data1/liuyincheng/cmip6-proces/aimp_2000-2014/MRI-ESM2-0/ensemble/radEffect_trend/
     %% load data
     % 观测值
-    load([radEfectPath, 'global_vars.mat'])% 'lon_f', 'lat_f', 'lon_k', 'lat_k', 'plev_k', 'time'
-    load([radEfectPath, 'real_dradEfect.mat'])% dR_allsky, dR_clr, l_rad, readme_realradEfect, s_rad (final row: 1sfc cld,2sfc clr,3toa cld,4toa clr)
+    load([radEffectPath, 'global_vars.mat'])% 'lon_f', 'lat_f', 'lon_k', 'lat_k', 'plev_k', 'time'
+    load([radEffectPath, 'real_dradEffect.mat'])% dR_allsky, dR_net_clr, l_rad, readme_realradEffect, s_rad (final row: 1sfc cld,2sfc clr,3toa cld,4toa clr)
     % cut to 2000.03-2014-02
     timeStr=string(datestr(datenum(time),'yyyy-mm-dd'));
     cutEnd=find(timeStr=='2014-02-01');
     time=time(1:cutEnd);
     ntime = length(time);
-    dRclr_sfc.net = squeeze(dR_clr(:, :, 1:cutEnd, 1));
+    dRclr_sfc.net = squeeze(dR_net_clr(:, :, 1:cutEnd, 1));
     dRclr_sfc.sw = squeeze(s_rad(:, :, 1:cutEnd, 2));
     dRclr_sfc.lw = squeeze(l_rad(:, :, 1:cutEnd, 2));
-    dRclr_toa.net = squeeze(dR_clr(:, :, 1:cutEnd, 2));
+    dRclr_toa.net = squeeze(dR_net_clr(:, :, 1:cutEnd, 2));
     dRclr_toa.sw = squeeze(s_rad(:, :, 1:cutEnd, 4));
     dRclr_toa.lw = squeeze(l_rad(:, :, 1:cutEnd, 4));
 
     % toa kernel rad
-    load([radEfectPath, 'dradEfect_toa_clr.mat'])%'wvlwEffect', 'wvswEffect', 'tsEffect', 'albEffect', 'husEffect', 'taEffect', 'tasEffect2', 'taOnlyEffect2', 'totalEffect'
-    load([radEfectPath, 'dR_residual_clr_toa.mat'])%dR_residual_clr_toa
+    load([radEffectPath, 'dradEffect_toa_clr.mat'])%'wvlwEffect', 'wvswEffect', 'tsEffect', 'albEffect', 'husEffect', 'taEffect', 'tasEffect2', 'taOnlyEffect2', 'totalEffect'
+    load([radEffectPath, 'dR_residual_clr_toa.mat'])%dR_residual_clr_toa
     dRclr_toaKern.lw = wvlwEffect(:,:,1:cutEnd) + tsEffect(:,:,1:cutEnd) + taEffect(:,:,1:cutEnd);
     dRclr_toaKern.sw = wvswEffect(:,:,1:cutEnd) + albEffect(:,:,1:cutEnd);
     dRclr_toaKern.net = dRclr_toaKern.sw + dRclr_toaKern.lw;
 
     % sfc kernel rad
-    load([radEfectPath, 'dradEfect_sfc_clr.mat'])%'wvlwEffect', 'wvswEffect', 'tsEffect', 'albEffect', 'husEffect', 'taEffect', 'tasEffect2', 'taOnlyEffect2', 'totalEffect'
-    load([radEfectPath, 'dR_residual_clr_sfc.mat'])%dR_residual_clr_toa
+    load([radEffectPath, 'dradEffect_sfc_clr.mat'])%'wvlwEffect', 'wvswEffect', 'tsEffect', 'albEffect', 'husEffect', 'taEffect', 'tasEffect2', 'taOnlyEffect2', 'totalEffect'
+    load([radEffectPath, 'dR_residual_clr_sfc.mat'])%dR_residual_clr_toa
     dRclr_sfcKern.lw = wvlwEffect(:,:,1:cutEnd) + tsEffect(:,:,1:cutEnd) + taEffect(:,:,1:cutEnd);
     dRclr_sfcKern.sw = wvswEffect(:,:,1:cutEnd) + albEffect(:,:,1:cutEnd);
     dRclr_sfcKern.net = dRclr_sfcKern.sw + dRclr_sfcKern.lw;
@@ -109,9 +109,9 @@ for exmNum = 1:1 % only read 2000.03-2018.02 to cut to 2000.03-2014-02
 
     end
 
-    radEfectPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{3}, 'ERA5', level.standVarPath{5}); %radEffect
-    auto_mkdir(radEfectPath);
-    unFileName = fullfile(radEfectPath, 'RadMean_world.mat');
+    radEffectPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{3}, 'ERA5', level.standVarPath{5}); %radEffect
+    auto_mkdir(radEffectPath);
+    unFileName = fullfile(radEffectPath, 'RadMean_world.mat');
     readme='(time,  band({net, lw, sw}))';
     save(unFileName, 'lon_f', 'lat_f', 'time','readme', 'dRclrMean_sfc_un', 'dRclrMean_toa_un', ...
         'dRclrMean_sfcKern_un', 'dRclrMean_toaKern_un', ...
@@ -152,7 +152,7 @@ for exmNum = 1:1 % only read 2000.03-2018.02 to cut to 2000.03-2014-02
 
     end
 
-    cnFileName = fullfile(radEfectPath, 'RadMean_china.mat');
+    cnFileName = fullfile(radEffectPath, 'RadMean_china.mat');
     readme='(time,  band({net, lw, sw}))';
     save(cnFileName, 'lon_f', 'lat_f', 'time', 'readme', 'dRclrMean_sfc_cn', 'dRclrMean_toa_cn', ...
         'dRclrMean_sfcKern_cn', 'dRclrMean_toaKern_cn', ...

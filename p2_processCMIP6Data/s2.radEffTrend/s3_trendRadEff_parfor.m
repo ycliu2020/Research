@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2021-03-16 21:22:22
+% LastEditTime : 2021-04-06 20:03:49
 % LastEditors  : Please set LastEditors
 % Description  : cal mainly include 1.regrid vars, 2.vars anomly
 %                CMIP6 mothly data
@@ -20,7 +20,7 @@ nowpath = pwd;
 poolobj = gcp('nocreate'); % If no pool,  create new one.
 
 if isempty(poolobj)
-    MyPar = parpool(16);
+    MyPar = parpool(10);
 else
     MyPar = gcp('nocreate');
     disp('Already initialized'); %说明并行环境已经启动。

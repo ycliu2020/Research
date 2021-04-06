@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-29 09:58:38
-% LastEditTime : 2021-03-11 20:29:43
+% LastEditTime : 2021-04-02 10:46:11
 % LastEditors  : Please set LastEditors
 % Description  : 相比旧方法, 这里计算地表平均温度时不直接用dts来计算, 而是从ts出发, 先算出总的纬向加权, 然后在进行求anomaly等一系列操作
 % FilePath     : /code/p2_processCMIP6Data/s4.nonLocalCld/s1_cal_dtsg_newMehod.m
@@ -33,7 +33,7 @@ lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f); % figure lat lon
 lon_f = lon_k; nlonf = length(lon_f);
 startMonth = 1;
 
-for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for exmNum = 1:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     nowpath = pwd;
     [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(exmNum);
 

@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-06 08:55:44
-% LastEditTime : 2021-03-25 22:26:32
+% LastEditTime : 2021-04-06 09:46:12
 % LastEditors  : Please set LastEditors
 % Description  :
 % FilePath     : /code/p1_processObserveData/ERA5/ERA5_s3_calRadEff_dp_v2.m
@@ -16,7 +16,7 @@ Lv = 2.5e6;
 %%% kernels in differnt conditions
 kernelsHightLabel = {'sfc', 'toa'}; kernelsLevel2_sky = {'cld', 'clr'};
 kernelsName = cell(1, 4);
-saveradEfectName = cell(1, 4);
+saveradEffectName = cell(1, 4);
 n = 0;
 
 for i = 1:2
@@ -24,22 +24,22 @@ for i = 1:2
     for j = 1:2
         n = n + 1;
         kernelsName{n} = ['kernels_', kernelsHightLabel{i}, '_', kernelsLevel2_sky{j}, '.mat'];
-        saveradEfectName{n} = ['dradEffect_', kernelsHightLabel{i}, '_', kernelsLevel2_sky{j}, '.mat'];
+        saveradEffectName{n} = ['dradEffect_', kernelsHightLabel{i}, '_', kernelsLevel2_sky{j}, '.mat'];
     end
 
 end
 
-saveTrend_radEfectName = {'trend_dradEffect_sfc_cld.mat', 'trend_dradEffect_toa_cld.mat'};
+saveTrend_radEffectName = {'trend_dradEffect_sfc_cld.mat', 'trend_dradEffect_toa_cld.mat'};
 plevel = 24; % wv_lwkernel and wv_swkernel level;
 t_scflevel = 25; % sfc t_lwkernel level;
 
 [readme, level, tLin, vars] = obsParameters('ERA5');
-for p_1 = 1:2
+for p_1 = 4:5
     varsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{1}); %rawdata
     dvarsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{2}); %anomaly
     kernelCalPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{4}); % kernelCal
-    radEfectPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{5}); %radEffect
-    auto_mkdir(radEfectPath)
+    radEffectPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{5}); %radEffect
+    auto_mkdir(radEffectPath)
     % load dvars
     load([dvarsPath, 'global_vars.mat'])% lat_k lon_k time plev_k
     load([dvarsPath, 'meto_dvars.mat'])% dhus and clim_hus...
@@ -58,7 +58,7 @@ for p_1 = 1:2
     %% main change(v1->v2):
     % dln(q)/dT = Lv/(Rv*T**2)->dT=dln(q)*T^2*Rv/Lv
     logHus = log(hus);
-    [dlogHus, logHus_clim] = monthlyAnomaly(144, 73, plevel, time, logHus, 1); %[nlongitude,nlatitude,time,var,startmonth]
+    [dlogHus, logHus_clim] = monthlyAnomaly(144, 73, plevel, time, logHus, startMonth); %[nlongitude,nlatitude,time,var,startmonth]
     for monNum = 1:ntime
         dhus2(:, :, :, monNum) = dlogHus(:, :, :, monNum) .* clim_ta(:, :, :, mod(monNum + startMonth - 2, 12) + 1).^2 * Rv / Lv;
     end
@@ -159,15 +159,15 @@ for p_1 = 1:2
             tasEffect1 = autoRegrid3(lon_k, lat_k, time, tasEffect1, lon_f, lat_f, time);
 
             % save the radEffect: dradEffect_sfc_cld.mat
-            save([radEfectPath, 'global_vars.mat'], 'lon_f', 'lat_f', 'lon_k', 'lat_k', 'plev_k', 'time')
-            save([radEfectPath, saveradEfectName{ii}], 'wvlwEffect', 'wvswEffect', 'tsEffect', 'albEffect', 'husEffect', ...
+            save([radEffectPath, 'global_vars.mat'], 'lon_f', 'lat_f', 'lon_k', 'lat_k', 'plev_k', 'time')
+            save([radEffectPath, saveradEffectName{ii}], 'wvlwEffect', 'wvswEffect', 'tsEffect', 'albEffect', 'husEffect', ...
                 'taEffect', 'taOnlyEffect', 'tasEffect', 'tasEffect2','tasEffect1', 'nonCloudEffect', 'nonCloudAndTsEffect');
         else
             tasEffect2 = autoRegrid3(lon_k, lat_k, time, tasEffect2, lon_f, lat_f, time);
             tasEffect1 = autoRegrid3(lon_k, lat_k, time, tasEffect1, lon_f, lat_f, time);
             % save the radEffect: dradEffect_sfc_cld.mat
-            save([radEfectPath, 'global_vars.mat'], 'lon_f', 'lat_f', 'lon_k', 'lat_k', 'plev_k', 'time')
-            save([radEfectPath, saveradEfectName{ii}], 'wvlwEffect', 'wvswEffect', 'tsEffect', 'albEffect', 'husEffect', ...
+            save([radEffectPath, 'global_vars.mat'], 'lon_f', 'lat_f', 'lon_k', 'lat_k', 'plev_k', 'time')
+            save([radEffectPath, saveradEffectName{ii}], 'wvlwEffect', 'wvswEffect', 'tsEffect', 'albEffect', 'husEffect', ...
                 'taEffect', 'tasEffect2', 'tasEffect1', 'nonCloudEffect', 'nonCloudAndTsEffect');
         end
 
@@ -180,8 +180,8 @@ for p_1 = 1:2
         dR_nonCloudAndTs(:, :, :, ii) = nonCloudAndTsEffect; % prepare for cal ta+alb+q+clod effect
     end
 
-    readme_radEfect = 'final column: 1sfc cld,2sfc clr,3toa cld,4toa clr, note that dR_tas and dR_taOnly shouldnt have value in toa';
-    save([radEfectPath, 'dradEffect_union.mat'], 'dR_hus', 'dR_alb', 'dR_ts', 'dR_ta', 'dR_nonCloud', 'readme_radEfect');
+    readme_radEffect = 'final column: 1sfc cld,2sfc clr,3toa cld,4toa clr, note that dR_tas and dR_taOnly shouldnt have value in toa';
+    save([radEffectPath, 'dradEffect_union.mat'], 'dR_hus', 'dR_alb', 'dR_ts', 'dR_ta', 'dR_nonCloud', 'readme_radEffect');
 
     %%%%% step2: cal cloud effect(definen down is postive)
     % load origan model rad dvars
@@ -216,9 +216,9 @@ for p_1 = 1:2
     % 1.sfc, 2.toa( 1sfc cld,2sfc clr,3toa cld,4toa clr)
     dR_net_cld = l_rad(:, :, :, [1 3]) + s_rad(:, :, :, [1 3]); % real net rad
     dR_net_clr = l_rad(:, :, :, [2 4]) + s_rad(:, :, :, [2 4]);
-    % save real radEffect: eg:real_dradEfect.mat
-    readme_realradEfect = {'final row: 1sfc cld,2sfc clr,3toa cld,4toa clr', 'dR_net_cld,dR_net_clr:1.sfc, 2.toa'};
-    save([radEfectPath, 'real_dradEfect.mat'], 'l_rad', 's_rad', 'dR_net_cld', 'dR_net_clr', 'readme_realradEfect');
+    % save real radEffect: eg:real_dradEffect.mat
+    readme_realradEffect = {'final row: 1sfc cld,2sfc clr,3toa cld,4toa clr', 'dR_net_cld,dR_net_clr:1.sfc, 2.toa'};
+    save([radEffectPath, 'real_dradEffect.mat'], 'l_rad', 's_rad', 'dR_net_cld', 'dR_net_clr', 'readme_realradEffect');
     clear ll_rad ss_rad l_rad s_rad
     %% cal the dRcloud and dR_co2(144,72,time,2)(final row means contain sfc and toa)
     % note that residual includ( 1sfc cld,2sfc clr,3toa cld,4toa clr)
@@ -238,19 +238,19 @@ for p_1 = 1:2
     dCRF_sfc = dCRF(:, :, :, 1); dCRF_toa = dCRF(:, :, :, 2);
     dR_residual_cld_sfc = dR_residual_cld(:, :, :, 1); dR_residual_cld_toa = dR_residual_cld(:, :, :, 2);
     dR_residual_clr_sfc = dR_residual_clr(:, :, :, 1); dR_residual_clr_toa = dR_residual_clr(:, :, :, 2);
-    % equal to real_dradEfect.mat
+    % equal to real_dradEffect.mat
     dR_net_cld_sfc = dR_net_cld(:, :, :, 1); dR_net_cld_toa = dR_net_cld(:, :, :, 2);
     dR_net_clr_sfc = dR_net_clr(:, :, :, 1); dR_net_clr_toa = dR_net_clr(:, :, :, 2);
     % save dR_cloud and dR_residual_cld and observe total effect
-    save([radEfectPath, 'dCRF.mat'], 'dCRF');
-    save([radEfectPath, 'dCRF_sfc.mat'], 'dCRF_sfc');
-    save([radEfectPath, 'dCRF_toa.mat'], 'dCRF_toa');
-    save([radEfectPath, 'dR_cloud.mat'], 'dR_cloud_sfc', 'dR_cloud_toa');
-    save([radEfectPath, 'dR_residual_cld_sfc.mat'], 'dR_residual_cld_sfc');
-    save([radEfectPath, 'dR_residual_cld_toa.mat'], 'dR_residual_cld_toa');
-    save([radEfectPath, 'dR_residual_clr_sfc.mat'], 'dR_residual_clr_sfc');
-    save([radEfectPath, 'dR_residual_clr_toa.mat'], 'dR_residual_clr_toa');
-    save([radEfectPath, 'dR_net.mat'], 'dR_net_cld_sfc', 'dR_net_cld_toa', ...
+    save([radEffectPath, 'dCRF.mat'], 'dCRF');
+    save([radEffectPath, 'dCRF_sfc.mat'], 'dCRF_sfc');
+    save([radEffectPath, 'dCRF_toa.mat'], 'dCRF_toa');
+    save([radEffectPath, 'dR_cloud.mat'], 'dR_cloud_sfc', 'dR_cloud_toa');
+    save([radEffectPath, 'dR_residual_cld_sfc.mat'], 'dR_residual_cld_sfc');
+    save([radEffectPath, 'dR_residual_cld_toa.mat'], 'dR_residual_cld_toa');
+    save([radEffectPath, 'dR_residual_clr_sfc.mat'], 'dR_residual_clr_sfc');
+    save([radEffectPath, 'dR_residual_clr_toa.mat'], 'dR_residual_clr_toa');
+    save([radEffectPath, 'dR_net.mat'], 'dR_net_cld_sfc', 'dR_net_cld_toa', ...
         'dR_net_clr_sfc', 'dR_net_clr_toa');
     clear dCRF dCRF_sfc dCRF_toa
         
@@ -259,12 +259,12 @@ for p_1 = 1:2
     %( 1sfc cld,2sfc clr,3toa cld,4toa clr)
     dR_tsAtom_cld = dR_ts(:, :, :, 3) - dR_ts(:, :, :, 1);
     dR_tsAtom_clr = dR_ts(:, :, :, 4) - dR_ts(:, :, :, 2);
-    save([radEfectPath, 'dR_tsAtom_cld.mat'], 'dR_tsAtom_cld');
-    save([radEfectPath, 'dR_tsAtom_clr.mat'], 'dR_tsAtom_clr');
+    save([radEffectPath, 'dR_tsAtom_cld.mat'], 'dR_tsAtom_cld');
+    save([radEffectPath, 'dR_tsAtom_clr.mat'], 'dR_tsAtom_clr');
     dR_nonTs_sfc = dR_cloud_sfc + dR_nonCloudAndTs(:, :, :, 1);
     dR_nonTs_toa = dR_cloud_toa + dR_nonCloudAndTs(:, :, :, 3);
-    save([radEfectPath, 'dR_nonTs_sfc.mat'], 'dR_nonTs_sfc');
-    save([radEfectPath, 'dR_nonTs_toa.mat'], 'dR_nonTs_toa');
+    save([radEffectPath, 'dR_nonTs_sfc.mat'], 'dR_nonTs_sfc');
+    save([radEffectPath, 'dR_nonTs_toa.mat'], 'dR_nonTs_toa');
 
 end
 t = toc; disp(t)

@@ -65,7 +65,7 @@ lat_k = ncread('/data1/liuyincheng/y_kernels/YiH/kernels_YiH/toa/RRTMG_wv_lw_toa
 
 %% different time series, 1mean 2000-03 to 2018-02(18*12). 2 mean 200207-201706(15*12)
 [readme, level, tLin, vars] = obsParameters('ERA5');
-for p_1 = 1:2
+for p_1 = 4:5
     kernelCalPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{4});
     auto_mkdir(kernelCalPath)
     %%%%% Part1 read dps

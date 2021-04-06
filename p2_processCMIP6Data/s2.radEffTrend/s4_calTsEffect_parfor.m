@@ -14,7 +14,7 @@ nowpath = pwd;
 poolobj = gcp('nocreate'); % If no pool,  create new one.
 
 if isempty(poolobj)
-    MyPar = parpool(16);
+    MyPar = parpool(10);
 else
     MyPar = gcp('nocreate');
     disp('Already initialized'); %说明并行环境已经启动。

@@ -8,6 +8,9 @@
 		},
 		{
 			"path": "../figure"
+		},
+		{
+			"path": "../../../../../data1/liuyincheng/Observe-rawdata/ERA/ERA5/meto_vars"
 		}
 	],
 	"settings": {}

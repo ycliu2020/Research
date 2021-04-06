@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-08-09 14:58:33
-% LastEditTime : 2021-03-11 20:42:26
+% LastEditTime : 2021-04-02 10:59:08
 % LastEditors  : Please set LastEditors
 % Description  : v2 和 v1 最大的不同就在于v2采用了散点累积的积分, 而v1采用了线性关系的假设.
 % FilePath     : /code/p2_processCMIP6Data/s4.nonLocalCld/s2_nonLocalCld_method3_v2.m
@@ -18,7 +18,7 @@ lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f); % figure lat lon
 lon_f = lon_k; nlonf = length(lon_f);
 load('/data1/liuyincheng/CMIP6-process/z_globalVar/ERF_rec.mat')% 'ERF_rec', 'timeERF_rec'
 
-for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for exmNum = 3:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     nowpath = pwd;
     [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(exmNum);
     % exmPath

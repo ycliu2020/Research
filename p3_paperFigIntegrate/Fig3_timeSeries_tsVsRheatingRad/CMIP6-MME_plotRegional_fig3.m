@@ -1,21 +1,19 @@
 %%---------------------------------------------------------
 % Author       : LYC
-% Date         : 2020-09-13 19:06:17
-% LastEditTime : 2021-01-14 16:39:10
+% Date         : 2020-08-31 17:00:15
+% LastEditTime : 2021-04-05 21:52:44
 % LastEditors  : Please set LastEditors
-% Description  : paper用图: ERA5 dataset timeSeries analyse(dR_ts and rhs)
-% FilePath     : /code/p3_paperFigIntegrate/Fig3_timeSeries_tsVsRheatingRad/ERA5_plot_fig3.m
-%
+% Description  : MME result of 时间序列图
+% FilePath     : /code/p3_paperFigIntegrate/Fig3_timeSeries_tsVsRheatingRad/CMIP6-MME_plotRegional_fig3.m
+% note : 统一用startmonth=3 开始计算
 %%---------------------------------------------------------
-clc; clear;
+clc; clear; tic;
 nowpath = pwd;
 % load mask map
-load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/mask/mask_cp144.mat')% load word land mask
-load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/mask/mask_ce72.mat')% load word land mask
+load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/mask/mask_cp144.mat') % load word land mask
+load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/mask/mask_ce72.mat') % load word land mask
 load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/correct_worldmap.mat')
 load('/home/liuyc/lib/tools/matlab/plot/myMap/01.china_map/mat_file/mask14472.mat')
-[mlabels, areaNum] = obsPlotParameters('sfc', 'land', 'ERA5-radEffect-ts');
-[readme, level, tLin, vars] = obsParameters('ERA5');
 
 toaSfc = {'toa', 'sfc'};
 lon_k = 0:2.5:357.5; nlonk = length(lon_k); % kernel lat lon
@@ -23,54 +21,93 @@ lat_k = 90:-2.5:-90; nlatk = length(lat_k);
 lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f); % figure lat lon
 lon_f = lon_k; nlonf = length(lon_f);
 
-for exmNum = 1:1
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %read data
-    varsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{exmNum}, 'ERA5', level.standVarPath{1}); %rawdata
-    dvarsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{exmNum}, 'ERA5', level.standVarPath{2}); %anomaly
-    dvarsTrendPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{exmNum}, 'ERA5', level.standVarPath{3}); %anomaly_trend
-    kernelCalPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{exmNum}, 'ERA5', level.standVarPath{4}); % kernelCal
-    radEfectPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{exmNum}, 'ERA5', level.standVarPath{5}); %radEffect
-    dradTrendPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{exmNum}, 'ERA5', level.standVarPath{6}); %/data1/liuyincheng/cmip6-proces/aimp_2000-2014/MRI-ESM2-0/ensemble/radEffect_trend/
+% the number of MME experiment
+MMENum = 'MME1'
 
-    load([dvarsTrendPath, 'global_vars.mat'])%% 'lon_f', 'lat_f', 'lon_k', 'lat_k', 'plev_k', 'time'
-    load([radEfectPath, 'dradEfect_sfc_cld.mat'])% load albEffect, husEffect, mainEffect, taEffect, taOnlyEffect, taOnlyEffect2, tasEffect, tasEffect2, totalEffect, tsEffect, wvlwEffect, wvswEffect
-    load([radEfectPath, 'dR_cloud_sfc.mat'])
-    load([dvarsPath, 'drhs.mat'])% load drhs
-    nlonf = length(lon_f);
-    nlatf = length(lat_f);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% experiment
+for exmNum = 1:2 %1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+    %CAMS-CSM1-0 didn't have sfc clear sky radiation, delete it
+    [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(exmNum);
+    % MMEPath
+    MMEPath = ['/data1/liuyincheng/CMIP6-process/z_ensembleMean/MME1/', level.time1{exmNum}]; %/data1/liuyincheng/CMIP6-process/z_ensembleMean/MME1/CMIP/amip_1980-2014
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% load and read
+    % data path
+    dvarsPath = fullfile(MMEPath, level.process3{2}); %/data1/liuyincheng/CMIP6-process/2000-2014/MRI-ESM2-0/anomaly
+    dradEffectPath = fullfile(MMEPath, level.process3{6}); %/data1/liuyincheng/CMIP6-process/2000-2014/MRI-ESM2-0/radEffect/
+    load([dradEffectPath, 'global_vars.mat']) % 'lon_f', 'lat_f', 'timeEssmble', 'time', 'plev_k', 'readme', 'timeseries', 'MME_Models'
+    ntime = length(time.date);
+
+    % cal rhs(RHeating)
+    load([dvarsPath, 'drlds.mat']) % surface_downwelling_longwave_flux_in_air
+    load([dvarsPath, 'drsds.mat']) % surface_downwelling_shortwave_flux_in_air
+    load([dvarsPath, 'drsus.mat']) % surface_upwelling_shortwave_flux_in_air
+    dR_swnet = drsds - drsus; % sfc net shortwave flux
+    drhs = drlds + dR_swnet; % equilibrium equation's RHS, nearly equal to sfc upward rad
+    drhs = autoRegrid3(lon_k, lat_k, time.date, drhs, lon_f, lat_f, time.date);
+
+    % cloud radRffect
+    load([dradEffectPath, 'dR_cloud.mat'])
+
+    % TotalEffect
+    load([dradEffectPath, 'dradEffect_sfc_cld.mat']) % 'totalEffect', 'wvlwEffect', 'wvswEffect', 'tsEffect', 'albEffect', 'husEffect', 'taEffect', 'tasEffect2', 'taOnlyEffect2', 'totalEffect', 'mainEffect'
     drhsKern = albEffect + husEffect + taEffect + dR_cloud_sfc;
 
-    % regrid
-    drhs = autoRegrid3(lon_k, lat_k, time, drhs, lon_f, lat_f, time);
+    if exmNum == 1
+        % cut to 2000.03-2014-02
+        timeStr = string(datestr(datenum(time.date), 'yyyy-mm'));
+        cutStart = find(timeStr == '2000-03');
+        cutEnd = find(timeStr == '2014-02');
+    else
+        % cut to 1980.03-2014-02
+        timeStr = string(datestr(datenum(time.date), 'yyyy-mm'));
+        cutStart = find(timeStr == '1980-03');
+        cutEnd = find(timeStr == '2014-02');
+    end
 
-    % cut to 2000.03-2014-02
-    timeStr = string(datestr(datenum(time), 'yyyy-mm-dd'));
-    cutEnd = find(timeStr == '2014-02-01');
-    time = time(1:cutEnd);
+    time = time.date(cutStart:cutEnd);
     ntime = length(time);
-    drhs = drhs(:, :, 1:cutEnd);
-    drhsKern = drhsKern(:, :, 1:cutEnd);
-    tsEffect = tsEffect(:, :, 1:cutEnd);
+    drhs = drhs(:, :, cutStart:cutEnd);
+    drhsKern = drhsKern(:, :, cutStart:cutEnd);
+    tsEffect = tsEffect(:, :, cutStart:cutEnd);
+    startMonth = 3;
+
+    % 写成drhs.world, drhs.CHN, drhs.EUR的形式? 有待进一步验证可行性
+
+    % mask CHN US EUR
+
+
 
     varUsed = zeros(nlonf, nlatf, ntime, 2);
     varUsed(:, :, :, 1) = -tsEffect;
     varUsed(:, :, :, 2) = drhs;
     varUsed(:, :, :, 3) = drhsKern;
-    startMonth = 3;
     [outPutPath] = plotFig(varUsed, time, lat_f, startMonth);
-    title({['Data: ', mlabels.dataName{1}, ', Level: ', mlabels.level, ', Era: ', tLin.time{3}], '90N-90S land, global mean', []}, 'FontWeight', 'normal')
+
+    if exmNum == 1
+        title_txt = {['Level:', num2str(toaSfc{2}), ', Era: 200003-201402'], ['Model:', MMENum], ['90N-90S land, global mean'], []};
+    else
+        title_txt = {['Level:', num2str(toaSfc{2}), ', Era: 198003-201402'], ['Model:', MMENum], ['90N-90S land, global mean'], []};
+
+    end
+
+    title(title_txt, 'FontWeight', 'normal', 'Interpreter', 'none')
 
     % save figures
-    figName = ['Fig3_', mlabels.dataName{1}, '_', tLin.time{3}, '_', mlabels.area, '_', mlabels.level, '_globalLandMeanTimeSeries'];
+    outPutPath = fullfile(outPutPath, 'Fig3_CMIP6_land_SFC_globalLandMeanTimeSeries');
+    auto_mkdir(outPutPath)
+    figName = ['Fig3_', MMENum, '_', level.time1{exmNum}(6:end - 1), ];
     figPath = [outPutPath, '/', figName, '.eps'];
-    export_fig(gcf,figPath,'-r600','-cmyk')
-    
-    % saveas(gcf, figPath)
-    % save_png(figPath)%high resolution
+    export_fig(gcf, figPath, '-r600', '-cmyk')
+    % saveas(gcf, figurePath)
+    % save_png(figurePath)%high resolution
     % close gcf
 
 end
+
+eval(['cd ', nowpath]);
+t = toc; disp(t)
 
 function [outPutPath] = plotFig(varUsed, time, lat_f, startMonth)
     outPutPath = fullfile('/home/liuyc/Research/P02.Ts_change_research/figure/proj3_PaperFig/v0.3/');
@@ -80,7 +117,7 @@ function [outPutPath] = plotFig(varUsed, time, lat_f, startMonth)
 
     latRange = 90; % Latitude range
 
-    varNames = {['d', '\itLW', '\rm_{up}'], ['d', '\itR_{Heating}'], ['d', '\itR_{Heating}'], 'ts RadEfect', 'q RadEfect', 'alb RadEfect'};
+    varNames = {['d', '\itLW', '\rm_{up}'], ['d', '\itR_{Heating}'], ['d', '\itR_{Heating}'], 'ts RadEffect', 'q RadEffect', 'alb RadEffect'};
     yLabel = {'W m^{-2}', 'W m^{-2}', 'W m^{-2}', 'W m^{-2}', 'W m^{-2}', 'W m^{-2}'};
 
     sizeVarUsed = size(varUsed);
@@ -156,11 +193,11 @@ function [outPutPath] = plotFig(varUsed, time, lat_f, startMonth)
     varUsedTemp3 = squeeze(varUsedYearly_weightMean(:, 1));
 
     lineWdth = 2;
-    p1=plot(timeYearly, varUsedTemp1', 'color', '#F08212', 'LineWidth', lineWdth);% 橘黄
+    p1 = plot(timeYearly, varUsedTemp1', 'color', '#F08212', 'LineWidth', lineWdth); % 橘黄
     hold on
-    p2=plot(timeYearly, varUsedTemp2', 'color', '#C2162E', 'LineWidth', lineWdth);% 深红
+    p2 = plot(timeYearly, varUsedTemp2', 'color', '#C2162E', 'LineWidth', lineWdth); % 深红
     hold on
-    p3=plot(timeYearly, varUsedTemp3', 'color', '#4450A1', 'LineWidth', lineWdth);% 蓝色
+    p3 = plot(timeYearly, varUsedTemp3', 'color', '#4450A1', 'LineWidth', lineWdth); % 蓝色
     hold on
     plot(timeYearly, zeroLine', 'k--', 'LineWidth', lineWdth)
     hold on;
@@ -175,19 +212,18 @@ function [outPutPath] = plotFig(varUsed, time, lat_f, startMonth)
     % set y axes
     ymax = 5;
     yticks([-5 -4 -3 -2 -1 0 1 2 3 4 5])
-    yticklabels({'-5','-4','-3','-2','-1','0','1','2','3','4','5'})
+    yticklabels({'-5', '-4', '-3', '-2', '-1', '0', '1', '2', '3', '4', '5'})
 
     ylim([-ymax ymax])
 
     ax = gca;
-    ax.FontName='Microsoft YaHei';% Microsoft YaHei 'Time New Roman'
+    ax.FontName = 'Microsoft YaHei'; % Microsoft YaHei 'Time New Roman'
     ax.XMinorTick = 'off'; ax.YMinorTick = 'off'; % 开启次刻度线
     ax.XAxis.MinorTickValues = (1980:1:2105);
     ax.TickLength = [0.015 0.01]; %刻度线长度      set(gca,'ticklength', [0.02 0.01]);
     ax.XColor = 'k'; ax.YColor = 'k'; % 设置刻度线颜色
     ax.FontSize = 18;
     ax.LineWidth = 1.5;
-
 
     % 去掉上边框和右边框的刻度
     box off
@@ -197,8 +233,8 @@ function [outPutPath] = plotFig(varUsed, time, lat_f, startMonth)
     line([timeYearly(end), timeYearly(end)], [ytick(end) ytick(1)], 'Color', 'k', 'LineWidth', 1.5)
 
     % ylabel({Level{i}, ' Rad Anomaly (Wm^{-2})'}, 'Fontsize', 10)
-    lgd = legend([p1 p2 p3],['d', '\itR', '\rm_{Heat}(kernel calc) cc=', num2str(cc_weightMean{3})], ['d', '\itR', '\rm_{Heat} cc=', num2str(cc_weightMean{2})], ['d', '\itLW', '\rm_{up}'], 'Fontsize', 16, 'Location', 'northwest', 'NumColumns', 1); %'FontWeight', 'bold',
-    legend('boxoff')%删除图例背景和轮廓
+    lgd = legend([p1 p2 p3], ['d', '\itR', '\rm_{Heat}(kernel calc) cc=', num2str(cc_weightMean{3})], ['d', '\itR', '\rm_{Heat} cc=', num2str(cc_weightMean{2})], ['d', '\itLW', '\rm_{up}'], 'Fontsize', 16, 'Location', 'northwest', 'NumColumns', 1); %'FontWeight', 'bold',
+    legend('boxoff') %删除图例背景和轮廓
     % lgd_inf = get(lgd);
     % text(lgd_inf.Position(1) + 0.15, lgd_inf.Position(2) + 0.235, ['cc= ', num2str(cc_weightMean{2})], 'Fontsize', 10, 'FontWeight', 'bold', 'Interpreter', 'none', 'Units', 'normalized')
     hold on

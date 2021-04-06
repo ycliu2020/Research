@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-02 15:23:02
-% LastEditTime : 2021-03-17 19:10:25
+% LastEditTime : 2021-04-06 10:42:32
 % LastEditors  : Please set LastEditors
 % Description  : process ERA5 data to anomaly (includ meto vars and rad)
 %                time line: 1. 2000-03 to 2018-02(18*12) 2. 200207-201706(15*12)
@@ -34,9 +34,9 @@ ts_Path = fullfile(metoVarsPath, 'ts_1979-2019.nc');
 % locate first year
 formatOut = 'yyyy-mm';
 layerSfc_dir = dir(alb_Path);
-startT = cdftime2loc(layerSfc_dir, formatOut, '2000-01');
+startT = cdftime2loc(layerSfc_dir, formatOut, '1979-01');
 % read time and transfor mat time
-startLoc = startT; count = 19 * 12; stride = 1;
+startLoc = startT; count = 41 * 12; stride = 1;
 time0 = cmipTimeRead(alb_Path, startLoc, count, stride); %time.date, Units, Calendar, length
 ntime0 = length(time0.date);
 time1 = 1:ntime0;
@@ -109,7 +109,7 @@ clear rad_sfc_ori
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% start to process
-for p_1 = 1:2% 1 mean 200003-201802
+for p_1 = 4:5% 1 mean 200003-201802
     regridPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{1});
     anomPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{2});
     anomTrendPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{3});
@@ -189,7 +189,7 @@ for p_1 = 1:2% 1 mean 200003-201802
     save([kernelCalPath, 'kernel_dp.mat'], 'dps', 'dp', 'dp_level2', 'dp_level1');
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Part2: deseasonlize vars
-    % meto vars
+    %% meto vars
     startMonth = tLin.startMonth{p_1};
     [dalb, clim_alb] = monthlyAnomaly3D(nlonk, nlatk, time, alb, startMonth);
     [dts, clim_ts] = monthlyAnomaly3D(nlonk, nlatk, time, ts, startMonth);
@@ -202,7 +202,7 @@ for p_1 = 1:2% 1 mean 200003-201802
 
     save([regridPath, 'global_vars.mat'], 'lon_k', 'lat_k', 'time', 'plev_k')
     save([regridPath, 'meto_vars.mat'], 'alb', 'ts', 'hus', 'ta')
-    % rad vars
+    %% rad vars
     % transform unite: W/m2
     rad_sfc = rad_sfc ./ (3600 * 24);
     rad_toa = rad_toa ./ (3600 * 24);
