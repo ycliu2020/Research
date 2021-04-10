@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-08-31 17:00:15
-% LastEditTime : 2021-04-01 15:09:34
+% LastEditTime : 2021-04-09 21:20:56
 % LastEditors  : Please set LastEditors
 % Description  : 同时画时间序列和相关性分布图
 % FilePath     : /code/p3_paperFigIntegrate/Fig1_2_radClosure/CMIP6_plot_RadClos.m
@@ -190,10 +190,12 @@ for exmNum = 1:1
 
             ss = get(0, 'ScreenSize');
             h = figure('Position', [-1075 188 934 764]); %[离左边缘 离下边缘 自身宽 自身高][ss(4) / 2 - 100 ss(3) / 35 ss(3) / 5 * 2.5, (ss(4) - 80) / 5 * 4]
-            subNum=1;
-            for sfcToa = 1:2 % sfc and toa
+            subNum = 1;
 
-                for waveProp = 1:3 % total, short,long
+            for waveProp = 1:3 % total, short,long
+
+                for sfcToa = 1:2 % sfc and toa
+
                     subplot_yc(3, 2, waveProp, sfcToa);
                     hold on
                     lineWdth = 2.5;
@@ -227,12 +229,14 @@ for exmNum = 1:1
                     %     yticklabels([])
                     % end
 
+                    % 上标题
                     if waveProp == 1
-                        text(0.45, 1.15, upperLevel{sfcToa}, 'FontName', 'Microsoft YaHei', 'Fontsize', 16, 'units', 'normalized');
+                        text(0.45, 1.15, upperLevel{sfcToa}, 'FontName', 'Arial', 'Fontsize', 16, 'units', 'normalized');
                     end
 
+                    % y label
                     if sfcToa == 1
-                        ylabel({'W m^{-2}'}, 'FontName', 'Microsoft YaHei', 'Fontsize', 16)
+                        ylabel({'W m^{-2}'}, 'FontName', 'Arial', 'Fontsize', 16)
                     end
 
                     gcaGet = get(gca);
@@ -243,14 +247,15 @@ for exmNum = 1:1
 
                     % 添加序号
                     if waveProp == 3
-                        text(0.475, -0.2, ['(', char(96 + subNum), ')'], 'FontName', 'Microsoft YaHei', 'FontWeight', 'bold', 'Fontsize', 14, 'units', 'normalized');
+                        text(0.475, -0.2, ['(', char(96 + subNum), ')'], 'FontName', 'Arial', 'FontWeight', 'bold', 'Fontsize', 14, 'units', 'normalized');
                     else
-                        text(0.475, -0.1, ['(', char(96 + subNum), ')'], 'FontName', 'Microsoft YaHei', 'FontWeight', 'bold', 'Fontsize', 14, 'units', 'normalized');
+                        text(0.475, -0.1, ['(', char(96 + subNum), ')'], 'FontName', 'Arial', 'FontWeight', 'bold', 'Fontsize', 14, 'units', 'normalized');
                     end
-                    subNum=subNum+1;
+
+                    subNum = subNum + 1;
 
                     ax = gca;
-                    ax.FontName = 'Microsoft YaHei'; % Microsoft YaHei 'Time New Roman'
+                    ax.FontName = 'Arial'; % Arial 'Time New Roman'
                     ax.XMinorTick = 'on'; ax.YMinorTick = 'on'; % 开启次刻度线
                     ax.XAxis.MinorTickValues = timeNumFull;
                     ax.TickLength = [0.03 0.02]; %刻度线长度      set(gca,'ticklength', [0.02 0.01]);
@@ -262,7 +267,7 @@ for exmNum = 1:1
             end
 
             figureTitle = 'Radiation closure experiment (90N-90S mean)';
-            sgtitle({figureTitle, ['Model:', level.model2{mdlNum} ', Ensemble: ', esmName{esmNum}, ', Era: ', level.time1{exmNum}(1:end - 10), ' 2000.03-2014.02']}, 'FontName', 'Microsoft YaHei', 'Fontsize', 18)
+            sgtitle({figureTitle, ['Model:', level.model2{mdlNum} ', Ensemble: ', esmName{esmNum}, ', Era: ', level.time1{exmNum}(1:end - 10), ' 2000.03-2014.02']}, 'FontName', 'Arial', 'Fontsize', 18)
             figureName = ['Fig2_', level.model2{mdlNum}, '_', esmName{esmNum}, '_200003-201402_world_radClos'];
             saveFileName = [mPath.Output, '/', figureName, '.eps'];
             export_fig(gcf, saveFileName, '-r600', '-cmyk')

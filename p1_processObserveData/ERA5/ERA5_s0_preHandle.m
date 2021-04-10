@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-02 15:23:02
-% LastEditTime : 2021-04-06 11:13:21
+% LastEditTime : 2021-04-08 17:09:19
 % LastEditors  : Please set LastEditors
 % Description  : 预先将所有的ERA5文件读取进一个大文件插值并保存, 这样下次就不用每次都读取了
 %                只需执行一次    
@@ -49,6 +49,14 @@ time1 = 1:ntime_raw;
 % read rawginal lat and lon
 lat_raw = double(ncread(alb_Path, 'latitude'));
 lon_raw = double(ncread(alb_Path, 'longitude'));
+% read level
+TQ_Path = strcat(metoVarsPath, 'TQ', num2str((0 + 1979), '%04i'), '.nc');
+plev_raw = ncread(TQ_Path, 'level');
+plev_raw = double(plev_raw);
+plev_raw = plev_raw(end:-1:1);
+plev_k = ncread('/data1/liuyincheng/y_kernels/YiH/kernels_YiH/toa/dp.nc', 'player'); % player 最大1000符合条件pay attention to plev_k's range must smaller than plev_raw's
+nplevk = length(plev_k);
+
 % read vars
 startLoc = [1, 1, 1, startT]; count = [inf, inf, 1, yearTotal * 12]; stride = [1, 1, 1, 1];
 alb_raw = squeeze(ncread(alb_Path, 'fal', startLoc, count, stride));
@@ -60,29 +68,60 @@ ps_regrid = autoRegrid3(lon_raw, lat_raw, time1, ps_raw, lon_k, lat_k, time1);
 alb_regrid = autoRegrid3(lon_raw, lat_raw, time1, alb_raw, lon_k, lat_k, time1);
 ts_regrid = autoRegrid3(lon_raw, lat_raw, time1, ts_raw, lon_k, lat_k, time1);
 % save raw data 
-save([outputPath_rawdata, 'global_vars.mat'], 'lon_raw', 'lat_raw', 'time_raw')
-save([outputPath_rawdata, 'ps_raw.mat'], 'ps_raw')
-save([outputPath_rawdata, 'alb_raw.mat'], 'alb_raw')
-save([outputPath_rawdata, 'ts_raw.mat'], 'ts_raw')
+save([outputPath_rawdata, 'global_vars.mat'], 'lon_raw', 'lat_raw', 'time_raw', 'plev_raw')
+save([outputPath_rawdata, 'ps_raw.mat'], 'ps_raw','-v7.3')
+save([outputPath_rawdata, 'alb_raw.mat'], 'alb_raw','-v7.3')
+save([outputPath_rawdata, 'ts_raw.mat'], 'ts_raw','-v7.3')
 clear alb_raw ps_raw ts_raw
 % save regrided data
-save([outputPath_rawdataRegrid, 'global_vars.mat'], 'lon_f', 'lat_f', 'time_raw')
+save([outputPath_rawdataRegrid, 'global_vars.mat'], 'lon_k', 'lat_k', 'time_raw', 'plev_k')
 save([outputPath_rawdataRegrid, 'ps_regrid.mat'], 'ps_regrid')
 save([outputPath_rawdataRegrid, 'alb_regrid.mat'], 'alb_regrid')
 save([outputPath_rawdataRegrid, 'ts_regrid.mat'], 'ts_regrid')
 clear alb_regrid ps_regrid ts_regrid
 
-% 1.2 按时间划分文件的变量
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 1.2 按时间划分文件的变量
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%% meto data %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% read data
+ta_raw=zeros(length(lon_raw),length(lat_raw),length(plev_raw),yearTotal*12);
+hus_raw=ta_raw;
 for yearNum = 0:yearTotal-1% (read raw range: 2000-2018)
-    % meto data
     TQ_Path = strcat(metoVarsPath, 'TQ', num2str((yearNum + 1979), '%04i'), '.nc');
     ta_raw(:, :, :, yearNum * 12 + 1:(yearNum + 1) * 12) = ncread(TQ_Path, 't');
     hus_raw(:, :, :, yearNum * 12 + 1:(yearNum + 1) * 12) = ncread(TQ_Path, 'q');
 
-    % rad data({'tsr', 'ttr', 'tsrcs', 'ttrcs', 'slhf', 'sshf', 'ssr', 'str', 'strd', 'ssrd', 'ssrc', 'strc', 'strdc', 'ssrdc'};)
-    sfcRad_Path = strcat(sfc_radVarsPath, 'rad_sfc', num2str((yearNum + 2000), '%04i'), '.nc');
-    toaRad_Path = strcat(toa_radVarsPath, 'rad_toa', num2str((yearNum + 2000), '%04i'), '.nc');
+end
+% transform plev direction
+hus_raw = hus_raw(:, :, end:-1:1, :);
+ta_raw = ta_raw(:, :, end:-1:1, :);
+% save raw data 
+save([outputPath_rawdata, 'global_vars.mat'], 'lon_raw', 'lat_raw', 'time_raw', 'plev_raw')
+save([outputPath_rawdata, 'hus_raw.mat'], 'hus_raw','-v7.3')
+save([outputPath_rawdata, 'ta_raw.mat'], 'ta_raw','-v7.3')
 
+%  Regrid to 2.5*2.5, method 1
+% 4D meto vars
+time2=1:12;
+for yearNum = 0:yearTotal-1 % (read raw range: 2000-2018)
+    hus_regrid(:, :, :, yearNum * 12 + 1:(yearNum + 1) * 12) = autoRegrid4(lon_raw, lat_raw, plev_raw, time2, hus_raw(:, :, :, yearNum * 12 + 1:(yearNum + 1) * 12), lon_k, lat_k, plev_k, time2);
+    ta_regrid(:, :, :, yearNum * 12 + 1:(yearNum + 1) * 12) = autoRegrid4(lon_raw, lat_raw, plev_raw, time2, ta_raw(:, :, :, yearNum * 12 + 1:(yearNum + 1) * 12), lon_k, lat_k, plev_k, time2);
+end
+clear hus_raw ta_raw
+
+% save regrided data
+save([outputPath_rawdataRegrid, 'global_vars.mat'], 'lon_k', 'lat_k', 'time_raw', 'plev_k')
+save([outputPath_rawdataRegrid, 'hus_regrid.mat'], 'hus_regrid')
+save([outputPath_rawdataRegrid, 'ta_regrid.mat'], 'ta_regrid')
+clear hus_regrid ta_regrid
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%% rad data %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+rad_sfc_raw=zeros(length(lon_raw),length(lat_raw),yearTotal*12,length(vars.sfcRad));
+rad_toa_raw=rad_sfc_raw;
+for yearNum = 0:yearTotal-1% (read raw range: 2000-2018)
+    sfcRad_Path = strcat(sfc_radVarsPath, 'rad_sfc', num2str((yearNum + 1979), '%04i'), '.nc');
+    toaRad_Path = strcat(toa_radVarsPath, 'rad_toa', num2str((yearNum + 1979), '%04i'), '.nc');
     for radVarNum = 1:length(vars.sfcRad)
         rad_sfc_raw(:, :, yearNum * 12 + 1:(yearNum + 1) * 12, radVarNum) = ncread(sfcRad_Path, vars.sfcRad{radVarNum});
     end
@@ -93,23 +132,6 @@ for yearNum = 0:yearTotal-1% (read raw range: 2000-2018)
 
 end
 
-% read level
-plev_raw = ncread(TQ_Path, 'level');
-plev_raw = double(plev_raw);
-plev_raw = plev_raw(end:-1:1);
-plev_k = ncread('/data1/liuyincheng/y_kernels/YiH/kernels_YiH/toa/dp.nc', 'player'); % player 最大1000符合条件pay attention to plev_k's range must smaller than plev_raw's
-nplevk = length(plev_k);
-
-% transform plev direction
-hus_raw = hus_raw(:, :, end:-1:1, :);
-ta_raw = ta_raw(:, :, end:-1:1, :);
-
-% Regrid to 2.5*2.5
-% 4D meto vars
-hus_regrid = autoRegrid4(lon_raw, lat_raw, plev_raw, time1, hus_raw, lon_k, lat_k, plev_k, time1);
-ta_regrid = autoRegrid4(lon_raw, lat_raw, plev_raw, time1, ta_raw, lon_k, lat_k, plev_k, time1);
-
-% rad vars
 rad_sfc_regrid = zeros(nlonk, nlatk, ntime_raw, length(vars.sfcRad));
 rad_toa_regrid = zeros(nlonk, nlatk, ntime_raw, length(vars.toaRad));
 
@@ -122,19 +144,13 @@ for radVarNum = 1:length(vars.sfcRad)
 end
 
 % save raw data 
-save([outputPath_rawdata, 'global_vars.mat'], 'lon_raw', 'lat_raw', 'time_raw', 'plev_raw')
-save([outputPath_rawdata, 'hus_raw.mat'], 'hus_raw')
-save([outputPath_rawdata, 'ta_raw.mat'], 'ta_raw')
-save([outputPath_rawdata, 'rad_sfc_raw.mat'], 'rad_sfc_raw')
-save([outputPath_rawdata, 'rad_toa_raw.mat'], 'rad_toa_raw')
-clear rad_sfc_raw rad_toa_raw hus_raw ta_raw
+save([outputPath_rawdata, 'rad_sfc_raw.mat'], 'rad_sfc_raw','-v7.3')
+save([outputPath_rawdata, 'rad_toa_raw.mat'], 'rad_toa_raw','-v7.3')
+clear rad_sfc_raw rad_toa_raw 
 
 % save regrided data
-save([outputPath_rawdataRegrid, 'global_vars.mat'], 'lon_f', 'lat_f', 'time_raw', 'plev_k')
-save([outputPath_rawdataRegrid, 'hus_regrid.mat'], 'hus_regrid')
-save([outputPath_rawdataRegrid, 'ta_regrid.mat'], 'ta_regrid')
 save([outputPath_rawdataRegrid, 'rad_sfc_regrid.mat'], 'rad_sfc_regrid')
 save([outputPath_rawdataRegrid, 'rad_toa_regrid.mat'], 'rad_toa_regrid')
-clear rad_sfc_regrid rad_toa_regrid hus_regrid ta_regrid
+clear rad_sfc_regrid rad_toa_regrid 
 
 t = toc; disp(t)

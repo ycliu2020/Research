@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-02 15:23:02
-% LastEditTime : 2021-04-06 10:42:32
+% LastEditTime : 2021-04-10 15:38:07
 % LastEditors  : Please set LastEditors
 % Description  : process ERA5 data to anomaly (includ meto vars and rad)
 %                time line: 1. 2000-03 to 2018-02(18*12) 2. 200207-201706(15*12)
@@ -18,98 +18,57 @@ lat_k = 90:-2.5:-90; nlatk = length(lat_k);
 lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f); % figure lat lon
 lon_f = lon_k; nlonf = length(lon_f);
 var_state = {'d', 'clim_', 'trendm_d', 'trends_d', 'trendyr_d'};
-% modify path first
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% modify path first
+dataSetName='ERA5'; % set which data to compute
+% s0_preHandle data
+s0_Path = '/data1/liuyincheng/Observe-process';
+rawdataPath = fullfile(s0_Path, 'rawdata', dataSetName,'/');
+rawdataRegridPath = fullfile(s0_Path, 'rawdata_regrid', dataSetName,'/');
+
+% origan data
 obsPath = '/data1/liuyincheng/Observe-rawdata/ERA/ERA5';
 metoVarsPath = fullfile(obsPath, 'meto_vars/');
 sfc_radVarsPath = fullfile(obsPath, 'rad_vars/SFC/');
 toa_radVarsPath = fullfile(obsPath, 'rad_vars/TOA/');
-[readme, level, tLin, vars] = obsParameters('ERA5');
+
+% pre set parameters
+[readme, level, tLin, vars] = obsParameters(dataSetName);
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% read raw data from 2000-2018 for futher process to 200003-201802,,,,
-% 1.1 连续时间的变量
-alb_Path = fullfile(metoVarsPath, 'alb_1979-2019.nc');
-ps_Path = fullfile(metoVarsPath, 'ps_1979-2019.nc');
-ts_Path = fullfile(metoVarsPath, 'ts_1979-2019.nc');
+%% read data from 2000-2018 for futher process to 200003-201802,,,,
 % read time
+alb_Path = fullfile(metoVarsPath, 'alb_1979-2019.nc');
 % locate first year
 formatOut = 'yyyy-mm';
 layerSfc_dir = dir(alb_Path);
 startT = cdftime2loc(layerSfc_dir, formatOut, '1979-01');
 % read time and transfor mat time
-startLoc = startT; count = 41 * 12; stride = 1;
+yearTotal=2019-1979+1;
+startLoc = startT; count = yearTotal * 12; stride = 1;
 time0 = cmipTimeRead(alb_Path, startLoc, count, stride); %time.date, Units, Calendar, length
 ntime0 = length(time0.date);
 time1 = 1:ntime0;
-% read original lat and lon
-lat_ori = double(ncread(alb_Path, 'latitude'));
-lon_ori = double(ncread(alb_Path, 'longitude'));
-% read vars
-startLoc = [1, 1, 1, startT]; count = [inf, inf, 1, 19 * 12]; stride = [1, 1, 1, 1];
-alb0 = squeeze(ncread(alb_Path, 'fal', startLoc, count, stride));
-ps0 = squeeze(ncread(ps_Path, 'sp', startLoc, count, stride));
-ts0 = squeeze(ncread(ts_Path, 'skt', startLoc, count, stride));
-% Regrid to 2.5*2.5
-% 3D meto vars
-ps0 = autoRegrid3(lon_ori, lat_ori, time1, ps0, lon_k, lat_k, time1);
-alb0 = autoRegrid3(lon_ori, lat_ori, time1, alb0, lon_k, lat_k, time1);
-ts0 = autoRegrid3(lon_ori, lat_ori, time1, ts0, lon_k, lat_k, time1);
 
-% 1.2 按时间划分文件的变量
-for yearNum = 0:18% (read raw range: 2000-2018)
-    % meto data
-    TQ_Path = strcat(metoVarsPath, 'TQ', num2str((yearNum + 2000), '%04i'), '.nc');
-    ta0(:, :, :, yearNum * 12 + 1:(yearNum + 1) * 12) = ncread(TQ_Path, 't');
-    hus0(:, :, :, yearNum * 12 + 1:(yearNum + 1) * 12) = ncread(TQ_Path, 'q');
-
-    % rad data({'tsr', 'ttr', 'tsrcs', 'ttrcs', 'slhf', 'sshf', 'ssr', 'str', 'strd', 'ssrd', 'ssrc', 'strc', 'strdc', 'ssrdc'};)
-    sfcRad_Path = strcat(sfc_radVarsPath, 'rad_sfc', num2str((yearNum + 2000), '%04i'), '.nc');
-    toaRad_Path = strcat(toa_radVarsPath, 'rad_toa', num2str((yearNum + 2000), '%04i'), '.nc');
-
-    for radVarNum = 1:length(vars.sfcRad)
-        rad_sfc_ori(:, :, yearNum * 12 + 1:(yearNum + 1) * 12, radVarNum) = ncread(sfcRad_Path, vars.sfcRad{radVarNum});
-    end
-
-    for radVarNum = 1:length(vars.toaRad)
-        rad_toa_ori(:, :, yearNum * 12 + 1:(yearNum + 1) * 12, radVarNum) = ncread(toaRad_Path, vars.toaRad{radVarNum});
-    end
-
-end
-
-% read level
-plev_ori = ncread(TQ_Path, 'level');
-plev_ori = double(plev_ori);
-plev_ori = plev_ori(end:-1:1);
-plev_k = ncread('/data1/liuyincheng/y_kernels/YiH/kernels_YiH/toa/dp.nc', 'player'); % player 最大1000符合条件pay attention to plev_k's range must smaller than plev_ori's
-nplevk = length(plev_k);
-
-% transform plev direction
-hus0 = hus0(:, :, end:-1:1, :);
-ta0 = ta0(:, :, end:-1:1, :);
-
-% Regrid to 2.5*2.5
-% 4D meto vars
-hus0 = autoRegrid4(lon_ori, lat_ori, plev_ori, time1, hus0, lon_k, lat_k, plev_k, time1);
-ta0 = autoRegrid4(lon_ori, lat_ori, plev_ori, time1, ta0, lon_k, lat_k, plev_k, time1);
+% read 3D vars
+load([rawdataRegridPath, 'global_vars.mat']) 
+load([rawdataRegridPath, 'alb_regrid.mat']) 
+load([rawdataRegridPath, 'ps_regrid.mat']) 
+load([rawdataRegridPath, 'ts_regrid.mat'])
+nplevk=length(plev_k);
+% 4D vars 
+load([rawdataRegridPath, 'hus_regrid.mat']) 
+load([rawdataRegridPath, 'ta_regrid.mat']) 
 
 % rad vars
-rad_sfc0 = zeros(nlonk, nlatk, ntime0, length(vars.sfcRad));
-rad_toa0 = zeros(nlonk, nlatk, ntime0, length(vars.toaRad));
+load([rawdataRegridPath, 'rad_sfc_regrid.mat']) 
+load([rawdataRegridPath, 'rad_toa_regrid.mat']) 
 
-for radVarNum = 1:length(vars.toaRad)
-    rad_toa0(:, :, :, radVarNum) = autoRegrid3(lon_ori, lat_ori, time1, rad_toa_ori(:, :, :, radVarNum), lon_k, lat_k, time1);
-end
-
-clear rad_toa_ori
-
-for radVarNum = 1:length(vars.sfcRad)
-    rad_sfc0(:, :, :, radVarNum) = autoRegrid3(lon_ori, lat_ori, time1, rad_sfc_ori(:, :, :, radVarNum), lon_k, lat_k, time1);
-end
-
-clear rad_sfc_ori
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% start to process
-for p_1 = 4:5% 1 mean 200003-201802
+for p_1 = 6:6% 1 mean 200003-201802
     regridPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{1});
     anomPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{2});
     anomTrendPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{3});
@@ -126,15 +85,15 @@ for p_1 = 4:5% 1 mean 200003-201802
     endMon = startMon + tLin.inter{p_1} - 1;
 
     % read specific time series
-    ps = ps0(:, :, startMon:endMon);
-    alb = alb0(:, :, startMon:endMon);
-    ts = ts0(:, :, startMon:endMon);
-    hus = hus0(:, :, :, startMon:endMon);
-    ta = ta0(:, :, :, startMon:endMon);
+    ps = ps_regrid(:, :, startMon:endMon);
+    alb = alb_regrid(:, :, startMon:endMon);
+    ts = ts_regrid(:, :, startMon:endMon);
+    hus = hus_regrid(:, :, :, startMon:endMon);
+    ta = ta_regrid(:, :, :, startMon:endMon);
     time = time0.date(startMon:endMon, 1);
     ntime = length(time);
-    rad_sfc = rad_sfc0(:, :, startMon:endMon, :);
-    rad_toa = rad_toa0(:, :, startMon:endMon, :);
+    rad_sfc = rad_sfc_regrid(:, :, startMon:endMon, :);
+    rad_toa = rad_toa_regrid(:, :, startMon:endMon, :);
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Part1: handle ps

@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-08 19:48:12
-% LastEditTime : 2021-04-01 15:09:23
+% LastEditTime : 2021-04-09 21:21:12
 % LastEditors  : Please set LastEditors
 % Description  : plot radClos
 % FilePath     : /code/p3_paperFigIntegrate/Fig1_2_radClosure/ERA5_plot_RadClos.m
@@ -72,10 +72,12 @@ for exmNum = 3:3 % only 2000.03-2014.02
 
         ss = get(0, 'ScreenSize');
         h = figure('Position', [-1075 188 934 764]); %[离左边缘 离下边缘 自身宽 自身高][ss(4) / 2 - 100 ss(3) / 35 ss(3) / 5 * 2.5, (ss(4) - 80) / 5 * 4]
-        subNum=1;
-        for sfcToa = 1:2 % sfc and toa
+        subNum = 1;
 
-            for waveProp = 1:3 % total, short,long
+        for waveProp = 1:3 % total, short,long
+
+            for sfcToa = 1:2 % sfc and toa
+
                 subplot_yc(3, 2, waveProp, sfcToa);
                 hold on
                 lineWdth = 2.5;
@@ -131,12 +133,13 @@ for exmNum = 3:3 % only 2000.03-2014.02
 
                 % 添加序号
                 if waveProp == 3
-                    text(0.475, -0.2, ['(',char(96+subNum),')'], 'FontName', 'Microsoft YaHei', 'FontWeight', 'bold', 'Fontsize', 14, 'units', 'normalized');
+                    text(0.475, -0.2, ['(', char(96 + subNum), ')'], 'FontName', 'Microsoft YaHei', 'FontWeight', 'bold', 'Fontsize', 14, 'units', 'normalized');
                 else
-                    text(0.475, -0.1, ['(',char(96+subNum),')'], 'FontName', 'Microsoft YaHei', 'FontWeight', 'bold', 'Fontsize', 14, 'units', 'normalized');
+                    text(0.475, -0.1, ['(', char(96 + subNum), ')'], 'FontName', 'Microsoft YaHei', 'FontWeight', 'bold', 'Fontsize', 14, 'units', 'normalized');
                 end
-                subNum=subNum+1;
-                
+
+                subNum = subNum + 1;
+
                 ax = gca;
                 ax.FontName = 'Microsoft YaHei'; % Microsoft YaHei 'Time New Roman'
                 ax.XMinorTick = 'on'; ax.YMinorTick = 'on'; % 开启次刻度线

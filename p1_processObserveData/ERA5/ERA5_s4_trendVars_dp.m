@@ -1,14 +1,14 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-06 13:27:23
-% LastEditTime : 2020-07-08 14:45:50
-% LastEditors  : LYC
+% LastEditTime : 2021-04-08 17:21:40
+% LastEditors  : Please set LastEditors
 % Description  :
 % FilePath     : /code/p1_processObserveData/ERA5/ERA5_s4_trendVars_dp.m
 %
 %%---------------------------------------------------------
 [readme, level, tLin, vars] = obsParameters('ERA5');
-for p_1 = 1:2
+for p_1 = 4:5
     varsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{1}); %rawdata
     dvarsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{2}); %anomaly
     kernelCalPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{4}); % kernelCal
@@ -21,7 +21,7 @@ for p_1 = 1:2
     % load radEffect
     load([radEfectPath, 'dCRF.mat'])% dCRF
     load([radEfectPath, 'global_vars.mat'])% 'lon_f', 'lat_f', 'lon_k', 'lat_k', 'plev_k', 'time'
-    load([radEfectPath, 'dradEfect_sfc_cld.mat'])%'wvlwEffect', 'wvswEffect', 'tsEffect', 'albEffect', 'husEffect', 'taEffect', 'tasEffect', taOnlyEffect', tasEffect2', 'taOnlyEffect2', 'totalEffect'
+    load([radEfectPath, 'dradEffect_sfc_cld.mat'])%'wvlwEffect', 'wvswEffect', 'tsEffect', 'albEffect', 'husEffect', 'taEffect', 'tasEffect', taOnlyEffect', tasEffect2', 'taOnlyEffect2', 'totalEffect'
     load([radEfectPath, 'dR_tsAtom_cld.mat'])% dR_tsAtom_cld(ts effect on atoms)
     load([radEfectPath, 'dR_mainEffect_sfc.mat'])%dR_mainEffect_sfc (ta+alb+q+clod effect)
     load([radEfectPath, 'dR_residual_cld_sfc.mat'])%dR_residual_cld_sfc(co2 effect)
@@ -49,7 +49,7 @@ for p_1 = 1:2
 
     readme.aboutTas2 = 'tas2 mean consider 2 levels near sfc';
     save([trend_radEfectPath, 'global_vars.mat'], 'lon_f', 'lat_f', 'time', 'plev_k')
-    save([trend_radEfectPath, 'trend_dradEfect_sfc_cld.mat'], ...
+    save([trend_radEfectPath, 'trend_dradEffect_sfc_cld.mat'], ...
         'trendm_dRsfc_CRF', 'trends_dRsfc_CRF', 'trendyr_dRsfc_CRF', ...
         'trendm_dRsfc_ta', 'trends_dRsfc_ta', 'trendyr_dRsfc_ta', ...
         'trendm_dRsfc_taOnly', 'trends_dRsfc_taOnly', 'trendyr_dRsfc_taOnly', ...
@@ -66,7 +66,7 @@ for p_1 = 1:2
 
     %%%%% 1.2: cal the data output net radEffect
     load([radEfectPath, 'global_vars.mat'])% 'lon_f', 'lat_f', 'lon_k', 'lat_k', 'plev_k', 'time'
-    load([radEfectPath, 'real_dradEfect.mat'])%'l_rad', 's_rad', 'dR_allsky', 'dR_clr', 'readme_realradEfect'
+    load([radEfectPath, 'real_dradEffect.mat'])%'l_rad', 's_rad', 'dR_allsky', 'dR_clr', 'readme_realradEfect'
     realRadEffect = dR_allsky(:, :, :, 1);
     nlonf = length(lon_f); nlatf = length(lat_f);
     % cal the trend(10 vars)
@@ -78,7 +78,7 @@ for p_1 = 1:2
     %%%%%1.1 cal radEffect
     load([radEfectPath, 'global_vars.mat'])% 'lon_f', 'lat_f', 'lon_k', 'lat_k', 'plev_k', 'time'
     load([radEfectPath, 'dCRF.mat'])% dCRF
-    load([radEfectPath, 'dradEfect_toa_cld.mat'])%'wvlwEffect', 'wvswEffect', 'tsEffect', 'albEffect', 'husEffect', 'taEffect', 'tasEffect2', 'taOnlyEffect2', 'totalEffect'
+    load([radEfectPath, 'dradEffect_toa_cld.mat'])%'wvlwEffect', 'wvswEffect', 'tsEffect', 'albEffect', 'husEffect', 'taEffect', 'tasEffect2', 'taOnlyEffect2', 'totalEffect'
     load([radEfectPath, 'dR_mainEffect_toa.mat'])%dR_mainEffect_toa (ta+alb+q+clod effect)
     load([radEfectPath, 'dR_residual_cld_toa.mat'])%dR_residual_cld_toa(co2 effect)
     load([radEfectPath, 'dR_cloud_toa.mat'])%dR_residual_cld_toa(co2 effect)
@@ -96,7 +96,7 @@ for p_1 = 1:2
     [trendm_dRtoa_ts, trends_dRtoa_ts, trendyr_dRtoa_ts, ~, ~] = autoCalTrend(tsEffect, nlonf, nlatf, timeDate, startMonth);
     readme.aboutTas2 = 'tas2 mean consider 2 levels near sfc';
     save([trend_radEfectPath, 'global_vars.mat'], 'lon_f', 'lat_f', 'time', 'plev_k')
-    save([trend_radEfectPath, 'trend_dradEfect_toa_cld.mat'], ...
+    save([trend_radEfectPath, 'trend_dradEffect_toa_cld.mat'], ...
         'trendm_dRtoa_CRF', 'trends_dRtoa_CRF', 'trendyr_dRtoa_CRF', ...
         'trendm_dRtoa_ta', 'trends_dRtoa_ta', 'trendyr_dRtoa_ta', ...
         'trendm_dRtoa_taOnly2', 'trends_dRtoa_taOnly2', 'trendyr_dRtoa_taOnly2', ...
@@ -110,7 +110,7 @@ for p_1 = 1:2
 
     %%%%Part2: cal the data output net radEffect
     load([radEfectPath, 'global_vars.mat'])% 'lon_f', 'lat_f', 'lon_k', 'lat_k', 'plev_k', 'time'
-    load([radEfectPath, 'real_dradEfect.mat'])%'l_rad', 's_rad', 'dR_allsky', 'dR_clr', 'readme_realradEfect'
+    load([radEfectPath, 'real_dradEffect.mat'])%'l_rad', 's_rad', 'dR_allsky', 'dR_clr', 'readme_realradEfect'
     realRadEffect = dR_allsky(:, :, :, 2);
     % cal the trend(10 vars)
     [trendm_dRtoa_realRad, trends_dRtoa_realRad, trendyr_dRtoa_realRad, ~, ~] = autoCalTrend(realRadEffect, nlonf, nlatf, timeDate, startMonth);
