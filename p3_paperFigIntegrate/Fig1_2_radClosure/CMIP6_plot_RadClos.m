@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-08-31 17:00:15
-% LastEditTime : 2021-04-09 21:20:56
+% LastEditTime : 2021-04-13 20:33:30
 % LastEditors  : Please set LastEditors
 % Description  : 同时画时间序列和相关性分布图
 % FilePath     : /code/p3_paperFigIntegrate/Fig1_2_radClosure/CMIP6_plot_RadClos.m
@@ -38,7 +38,7 @@ for exmNum = 1:1
     auto_mkdir(mPath.Output)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % model
-    for mdlNum = 1:length(level.model2) %1:length(level.model2)
+    for mdlNum = 3:3%1:length(level.model2) %1:length(level.model2)
         % model path
         mdlName = level.model2{mdlNum};
         mdlPath = fullfile(exmPath, level.model2{mdlNum});
@@ -116,7 +116,7 @@ for exmNum = 1:1
             dRclr_toaRes(:, :, :, 3) = sw_residual_clr_toa;
 
             % mask
-            areaStr = 'world';
+            areaStr = 'china';
 
             for varNum = 1:3
                 [dRclr_sfc(:, :, :, varNum), ~, ~] = maskArea(squeeze(dRclr_sfc(:, :, :, varNum)), lat_f, latRange, -latRange, areaStr);
@@ -186,7 +186,7 @@ for exmNum = 1:1
             sfcToalevel = {'sfc', 'toa'}; upperLevel = upper(sfcToalevel);
             Radname = {['d', '\itR', '\rm_{net} '], ['d', '\itR', '\rm_{LW} '], ['d', '\itR', '\rm_{SW} ']};
             set(0, 'defaultfigurecolor', 'w'); %设置画布底色为白色
-            set(0, 'DefaultFigureVisible', 'off')
+            set(0, 'DefaultFigureVisible', 'on')
 
             ss = get(0, 'ScreenSize');
             h = figure('Position', [-1075 188 934 764]); %[离左边缘 离下边缘 自身宽 自身高][ss(4) / 2 - 100 ss(3) / 35 ss(3) / 5 * 2.5, (ss(4) - 80) / 5 * 4]
@@ -199,9 +199,12 @@ for exmNum = 1:1
                     subplot_yc(3, 2, waveProp, sfcToa);
                     hold on
                     lineWdth = 2.5;
-                    plot(time, squeeze(meanarea(:, sfcToa, waveProp, 3)), 'color', '#808080', 'LineWidth', 1.5)
-                    plot(time, squeeze(meanarea(:, sfcToa, waveProp, 1)), 'color', '#BC144A', 'LineWidth', lineWdth) %真实值值
-                    plot(time, squeeze(meanarea(:, sfcToa, waveProp, 2)), 'color', '#30388B', 'LineWidth', lineWdth) % 计算值
+                    % plot(time, squeeze(meanarea(:, sfcToa, waveProp, 3)), 'color', '#808080', 'LineWidth', 1.5)
+                    % plot(time, squeeze(meanarea(:, sfcToa, waveProp, 1)), 'color', '#BC144A', 'LineWidth', lineWdth) %真实值值
+                    % plot(time, squeeze(meanarea(:, sfcToa, waveProp, 2)), 'color', '#30388B', 'LineWidth', lineWdth) % 计算值
+                    plot(time, squeeze(meanarea(:, sfcToa, waveProp, 1)), 'color', '#FCF8F9', 'LineWidth', lineWdth) %真实值值
+                    plot(time, squeeze(meanarea(:, sfcToa, waveProp, 2)), 'color', '#F8F8FC', 'LineWidth', lineWdth) % 计算值
+                    plot(time, squeeze(meanarea(:, sfcToa, waveProp, 3)), 'color', '#CA1919', 'LineWidth', 1.5)
 
                     timeSer = [1985 1990 1995 2002 2006 2010 2014 2025 2035 2045 2055 2065 2075 2085 2095 2105];
                     char_timeSer = cellstr(string(timeSer));
@@ -224,6 +227,7 @@ for exmNum = 1:1
 
                     % y 轴坐标
                     ylim([-3 4])
+                    ylim([-6 6])
 
                     % if sfcToa==2
                     %     yticklabels([])
@@ -269,9 +273,9 @@ for exmNum = 1:1
             figureTitle = 'Radiation closure experiment (90N-90S mean)';
             sgtitle({figureTitle, ['Model:', level.model2{mdlNum} ', Ensemble: ', esmName{esmNum}, ', Era: ', level.time1{exmNum}(1:end - 10), ' 2000.03-2014.02']}, 'FontName', 'Arial', 'Fontsize', 18)
             figureName = ['Fig2_', level.model2{mdlNum}, '_', esmName{esmNum}, '_200003-201402_world_radClos'];
-            saveFileName = [mPath.Output, '/', figureName, '.eps'];
-            export_fig(gcf, saveFileName, '-r600', '-cmyk')
-            close gcf
+            % saveFileName = [mPath.Output, '/', figureName, '.eps'];
+            % export_fig(gcf, saveFileName, '-r600', '-cmyk')
+            % close gcf
 
             % saveas(gcf, saveFileName)
             % save_png(saveFileName)%high resolution

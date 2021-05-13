@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-06-09 15:52:00
-% LastEditTime : 2021-03-25 20:58:42
+% LastEditTime : 2021-04-14 09:14:47
 % LastEditors  : Please set LastEditors
 % Description  : cal mainly include 1.regrid vars, 2.vars anomly
 %                CMIP6 mothly data
@@ -23,7 +23,7 @@ nowpath = pwd;
 poolobj = gcp('nocreate'); % If no pool,  create new one.
 
 if isempty(poolobj)
-    MyPar = parpool(18);
+    MyPar = parpool(9);
 else
     MyPar = gcp('nocreate');
     disp('Already initialized'); %说明并行环境已经启动。
@@ -156,7 +156,7 @@ function [] = esmFun(mdlPath, esmPath, exmNum, mdlNum, esmNum)
     % path
     dvarsPath = fullfile(esmPath, level.process3{2}); %/data1/liuyincheng/CMIP6-process/2000-2014/MRI-ESM2-0/essember/anomaly
     varsPath = fullfile(esmPath, level.process3{1}); %/data1/liuyincheng/CMIP6-process/2000-2014/MRI-ESM2-0/essember/rawdata
-    radEfectPath = fullfile(esmPath, level.process3{6}); %/data1/liuyincheng/CMIP6-process/2000-2014/MRI-ESM2-0/essember/radEffect/
+    radEfectPath = fullfile(esmPath, 'radEffect1/'); %/data1/liuyincheng/CMIP6-process/2000-2014/MRI-ESM2-0/essember/radEffect/
     auto_mkdir(radEfectPath)
     %%%%% step1: cal dReffect
     % load dvars

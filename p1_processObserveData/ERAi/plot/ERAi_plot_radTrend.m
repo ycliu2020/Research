@@ -1,8 +1,8 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-06 15:05:35
-% LastEditTime : 2020-07-14 09:54:02
-% LastEditors  : LYC
+% LastEditTime : 2021-05-04 17:15:14
+% LastEditors  : Please set LastEditors
 % Description  :
 % FilePath     : /code/p1_processObserveData/ERAi/plot/ERAi_plot_radTrend.m
 %
@@ -20,18 +20,18 @@ load('/home/liuyc/lib/tools/matlab/plot/myMap/01.china_map/mat_file/mask14472.ma
 latRange = 60;
 lon1 = [2.5 357.5]; lat1 = [-latRange + 1 latRange - 1]; % world area
 set(0, 'defaultfigurecolor', 'w')
-
+obsPath='/data2/liuyincheng/Observe-process';
 %% different time series, 1mean 2000-03 to 2018-02(18*12). 2 mean 200207-201706(15*12)
-for p_1 = 1:2
+for exmNum = 1:2
     %%%%%%%%%%%%%%%%%%%%%%%%%%%
     %read data
-    varsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{1}); %rawdata
-    dvarsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{2}); %anomaly
-    dvarsTrendPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{3}); %anomaly_trend
-    kernelCalPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{4}); % kernelCal
-    radEfectPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{5}); %radEffect
-    dradTrendPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{6}); %/data1/liuyincheng/cmip6-proces/aimp_2000-2014/MRI-ESM2-0/ensemble/radEffect_trend/
-    outPutPath = fullfile('/home/liuyc/Research/P02.Ts_change_research/figure/01.observe/1.3/', tLin.time{p_1}, 'ERAi', 'fig_radEffect');
+    varsPath = fullfile(obsPath, tLin.time{exmNum}, 'ERAi', level.standVarPath{1}); %rawdata
+    dvarsPath = fullfile(obsPath, tLin.time{exmNum}, 'ERAi', level.standVarPath{2}); %anomaly
+    dvarsTrendPath = fullfile(obsPath, tLin.time{exmNum}, 'ERAi', level.standVarPath{3}); %anomaly_trend
+    kernelCalPath = fullfile(obsPath, tLin.time{exmNum}, 'ERAi', level.standVarPath{4}); % kernelCal
+    radEfectPath = fullfile(obsPath, tLin.time{exmNum}, 'ERAi', level.standVarPath{5}); %radEffect
+    dradTrendPath = fullfile(obsPath, tLin.time{exmNum}, 'ERAi', level.standVarPath{6}); %/data1/liuyincheng/cmip6-proces/aimp_2000-2014/MRI-ESM2-0/ensemble/radEffect_trend/
+    outPutPath = fullfile('/home/liuyc/Research/P02.Ts_change_research/figure/01.observe/1.3/', tLin.time{exmNum}, 'ERAi', 'fig_radEffect');
     auto_mkdir(outPutPath)
 
     load([dvarsTrendPath, 'global_vars.mat'])%% 'lon_f', 'lat_f', 'lon_k', 'lat_k', 'plev_k', 'time'
@@ -109,9 +109,9 @@ for p_1 = 1:2
         c.Limits = [min(colorbar_Series) max(colorbar_Series)];
     end
 
-    headLineTxt = {['Level:', mlabels.level, ', Era: ', tLin.time{p_1}], ['Data:', mlabels.dataName{1}, ', Trend(year mean)']};
+    headLineTxt = {['Level:', mlabels.level, ', Era: ', tLin.time{exmNum}], ['Data:', mlabels.dataName{1}, ', Trend(year mean)']};
     sgtt = sgtitle(headLineTxt, 'Fontsize', 14, 'Interpreter', 'none');
-    figureName = [mlabels.dataName{1}, '_', tLin.time{p_1}, '_radEffect', '_', mlabels.area,'_',mlabels.level];
+    figureName = [mlabels.dataName{1}, '_', tLin.time{exmNum}, '_radEffect', '_', mlabels.area,'_',mlabels.level];
     saveFileName = [outPutPath, '/', figureName, '.png'];
     saveas(gcf, saveFileName)
     % save_png(saveFileName)%high resolution

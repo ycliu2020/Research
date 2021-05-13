@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-08-31 17:00:15
-% LastEditTime : 2021-04-01 15:41:50
+% LastEditTime : 2021-04-20 19:12:04
 % LastEditors  : Please set LastEditors
 % Description  : 同时画时间序列和相关性分布图
-% FilePath     : /code/p3_paperFigIntegrate/Fig3_timeSeries_tsVsRheatingRad/CMIP6_plot_fig3_v2.m
+% FilePath     : /code/p3_paperFigIntegrate/Fig3_timeSeries_tsVsRheatingRad/CMIP6_plot_v2.m
 % v2 VS v1 : 统一用startmonth=3 开始计算
 %%---------------------------------------------------------
 clc; clear; tic;
@@ -23,7 +23,7 @@ lon_f = lon_k; nlonf = length(lon_f);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % experiment
-for exmNum = 1:2%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for exmNum = 1:1%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     %CAMS-CSM1-0 didn't have sfc clear sky radiation, delete it
     [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(exmNum);
     % exmPath
@@ -129,8 +129,8 @@ for exmNum = 1:2%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             outPutPath=fullfile(outPutPath,'Fig3_CMIP6_land_SFC_globalLandMeanTimeSeries');
             auto_mkdir(outPutPath)
             figName = ['Fig3_', level.model2{mdlNum}, '_', esmName{esmNum},'_',level.time1{exmNum}(6:end - 1),];
-            figPath = [outPutPath, '/', figName, '.eps'];
-            export_fig(gcf,figPath,'-r600','-cmyk')
+            % figPath = [outPutPath, '/', figName, '.eps'];
+            % export_fig(gcf,figPath,'-r600','-cmyk')
             % saveas(gcf, figurePath)
             % save_png(figurePath)%high resolution
             % close gcf

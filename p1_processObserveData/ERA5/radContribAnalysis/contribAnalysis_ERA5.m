@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-11-07 15:09:57
-% LastEditTime : 2020-12-08 15:23:12
+% LastEditTime : 2021-04-13 18:42:14
 % LastEditors  : Please set LastEditors
 % Description  :
 % FilePath     : /code/p1_processObserveData/ERA5/radContribAnalysis/contribAnalysis_ERA5.m
@@ -18,7 +18,7 @@ lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f); % figure lat lon
 lon_f = lon_k; nlonf = length(lon_f);
 
 % Path
-ERA5Path = '/data1/liuyincheng/Observe-process/200003-201802/ERA5';
+ERA5Path = '/data1/liuyincheng/Observe-process/200001-201412/ERA5';
 
 % Read rhs(RHeating)
 anomPath = fullfile(ERA5Path, 'anomaly');
@@ -31,15 +31,15 @@ drhs = autoRegrid3(lon_k, lat_k, time, drhs, lon_f, lat_f, time);
 % Read sfc values
 dradEffectPath = fullfile(ERA5Path, 'radEffect');
 load(fullfile(dradEffectPath, 'global_vars.mat'))
-load(fullfile(dradEffectPath, 'dR_cloud_sfc'))
-load(fullfile(dradEffectPath, 'dradEfect_sfc_cld.mat'))% husEffect, mainEffect, taEffect, taOnlyEffect, taOnlyEffect2, tasEffect, tasEffect2, totalEffect, tsEffect, wvlwEffect, wvswEffect, albEffect
+load(fullfile(dradEffectPath, 'dR_cloud'))
+load(fullfile(dradEffectPath, 'dradEffect_sfc_cld.mat'))% husEffect, nonCloudAndTsEffect, taEffect, taOnlyEffect, taOnlyEffect2, tasEffect, tasEffect2, totalEffect, tsEffect, wvlwEffect, wvswEffect, albEffect
 load(fullfile(dradEffectPath, 'dR_residual_cld_sfc.mat'))% dR_resiual_cld_sfc
-load(fullfile(dradEffectPath, 'real_dradEfect.mat'))% l_rad, readme_realradEfect, s_rad, dR_clr, dR_allsky
+load(fullfile(dradEffectPath, 'real_dradEffect.mat'))% l_rad, readme_realradEfect, s_rad, dR_clr, dR_allsky
 
 % Add all vars into one var
 dTs_x_sfc = zeros(nlonf, nlatf, ntime, 2);
 dTs_x_sfc(:, :, :, 1) = drhs;
-dTs_x_sfc(:, :, :, 2) = drhs - (mainEffect + dR_cloud_sfc); % or -squeeze(dR_allsky(:,:,:,1))+dR_residual_cld_sfc;
+dTs_x_sfc(:, :, :, 2) = drhs - (nonCloudAndTsEffect + dR_cloud_sfc); % or -squeeze(dR_allsky(:,:,:,1))+dR_residual_cld_sfc;
 dTs_x_sfc(:, :, :, 3) = albEffect;
 dTs_x_sfc(:, :, :, 4) = dR_cloud_sfc;
 dTs_x_sfc(:, :, :, 5) = husEffect;
@@ -49,8 +49,8 @@ nValue = size_dTs_x_sfc(4);
 
 % cut to 2000.03-2014.02
 timeStr = string(datestr(datenum(time), 'yyyy-mm'));
-cutStart = find(timeStr == '2000-03');
-cutEnd = find(timeStr == '2014-02');
+cutStart = find(timeStr == '2000-01');
+cutEnd = find(timeStr == '2014-12');
 time = time(cutStart:cutEnd);
 ntime = length(time);
 dTs_x_sfc=dTs_x_sfc(:,:,cutStart:cutEnd,:);

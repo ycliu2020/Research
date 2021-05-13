@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-02 15:23:02
-% LastEditTime : 2021-04-10 15:38:07
+% LastEditTime : 2021-04-22 14:53:57
 % LastEditors  : Please set LastEditors
 % Description  : process ERA5 data to anomaly (includ meto vars and rad)
 %                time line: 1. 2000-03 to 2018-02(18*12) 2. 200207-201706(15*12)
@@ -21,14 +21,14 @@ var_state = {'d', 'clim_', 'trendm_d', 'trends_d', 'trendyr_d'};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% modify path first
-dataSetName='ERA5'; % set which data to compute
+dataSetName=dataSetName; % set which data to compute
 % s0_preHandle data
-s0_Path = '/data1/liuyincheng/Observe-process';
-rawdataPath = fullfile(s0_Path, 'rawdata', dataSetName,'/');
-rawdataRegridPath = fullfile(s0_Path, 'rawdata_regrid', dataSetName,'/');
+ERAPath = '/data2/liuyincheng/Observe-process';
+rawdataPath = fullfile(ERAPath, 'rawdata', dataSetName,'/');
+rawdataRegridPath = fullfile(ERAPath, 'rawdata_regrid', dataSetName,'/');
 
 % origan data
-obsPath = '/data1/liuyincheng/Observe-rawdata/ERA/ERA5';
+obsPath = '/data2/liuyincheng/Observe-rawdata/ERA/ERA5';
 metoVarsPath = fullfile(obsPath, 'meto_vars/');
 sfc_radVarsPath = fullfile(obsPath, 'rad_vars/SFC/');
 toa_radVarsPath = fullfile(obsPath, 'rad_vars/TOA/');
@@ -39,13 +39,13 @@ toa_radVarsPath = fullfile(obsPath, 'rad_vars/TOA/');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% read data from 2000-2018 for futher process to 200003-201802,,,,
 % read time
-alb_Path = fullfile(metoVarsPath, 'alb_1979-2019.nc');
+alb_Path = fullfile(metoVarsPath, 'alb_1979-2020.nc');
 % locate first year
 formatOut = 'yyyy-mm';
 layerSfc_dir = dir(alb_Path);
 startT = cdftime2loc(layerSfc_dir, formatOut, '1979-01');
 % read time and transfor mat time
-yearTotal=2019-1979+1;
+yearTotal=2020-1979+1;
 startLoc = startT; count = yearTotal * 12; stride = 1;
 time0 = cmipTimeRead(alb_Path, startLoc, count, stride); %time.date, Units, Calendar, length
 ntime0 = length(time0.date);
@@ -68,13 +68,13 @@ load([rawdataRegridPath, 'rad_toa_regrid.mat'])
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% start to process
-for p_1 = 6:6% 1 mean 200003-201802
-    regridPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{1});
-    anomPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{2});
-    anomTrendPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{3});
-    kernelCalPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{4});
-    radEffectPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{5});
-    radEffectTrendPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{6});
+for p_1 = 1:6% 1 mean 200003-201802
+    regridPath = fullfile(ERAPath, tLin.time{p_1}, dataSetName, level.standVarPath{1});
+    anomPath = fullfile(ERAPath, tLin.time{p_1}, dataSetName, level.standVarPath{2});
+    anomTrendPath = fullfile(ERAPath, tLin.time{p_1}, dataSetName, level.standVarPath{3});
+    kernelCalPath = fullfile(ERAPath, tLin.time{p_1}, dataSetName, level.standVarPath{4});
+    radEffectPath = fullfile(ERAPath, tLin.time{p_1}, dataSetName, level.standVarPath{5});
+    radEffectTrendPath = fullfile(ERAPath, tLin.time{p_1}, dataSetName, level.standVarPath{6});
     auto_mkdir(regridPath); auto_mkdir(anomPath); auto_mkdir(anomTrendPath);
     auto_mkdir(kernelCalPath); auto_mkdir(radEffectPath); auto_mkdir(radEffectTrendPath);
     % find start and end month

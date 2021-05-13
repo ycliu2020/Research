@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-08 19:48:12
-% LastEditTime : 2021-04-09 21:21:12
+% LastEditTime : 2021-04-14 09:52:42
 % LastEditors  : Please set LastEditors
 % Description  : plot radClos
 % FilePath     : /code/p3_paperFigIntegrate/Fig1_2_radClosure/ERA5_plot_RadClos.m
@@ -152,7 +152,6 @@ for exmNum = 3:3 % only 2000.03-2014.02
             end
 
         end
-
         sgtitle({figureTitle{areaNum}, 'Data: ERA5'}, 'FontName', 'Microsoft YaHei', 'Fontsize', 18);
         figureName = ['Fig1_ERA5_', tLin.time{exmNum}, '_', areaName{areaNum}, '_radClos'];
         saveFileName = [outPutPath, '/', figureName, '.eps'];

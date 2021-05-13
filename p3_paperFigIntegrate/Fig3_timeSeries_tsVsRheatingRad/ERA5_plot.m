@@ -1,27 +1,16 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-09-13 19:06:17
-% LastEditTime : 2021-01-14 16:39:10
+% LastEditTime : 2021-05-10 14:42:26
 % LastEditors  : Please set LastEditors
 % Description  : paper用图: ERA5 dataset timeSeries analyse(dR_ts and rhs)
-% FilePath     : /code/p3_paperFigIntegrate/Fig3_timeSeries_tsVsRheatingRad/ERA5_plot_fig3.m
+% FilePath     : /code/p3_paperFigIntegrate/Fig3_timeSeries_tsVsRheatingRad/ERA5_plot.m
 %
 %%---------------------------------------------------------
 clc; clear;
 nowpath = pwd;
 % load mask map
-load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/mask/mask_cp144.mat')% load word land mask
-load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/mask/mask_ce72.mat')% load word land mask
-load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/correct_worldmap.mat')
-load('/home/liuyc/lib/tools/matlab/plot/myMap/01.china_map/mat_file/mask14472.mat')
-[mlabels, areaNum] = obsPlotParameters('sfc', 'land', 'ERA5-radEffect-ts');
-[readme, level, tLin, vars] = obsParameters('ERA5');
-
-toaSfc = {'toa', 'sfc'};
-lon_k = 0:2.5:357.5; nlonk = length(lon_k); % kernel lat lon
-lat_k = 90:-2.5:-90; nlatk = length(lat_k);
-lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f); % figure lat lon
-lon_f = lon_k; nlonf = length(lon_f);
+run '/home/liuyc/lib/tools/matlab/myTools/autoScript/preLoadVar.m'
 
 for exmNum = 1:1
     %%%%%%%%%%%%%%%%%%%%%%%%%%%

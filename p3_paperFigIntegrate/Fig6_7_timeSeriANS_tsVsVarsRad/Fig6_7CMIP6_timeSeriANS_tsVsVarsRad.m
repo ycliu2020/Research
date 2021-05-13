@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-08-31 17:00:15
-% LastEditTime : 2021-03-25 21:42:57
+% LastEditTime : 2021-04-13 15:29:42
 % LastEditors  : Please set LastEditors
 % Description  : 同时画时间序列和相关性分布图
-% FilePath     : /code/p3_paperFigIntegrate/Fig6_7CMIP6_timeSeriANS_tsVsVarsRad.m
+% FilePath     : /code/p3_paperFigIntegrate/Fig6_7_timeSeriANS_tsVsVarsRad/Fig6_7CMIP6_timeSeriANS_tsVsVarsRad.m
 %
 %%---------------------------------------------------------
 clc; clear; tic;
@@ -22,22 +22,29 @@ lon_k = 0:2.5:357.5; nlonk = length(lon_k); % kernel lat lon
 lat_k = 90:-2.5:-90; nlatk = length(lat_k);
 lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f); % figure lat lon
 lon_f = lon_k; nlonf = length(lon_f);
-
+MME1Path='/data1/liuyincheng/CMIP6-process/z_ensembleMean/MME1/';
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % experiment
-for exmNum = 1:1%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for exmNum = 4:4%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     %CAMS-CSM1-0 didn't have sfc clear sky radiation, delete it
     [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(exmNum);
     % exmPath
     exmPath = ['/data1/liuyincheng/CMIP6-process/', level.time1{exmNum}]; %/data1/liuyincheng/CMIP6-process/2000-2014/
+    MMEPath=[MME1Path, level.time1{exmNum}];
+    load([MMEPath, '/radEffect/global_vars.mat'])% lat_f, lon_f, MME_Models, plev_k, readme, time, timeEssmble, timeseries
+
     mPath.uniOutput = fullfile('/home/liuyc/Research/P02.Ts_change_research/figure/proj3_PaperFig/v0.3/Fig6_7TimeSeries_analysis_landMean_RadEffectAll', level.time1{exmNum}); %['dRTs_', lower(mlabels.level)],
     mPath.Output1 = fullfile(mPath.uniOutput);
     auto_mkdir(mPath.Output1)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % model
-    for mdlNum = 3:4%1:length(level.model2)
+    for mdlNum = 1:length(level.model2)
+
         % model path
         mdlName = level.model2{mdlNum};
+        if ismember(mdlName, MME_Models.name)~=1
+            continue
+        end
         mdlPath = fullfile(exmPath, level.model2{mdlNum});
         eval(['cd ', mdlPath]);
         disp(' ')
@@ -265,9 +272,9 @@ for exmNum = 1:1%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp3
             % hold on
 
             % save figures
-            figName = [level.time1{exmNum}(6:end - 1), '_', level.model2{mdlNum}, '_', esmName{esmNum}];
-            figurePath = [mPath.Output1, '/', figName, '.eps'];
-            export_fig(gcf,figurePath,'-r600','-cmyk')
+            % figName = [level.time1{exmNum}(6:end - 1), '_', level.model2{mdlNum}, '_', esmName{esmNum}];
+            % figurePath = [mPath.Output1, '/', figName, '.eps'];
+            % export_fig(gcf,figurePath,'-r600','-cmyk')
 
             % saveas(gcf, figurePath)
             % save_png(figurePath)%high resolution

@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-10-14 15:3nValue:49
-% LastEditTime : 2021-03-17 16:17:12
+% LastEditTime : 2021-05-13 15:32:31
 % LastEditors  : Please set LastEditors
 % Description  :
 % FilePath     : /code/p2_processCMIP6Data/s2.radEffTrend/contribAnalysis/contribAnalysis_joint_addSFCLayer.m
@@ -14,16 +14,12 @@ nowpath = pwd;
 [mlabels, areaStr] = cmipPlotParameters('atm', 'land', 'radEffect'); % plot parameters
 
 esm = 'r1i1p1f1';
+timeType = 'monthly'; % monthly or yearly
 exmStart = 1; exmEnd = 2;
 
 for exmNum = exmStart:exmEnd
     [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(exmNum);
-    % mPath.input:E:/data/CMIP6-process/2000-2014/
     exmPath = fullfile('/data1/liuyincheng/CMIP6-process/', level.time1{exmNum});
-    % mPath.output:a_research/P02.Ts_change_research/figure/04.cmip6Result/2000-2014/ 根据输出的格式进行修改
-    % mPath.uniOutput = fullfile('/home/liuyc/Research/P02.Ts_change_research/figure/02.cmip6Result/1.6/', lower(mlabels.level), level.time1{exmNum});
-    % mPath.Output = fullfile(mPath.uniOutput);
-    % auto_mkdir(mPath.Output)
 
     % model loop
     mdlStart = 1; mdlEnd = length(level.model2); % differnt models%length(level.model2)
@@ -91,15 +87,6 @@ for exmNum = exmStart:exmEnd
             load([dradEffectPath, 'dR_residual_cld_sfc.mat'])% dR_resiual_cld_sfc
             load([dradEffectPath, 'model_dradEffect.mat'])% 'l_rad', 's_rad', 'dR_allsky', 'dR_clr', 'readme_realradEfect'
 
-            % add all vars into one var
-            % dTs_x_sfc=zeros(nlonf, nlatf, ntime,6);
-            % dTs_x_sfc(:,:,:,1)=dts;
-            % dTs_x_sfc(:,:,:,2)=dTs_cloud;
-            % dTs_x_sfc(:,:,:,3)=dTs_ta;
-            % dTs_x_sfc(:,:,:,4)=dTs_hus;
-            % dTs_x_sfc(:,:,:,5)=dTs_alb;
-            % dTs_x_sfc(:,:,:,6)=dTs_residual;
-
             %% Test1: Rheating variance of a sum test
             dTs_x_sfc = zeros(nlonf, nlatf, ntime, 2);
             dTs_x_sfc(:, :, :, 1) = drhs;
@@ -110,23 +97,13 @@ for exmNum = exmStart:exmEnd
             dTs_x_sfc(:, :, :, 6) = taEffect-tasEffect1;
             dTs_x_sfc(:, :, :, 7) = tasEffect1;
             % dTs_x_sfc(:,:,:,3)=dR_residual_cld_sfc;
-            if exmNum == 1
-                % cut to 2000.03-2014.02
-                timeStr = string(datestr(datenum(time.date), 'yyyy-mm'));
-                cutStart = find(timeStr == '2000-03');
-                cutEnd = find(timeStr == '2014-02');
-                time = time.date(cutStart:cutEnd);
-                ntime = length(time);
-                dTs_x_sfc=dTs_x_sfc(:,:,cutStart:cutEnd,:);
-            end
-
             %
             % cal Function
             latRange = 90;
             areaStr = {'world', 'china east', 'USA east', 'EUR west'};
-            outPutFile = ['/home/liuyc/Research/P02.Ts_change_research/figure/proj2_cmip6Result/Radiation_Tscontribution/radContrib_addSFC_', level.time1{exmNum}(6:end - 1), '.xlsx'];
+            outPutFile = ['/home/liuyc/Research/P02.Ts_change_research/table/Radiation_Tscontribution/radContrib_addSFC_', level.time1{exmNum}(6:end - 1),'_', timeType,'.xlsx'];
             for areaNum = 1:length(areaStr)
-                [lineStart] = calCovContribution(latRange, lat_f, ntime, level.model2{mdlNum}, areaStr, areaNum, dTs_x_sfc, outPutFile, lineStart);
+                [lineStart] = calCovContribution(latRange, lat_f, timeType, ntime, level.model2{mdlNum}, areaStr, areaNum, dTs_x_sfc, outPutFile, lineStart);
             end
 
             disp([esmName{esmNum, 1}, ' ensemble is done!'])
@@ -144,7 +121,7 @@ end
 
 eval(['cd ', nowpath]);
 
-function [lineStart] = calCovContribution(latRange, lat_f, ntime, mdlName, areaStr, areaNum, dTs_x_sfc, outPutFile, lineStart)
+function [lineStart] = calCovContribution(latRange, lat_f, timeType, ntime, mdlName, areaStr, areaNum, dTs_x_sfc, outPutFile, lineStart)
 
     size_dTs_x_sfc = size(dTs_x_sfc);
     nValue = size_dTs_x_sfc(4);
@@ -165,15 +142,18 @@ function [lineStart] = calCovContribution(latRange, lat_f, ntime, mdlName, areaS
 
     end
 
-    % % cal intel annual mean
-    % ntime_year = ntime / 12; % year num
-    % glbMoth_dTs_x_sfc = zeros(ntime_year, nValue);
-    % countNum = 1;
+    if strcmp(timeType, 'yearly')
+        % cal intel annual mean
+        ntime_year = ntime / 12; % year num
+        glbMoth_dTs_x_sfc = zeros(ntime_year, nValue);
+        countNum = 1;
 
-    % for timeNum = 1:ntime_year
-    %     glbMoth_dTs_x_sfc(timeNum, :) = sum(glb_dTs_x_sfc(countNum:countNum + 12 - 1, :), 1);
-    %     countNum = countNum + 12;
-    % end
+        for timeNum = 1:ntime_year
+            glbMoth_dTs_x_sfc(timeNum, :) = sum(glb_dTs_x_sfc(countNum:countNum + 12 - 1, :), 1);
+            countNum = countNum + 12;
+        end
+
+    end
 
     glbMoth_dTs_x_sfc = glb_dTs_x_sfc;
     % test sum = 0
@@ -221,3 +201,13 @@ function [lineStart] = calCovContribution(latRange, lat_f, ntime, mdlName, areaS
     lineStart = lineStart + 8;
 
 end
+
+            % if exmNum == 1
+            %     % cut to 2000.03-2014.02
+            %     timeStr = string(datestr(datenum(time.date), 'yyyy-mm'));
+            %     cutStart = find(timeStr == '2000-03');
+            %     cutEnd = find(timeStr == '2014-02');
+            %     time = time.date(cutStart:cutEnd);
+            %     ntime = length(time);
+            %     dTs_x_sfc=dTs_x_sfc(:,:,cutStart:cutEnd,:);
+            % end

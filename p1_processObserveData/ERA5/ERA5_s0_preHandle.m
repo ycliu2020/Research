@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-02 15:23:02
-% LastEditTime : 2021-04-08 17:09:19
+% LastEditTime : 2021-04-20 15:15:06
 % LastEditors  : Please set LastEditors
 % Description  : 预先将所有的ERA5文件读取进一个大文件插值并保存, 这样下次就不用每次都读取了
 %                只需执行一次    
@@ -19,12 +19,12 @@ lon_f = lon_k; nlonf = length(lon_f);
 var_state = {'d', 'clim_', 'trendm_d', 'trends_d', 'trendyr_d'};
 %% modify path first
 % ouput path
-outputPath_rawdata= '/data1/liuyincheng/Observe-process/rawdata/ERA5/';
-outputPath_rawdataRegrid= '/data1/liuyincheng/Observe-process/rawdata_regrid/ERA5/';
+outputPath_rawdata= '/data2/liuyincheng/Observe-process/rawdata/ERA5/';
+outputPath_rawdataRegrid= '/data2/liuyincheng/Observe-process/rawdata_regrid/ERA5/';
 auto_mkdir(outputPath_rawdata);
 auto_mkdir(outputPath_rawdataRegrid);
 % input path
-obsPath = '/data1/liuyincheng/Observe-rawdata/ERA/ERA5';
+obsPath = '/data2/liuyincheng/Observe-rawdata/ERA/ERA5';
 metoVarsPath = fullfile(obsPath, 'meto_vars/');
 sfc_radVarsPath = fullfile(obsPath, 'rad_vars/SFC/');
 toa_radVarsPath = fullfile(obsPath, 'rad_vars/TOA/');
@@ -32,16 +32,16 @@ toa_radVarsPath = fullfile(obsPath, 'rad_vars/TOA/');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% read raw data from 2000-2018 for futher process to 200003-201802,,,,
 % 1.1 连续时间的变量
-alb_Path = fullfile(metoVarsPath, 'alb_1979-2019.nc');
-ps_Path = fullfile(metoVarsPath, 'ps_1979-2019.nc');
-ts_Path = fullfile(metoVarsPath, 'ts_1979-2019.nc');
+alb_Path = fullfile(metoVarsPath, 'alb_1979-2020.nc');
+ps_Path = fullfile(metoVarsPath, 'ps_1979-2020.nc');
+ts_Path = fullfile(metoVarsPath, 'ts_1979-2020.nc');
 % read time
 % locate first year
 formatOut = 'yyyy-mm';
 layerSfc_dir = dir(alb_Path);
 startT = cdftime2loc(layerSfc_dir, formatOut, '1979-01');
 % read time and transfor mat time
-yearTotal=2019-1979+1;
+yearTotal=2020-1979+1;
 startLoc = startT; count = yearTotal * 12; stride = 1;
 time_raw = cmipTimeRead(alb_Path, startLoc, count, stride); %time.date, Units, Calendar, length
 ntime_raw = length(time_raw.date);
@@ -58,7 +58,7 @@ plev_k = ncread('/data1/liuyincheng/y_kernels/YiH/kernels_YiH/toa/dp.nc', 'playe
 nplevk = length(plev_k);
 
 % read vars
-startLoc = [1, 1, 1, startT]; count = [inf, inf, 1, yearTotal * 12]; stride = [1, 1, 1, 1];
+startLoc = [1, 1, startT]; count = [inf, inf, yearTotal * 12]; stride = [1, 1, 1];
 alb_raw = squeeze(ncread(alb_Path, 'fal', startLoc, count, stride));
 ps_raw = squeeze(ncread(ps_Path, 'sp', startLoc, count, stride));
 ts_raw = squeeze(ncread(ts_Path, 'skt', startLoc, count, stride));

@@ -1,46 +1,38 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-08-31 17:00:15
-% LastEditTime : 2021-04-09 20:24:49
+% LastEditTime : 2021-05-10 10:28:09
 % LastEditors  : Please set LastEditors
 % Description  : MME result of 时间序列图
-% FilePath     : /code/p3_paperFigIntegrate/Fig3_timeSeries_tsVsRheatingRad/s1_plotRegional_containWorld.m
+% FilePath     : /code/p3_paperFigIntegrate/Fig3_timeSeries_tsVsRheatingRad/s1_plotRegional_MME_containWorld.m
 % note : 统一用startmonth=3 开始计算
 %%---------------------------------------------------------
 clc; clear; tic;
 nowpath = pwd;
 % load mask map
-load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/mask/mask_cp144.mat') % load word land mask
-load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/mask/mask_ce72.mat') % load word land mask
-load('/home/liuyc/lib/tools/matlab/plot/myMap/02.world_map/mat_file/correct_worldmap.mat')
-load('/home/liuyc/lib/tools/matlab/plot/myMap/01.china_map/mat_file/mask14472.mat')
+run '/home/liuyc/lib/tools/matlab/myTools/autoScript/preLoadVar.m'
 
-toaSfc = {'toa', 'sfc'};
-lon_k = 0:2.5:357.5; nlonk = length(lon_k); % kernel lat lon
-lat_k = 90:-2.5:-90; nlatk = length(lat_k);
-lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f); % figure lat lon
-lon_f = lon_k; nlonf = length(lon_f);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% read data
-% the number of MME experiment
-MMECode = 'MME1';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % experiment
-for exmNum_MME = 1:2 %1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
+for exmNum = 1:1 %1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370; 5 mean amip-hist 2000; 6 mean amip-hist 1980
     % ERA5 number
-    exmNum_ERA5 = exmNum_MME + 3;
-    [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(exmNum_MME);
-    % MME Path
-    MMEPath = ['/data1/liuyincheng/CMIP6-process/z_ensembleMean/MME1/', level.time1{exmNum_MME}]; %/data1/liuyincheng/CMIP6-process/z_ensembleMean/MME1/CMIP/amip_1980-2014
+    exmNum_ERA5 = exmNum + 3;
+    [readme, Experiment, level, tLin, mPlev, vars] = cmipParameters(exmNum);
+    % MMEPath
+    MMEPath= [level.path_MME1, level.time1{exmNum}];%/data1/liuyincheng/CMIP6-process/2000-2014/
+    % MMEPath= [level.path_MME{exmNum}, level.time1{exmNum}];%/data1/liuyincheng/CMIP6-process/2000-2014/
+    
     dvarsPath = fullfile(MMEPath, level.process3{2});
     dradEffectPath = fullfile(MMEPath, level.process3{6});
     figDataPath = fullfile(MMEPath, 'FigData/');
 
     % ERA5 Path
     [readme, level, tLin, vars] = obsParameters('ERA5');
-    ERA5Path = fullfile('/data1/liuyincheng/Observe-process', tLin.time{exmNum_ERA5}, 'ERA5/');
+    ERA5Path = fullfile('/data2/liuyincheng/Observe-process', tLin.time{exmNum_ERA5}, 'ERA5/');
     ERA5figDataPath = fullfile(ERA5Path, 'FigData/');
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -49,10 +41,10 @@ for exmNum_MME = 1:2 %1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means
     ntime = length(time.date);
 
     % load MME and save one var
-    load([figDataPath, 'regionalTsRHeating.mat']) % dlwUPMask, drhsKernMask, drhsMask  .world .CHNeast  .EURwest .USeast
+    load([figDataPath, 'regionalVarsRad_sfc_cld.mat']) % dlwUPMask, drhsKernMask, drhsMask  .world .CHNeast  .EURwest .USeast
 
     regionCode = {'world', 'CHNeast', 'EURwest', 'USeast'}; %'CHNeast', 'EURwest', 'USeast'
-    varibalCode = {'drhsKernMask', 'drhsMask', 'dlwUPMask'};
+    varibalCode = {'drhsKernMask', 'drhsMask', 'dlwUPRawDataMask'};
     varUsed = zeros(nlonf, nlatf, ntime, length(regionCode), length(varibalCode), 2); % dim:[lon, lat, time, region, varibal, dataset]
     sizeVarUsed = size(varUsed);
     sizeLon = sizeVarUsed(1); sizeLat = sizeVarUsed(2); sizeTime = sizeVarUsed(3);
@@ -112,18 +104,18 @@ for exmNum_MME = 1:2 %1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means
 
     end
 
-    % detrend
-    for dataNum = 1:sizeData
+    % % detrend
+    % for dataNum = 1:sizeData
 
-        for regionNum = 1:sizeRegion
+    %     for regionNum = 1:sizeRegion
 
-            for varNum = 1:sizeVar
-                varUsedYearly_weightMean(:, varNum, regionNum, dataNum) = detrend(varUsedYearly_weightMean(:, varNum, regionNum, dataNum));
-            end
+    %         for varNum = 1:sizeVar
+    %             varUsedYearly_weightMean(:, varNum, regionNum, dataNum) = detrend(varUsedYearly_weightMean(:, varNum, regionNum, dataNum));
+    %         end
 
-        end
+    %     end
 
-    end
+    % end
 
     % cal cc of areaMeanLatWeight
     cc_weightMean = cell(sizeVar, sizeRegion, sizeData);
@@ -180,11 +172,10 @@ for exmNum_MME = 1:2 %1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means
             plot(timeYearly, zeroLine', 'k--', 'LineWidth', 1.5)
 
             % x axis
-            if exmNum_MME == 1
+            if exmNum == 1
                 timeSer = [2002 2006 2010 2014];
             else
-                timeSer = [1980 1985 1990 1995 2000 2005 2010 2015 2020 2025 2035 2045 2055 2065 2075 2085 2095 2105];
-
+                timeSer = [1982 1990 1998 2006 2014 2020 2025 2035 2045 2055 2065 2075 2085 2095 2105];
             end
 
             char_timeSer = cellstr(string(timeSer));
@@ -195,13 +186,14 @@ for exmNum_MME = 1:2 %1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means
             if regionNum == 4
                 xticklabels(char_timeSer)
             end
+            xlim([timeYearly(1) timeYearly(end)])
 
             % y axis
             xlim([timeYearly(1) timeYearly(end)])
             ymax = 10;
             ylim([-ymax ymax])
 
-            if dataNum == 2 && exmNum_MME == 1
+            if dataNum == 2 && exmNum == 1
                 ylim([-5 ymax])
             end
 
@@ -253,8 +245,8 @@ for exmNum_MME = 1:2 %1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means
     auto_mkdir(mPath.Output)
     figName = ['Fig3_', 'AMIP-MME1AndERA5_containWorld', '_', tLin.time{exmNum_ERA5}];
 
-    figPath = [mPath.Output, '/', figName, '.eps'];
-    export_fig(gcf, figPath, '-r600', '-cmyk')
+    % figPath = [mPath.Output, '/', figName, '.eps'];
+    % export_fig(gcf, figPath, '-r600', '-cmyk')
     % saveas(gcf, figurePath)
     % save_png(figurePath)%high resolution
     % close gcf

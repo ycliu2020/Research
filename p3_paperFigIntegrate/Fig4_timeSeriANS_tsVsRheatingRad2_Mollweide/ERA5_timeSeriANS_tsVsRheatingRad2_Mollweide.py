@@ -11,7 +11,7 @@ import matlab.engine
 eng = matlab.engine.start_matlab()
 
 # load global parm
-for exmNum in [2, 2]:
+for exmNum in [4, 5]:
 
     # function [lon_f,lat_f,cc_global,headLineTxt,figPath,colorLab] = Pyn_figure1_2(exmNum)
     figData = eng.Pyn_figure4_ERA5(exmNum, nargout=6)

@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-08 10:22:15
-% LastEditTime : 2020-07-14 11:20:29
-% LastEditors  : LYC
+% LastEditTime : 2021-05-02 15:00:50
+% LastEditors  : Please set LastEditors
 % Description  :
-% FilePath     : /code/p1_processObserveData/CERES/CERES_s1_drads.m
+% FilePath     : /code/p1_processObserveData/CERES/CERES_s1_drads_ERA5_example.m
 %
 %%---------------------------------------------------------
 % This program is to calculate the radiation anomalies from CERES/EBAF4.0
@@ -21,10 +21,11 @@ lat_c = -89.5:1:89.5; nlatc = length(lat_c); lat_c = double(lat_c);
 
 vector_var_str{1} = 'sfc';
 vector_var_str{2} = 'toa';
-%modify path first
-ceresDataPath = '/data1/liuyincheng/Observe-rawdata/CERES_EBAF/4.1/';
-sfcDataPath = strcat(ceresDataPath, 'CERES_EBAF-SFC_Ed4.1_Subset_200003-201911.nc');
-toaDataPath = strcat(ceresDataPath, 'CERES_EBAF-TOA_Ed4.1_Subset_200003-201911.nc');
+
+% modify path first
+ceresDataPath = '/data2/liuyincheng/Observe-rawdata/CERES_EBAF/4.1/';
+sfcDataPath = strcat(ceresDataPath, 'CERES_EBAF-SFC_Ed4.1_Subset_200003-202011.nc');
+toaDataPath = strcat(ceresDataPath, 'CERES_EBAF-TOA_Ed4.1_Subset_200003-202011.nc');
 
 % transfor mat time
 time = double(ncread(sfcDataPath, 'time')); % days since 2000-03-01 00:00:00
@@ -33,7 +34,7 @@ timeCalendar = 'gregorian';
 time = cdfdate2num(timeUnits, timeCalendar, time);
 ntime = length(time);
 
-%% read raw data
+%% read CERES raw data
 %% SFC
 % All-sky
 dR_tot_sfc_all = ncread(sfcDataPath, 'sfc_net_tot_all_mon'); % = sfc_net_lw_all_mon + sfc_net_sw_all_mon
@@ -71,14 +72,15 @@ dR_tot_toa_clr_t = transfCordi(lon_c, lat_c, time, dR_tot_toa_clr_t, lon_f, lat_
 dR_tot_toa_clr_c = transfCordi(lon_c, lat_c, time, dR_tot_toa_clr_c, lon_f, lat_f, time);
 
 [readme, level, tLin, vars] = obsParameters('CERES');
-%% different time series, 1mean 2000-03 to 2018-02(18*12). 2 mean 200207-201706(15*12)
-for p_1 = 1:2
-    anomPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'CERES', level.standVarPath{2}); % /anomaly
-    anomPath_era5 = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{2}); % /anomaly
-    anomPath_erai = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{2}); % /anomaly
-    anomTrendPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'CERES', level.standVarPath{3}); % /anomaly_trend
-    radEfectPath_era5 = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERA5', level.standVarPath{5}); %radEffect
-    radEfectPath_erai = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{5}); %radEffect
+obsPath='/data2/liuyincheng/Observe-process';
+%% p_1 mean different time series, 1 mean 2000-03 to 2018-02(18*12). 2 mean 200207-201706(15*12). 6 mean '200003-202011'
+for p_1 = 1:1
+    anomPath = fullfile(obsPath, tLin.time{p_1}, 'CERES', level.standVarPath{2}); % /anomaly
+    anomPath_era5 = fullfile(obsPath, tLin.time{p_1}, 'ERA5', level.standVarPath{2}); % /anomaly
+    anomPath_erai = fullfile(obsPath, tLin.time{p_1}, 'ERAi', level.standVarPath{2}); % /anomaly
+    anomTrendPath = fullfile(obsPath, tLin.time{p_1}, 'CERES', level.standVarPath{3}); % /anomaly_trend
+    radEffectPath_era5 = fullfile(obsPath, tLin.time{p_1}, 'ERA5', level.standVarPath{5}); %radEffect
+    radEffectPath_erai = fullfile(obsPath, tLin.time{p_1}, 'ERAi', level.standVarPath{5}); %radEffect
     auto_mkdir(anomPath); auto_mkdir(anomTrendPath);
 
     % find start and end month
@@ -134,110 +136,113 @@ for p_1 = 1:2
     % SFC
     % cal dCErhs
     dCErhs = dR_lwDown_sfc_all + dR_swNet_sfc_all;
-    [trendm_dCErhs, trends_dCErhs, trendyr_dCErhs, ~, ~] = autoCalTrend(dCErhs, nlonf, nlatf, time, startMonth);
     save([anomPath, 'dCErhs.mat'], 'dCErhs');
-    save([anomTrendPath, 'global_vars.mat'], 'lon_f', 'lat_f', 'time')
-    save([anomTrendPath, 'trend_dCErhs.mat'], 'trendm_dCErhs', 'trends_dCErhs', 'trendyr_dCErhs');
+
+    % [trendm_dCErhs, trends_dCErhs, trendyr_dCErhs, ~, ~] = autoCalTrend(dCErhs, nlonf, nlatf, time, startMonth);
+    % save([anomTrendPath, 'global_vars.mat'], 'lon_f', 'lat_f', 'time')
+    % save([anomTrendPath, 'trend_dCErhs.mat'], 'trendm_dCErhs', 'trends_dCErhs', 'trendyr_dCErhs');
     % cal the drhsPlus
     load([anomPath_era5, 'drhs.mat'], 'dhFlux')% ERA5 dhFlux
     dhFlux = autoRegrid3(lon_k, lat_k, time, dhFlux, lon_f, lat_f, time);
     dCErhsPlus_era5 = dCErhs + dhFlux;
-    [trendm_dCErhsPlus_era5, trends_dCErhsPlus_era5, trendyr_dCErhsPlus_era5, ~, ~] = autoCalTrend(dCErhsPlus_era5, nlonf, nlatf, time, startMonth);
     save([anomPath, 'dCErhsPlus_era5.mat'], 'dCErhsPlus_era5');
-    save([anomTrendPath, 'trend_dCErhsPlus_era5.mat'], 'trendm_dCErhsPlus_era5', 'trends_dCErhsPlus_era5', 'trendyr_dCErhsPlus_era5');
 
-    load([anomPath_erai, 'drhs.mat'], 'dhFlux')% ERAi dhFlux
-    dhFlux = autoRegrid3(lon_k, lat_k, time, dhFlux, lon_f, lat_f, time);
-    dCErhsPlus_erai = dCErhs + dhFlux;
-    [trendm_dCErhsPlus_erai, trends_dCErhsPlus_erai, trendyr_dCErhsPlus_erai, ~, ~] = autoCalTrend(dCErhsPlus_erai, nlonf, nlatf, time, startMonth);
-    save([anomPath, 'dCErhsPlus_erai.mat'], 'dCErhsPlus_erai');
-    save([anomTrendPath, 'trend_dCErhsPlus_erai.mat'], 'trendm_dCErhsPlus_erai', 'trends_dCErhsPlus_erai', 'trendyr_dCErhsPlus_erai');
-    % TOA
-    dCEnetTOA = dR_tot_toa_all;
-    [trendm_dCEnetTOA, trends_dCEnetTOA, trendyr_dCEnetTOA, p_dCEnetTOA, cons_dCEnetTOA] = autoCalTrend(dCEnetTOA, nlonf, nlatf, time, startMonth);
-    save([anomTrendPath, 'trend_dCEnetTOA.mat'], 'trendm_dCEnetTOA', 'cons_dCEnetTOA', 'p_dCEnetTOA', 'trends_dCEnetTOA', 'trendyr_dCEnetTOA');
+    % [trendm_dCErhsPlus_era5, trends_dCErhsPlus_era5, trendyr_dCErhsPlus_era5, ~, ~] = autoCalTrend(dCErhsPlus_era5, nlonf, nlatf, time, startMonth);
+    % save([anomTrendPath, 'trend_dCErhsPlus_era5.mat'], 'trendm_dCErhsPlus_era5', 'trends_dCErhsPlus_era5', 'trendyr_dCErhsPlus_era5');
+
+    % load([anomPath_erai, 'drhs.mat'], 'dhFlux')% ERAi dhFlux
+    % dhFlux = autoRegrid3(lon_k, lat_k, time, dhFlux, lon_f, lat_f, time);
+    % dCErhsPlus_erai = dCErhs + dhFlux;
+    % save([anomPath, 'dCErhsPlus_erai.mat'], 'dCErhsPlus_erai');
+
+    % [trendm_dCErhsPlus_erai, trends_dCErhsPlus_erai, trendyr_dCErhsPlus_erai, ~, ~] = autoCalTrend(dCErhsPlus_erai, nlonf, nlatf, time, startMonth);
+    % save([anomTrendPath, 'trend_dCErhsPlus_erai.mat'], 'trendm_dCErhsPlus_erai', 'trends_dCErhsPlus_erai', 'trendyr_dCErhsPlus_erai');
+    % % TOA
+    % dCEnetTOA = dR_tot_toa_all;
+    % [trendm_dCEnetTOA, trends_dCEnetTOA, trendyr_dCEnetTOA, p_dCEnetTOA, cons_dCEnetTOA] = autoCalTrend(dCEnetTOA, nlonf, nlatf, time, startMonth);
+    % save([anomTrendPath, 'trend_dCEnetTOA.mat'], 'trendm_dCEnetTOA', 'cons_dCEnetTOA', 'p_dCEnetTOA', 'trends_dCEnetTOA', 'trendyr_dCEnetTOA');
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Part3: cal cloud Effect and trend
-    %% ERA5 ,  _t
-    % load  ( 1sfc cld,2sfc clr,3toa cld,4toa clr)
-    load([radEfectPath_era5, 'dradEfect_union.mat']); %'dR_hus', 'dR_alb', 'dR_ts', 'dR_ta', 'dR_total', 'readme_radEfect'
-    dCE_CRF_t(:, :, :, 1) = dR_cre_sfc_all_t;
-    dCE_CRF_t(:, :, :, 2) = dR_cre_toa_all_t;
-    dvarsFeedback = dR_total(:, :, :, [2 4]) - dR_total(:, :, :, [1 3]);
-    dRCE_cloud = dCE_CRF_t + dvarsFeedback;
-    dRCE_clr(:, :, :, 1) = dR_tot_sfc_clr_t;
-    dRCE_clr(:, :, :, 2) = dR_tot_toa_clr_t;
-    dRCE_residual = dRCE_clr - dR_total(:, :, :, [2 4]);
-    dR_main = dR_hus + dR_alb + dR_ta; % dR exclude ts
-    dR_mainEffect_sfc = squeeze(dRCE_cloud(:, :, :, 1)) + squeeze(dR_main(:, :, :, 1));
-    dR_mainEffect_toa = squeeze(dRCE_cloud(:, :, :, 2)) + squeeze(dR_main(:, :, :, 3));
-    %save as one file
-    dCE_era5_t.Rcloud_sfc = squeeze(dRCE_cloud(:, :, :, 1));
-    dCE_era5_t.Rcloud_toa = squeeze(dRCE_cloud(:, :, :, 2));
-    dCE_era5_t.residual_sfc = squeeze(dRCE_residual(:, :, :, 1));
-    dCE_era5_t.residual_toa = squeeze(dRCE_residual(:, :, :, 2));
-    dCE_era5_t.mainEffect_sfc = dR_mainEffect_sfc;
-    dCE_era5_t.mainEffect_toa = dR_mainEffect_toa;
-    % _c
-    dCE_CRF_c(:, :, :, 1) = dR_cre_sfc_all_c;
-    dCE_CRF_c(:, :, :, 2) = dR_cre_toa_all_c;
-    dvarsFeedback = dR_total(:, :, :, [2 4]) - dR_total(:, :, :, [1 3]);
-    dRCE_cloud = dCE_CRF_c + dvarsFeedback;
-    dRCE_clr(:, :, :, 1) = dR_tot_sfc_clr_c;
-    dRCE_clr(:, :, :, 2) = dR_tot_toa_clr_c;
-    dRCE_residual = dRCE_clr - dR_total(:, :, :, [2 4]);
-    dR_main = dR_hus + dR_alb + dR_ta; % dR exclude ts
-    dR_mainEffect_sfc = squeeze(dRCE_cloud(:, :, :, 1)) + squeeze(dR_main(:, :, :, 1));
-    dR_mainEffect_toa = squeeze(dRCE_cloud(:, :, :, 2)) + squeeze(dR_main(:, :, :, 3));
-    %save as one file
-    dCE_era5_c.Rcloud_sfc = squeeze(dRCE_cloud(:, :, :, 1));
-    dCE_era5_c.Rcloud_toa = squeeze(dRCE_cloud(:, :, :, 2));
-    dCE_era5_c.residual_sfc = squeeze(dRCE_residual(:, :, :, 1));
-    dCE_era5_c.residual_toa = squeeze(dRCE_residual(:, :, :, 2));
-    dCE_era5_c.mainEffect_sfc = dR_mainEffect_sfc;
-    dCE_era5_c.mainEffect_toa = dR_mainEffect_toa;
+    % %% ERA5 ,  _t
+    % % load  ( 1sfc cld,2sfc clr,3toa cld,4toa clr)
+    % load([radEffectPath_era5, 'dradEffect_union.mat']); %'dR_hus', 'dR_alb', 'dR_ts', 'dR_ta', 'dR_nonCloud', 'readme_radEfect'
+    % dCE_CRF_t(:, :, :, 1) = dR_cre_sfc_all_t;
+    % dCE_CRF_t(:, :, :, 2) = dR_cre_toa_all_t;
+    % dvarsFeedback = dR_nonCloud(:, :, :, [2 4]) - dR_nonCloud(:, :, :, [1 3]);
+    % dRCE_cloud = dCE_CRF_t + dvarsFeedback;
+    % dRCE_clr(:, :, :, 1) = dR_tot_sfc_clr_t;
+    % dRCE_clr(:, :, :, 2) = dR_tot_toa_clr_t;
+    % dRCE_residual = dRCE_clr - dR_nonCloud(:, :, :, [2 4]);
+    % dR_main = dR_hus + dR_alb + dR_ta; % dR exclude ts
+    % dR_mainEffect_sfc = squeeze(dRCE_cloud(:, :, :, 1)) + squeeze(dR_main(:, :, :, 1));
+    % dR_mainEffect_toa = squeeze(dRCE_cloud(:, :, :, 2)) + squeeze(dR_main(:, :, :, 3));
+    % %save as one file
+    % dCE_era5_t.Rcloud_sfc = squeeze(dRCE_cloud(:, :, :, 1));
+    % dCE_era5_t.Rcloud_toa = squeeze(dRCE_cloud(:, :, :, 2));
+    % dCE_era5_t.residual_sfc = squeeze(dRCE_residual(:, :, :, 1));
+    % dCE_era5_t.residual_toa = squeeze(dRCE_residual(:, :, :, 2));
+    % dCE_era5_t.mainEffect_sfc = dR_mainEffect_sfc;
+    % dCE_era5_t.mainEffect_toa = dR_mainEffect_toa;
+    % % _c
+    % dCE_CRF_c(:, :, :, 1) = dR_cre_sfc_all_c;
+    % dCE_CRF_c(:, :, :, 2) = dR_cre_toa_all_c;
+    % dvarsFeedback = dR_nonCloud(:, :, :, [2 4]) - dR_nonCloud(:, :, :, [1 3]);
+    % dRCE_cloud = dCE_CRF_c + dvarsFeedback;
+    % dRCE_clr(:, :, :, 1) = dR_tot_sfc_clr_c;
+    % dRCE_clr(:, :, :, 2) = dR_tot_toa_clr_c;
+    % dRCE_residual = dRCE_clr - dR_nonCloud(:, :, :, [2 4]);
+    % dR_main = dR_hus + dR_alb + dR_ta; % dR exclude ts
+    % dR_mainEffect_sfc = squeeze(dRCE_cloud(:, :, :, 1)) + squeeze(dR_main(:, :, :, 1));
+    % dR_mainEffect_toa = squeeze(dRCE_cloud(:, :, :, 2)) + squeeze(dR_main(:, :, :, 3));
+    % %save as one file
+    % dCE_era5_c.Rcloud_sfc = squeeze(dRCE_cloud(:, :, :, 1));
+    % dCE_era5_c.Rcloud_toa = squeeze(dRCE_cloud(:, :, :, 2));
+    % dCE_era5_c.residual_sfc = squeeze(dRCE_residual(:, :, :, 1));
+    % dCE_era5_c.residual_toa = squeeze(dRCE_residual(:, :, :, 2));
+    % dCE_era5_c.mainEffect_sfc = dR_mainEffect_sfc;
+    % dCE_era5_c.mainEffect_toa = dR_mainEffect_toa;
+    % save([anomPath, 'dCEcloud_era5.mat'], 'dCE_era5_t', 'dCE_era5_c')
 
-    [trendm_dCEcloud_sfc_t, trends_dCEcloud_sfc_t, trendyr_dCEcloud_sfc_t, ~, ~] = autoCalTrend(dCE_era5_t.Rcloud_sfc, nlonf, nlatf, time, startMonth);
-    [trendm_dCEcloud_toa_t, trends_dCEcloud_toa_t, trendyr_dCEcloud_toa_t, ~, ~] = autoCalTrend(dCE_era5_t.Rcloud_toa, nlonf, nlatf, time, startMonth);
-    [trendm_dCEcloud_sfc_c, trends_dCEcloud_sfc_c, trendyr_dCEcloud_sfc_c, ~, ~] = autoCalTrend(dCE_era5_c.Rcloud_sfc, nlonf, nlatf, time, startMonth);
-    [trendm_dCEcloud_toa_c, trends_dCEcloud_toa_c, trendyr_dCEcloud_toa_c, ~, ~] = autoCalTrend(dCE_era5_c.Rcloud_toa, nlonf, nlatf, time, startMonth);
+    % [trendm_dCEcloud_sfc_t, trends_dCEcloud_sfc_t, trendyr_dCEcloud_sfc_t, ~, ~] = autoCalTrend(dCE_era5_t.Rcloud_sfc, nlonf, nlatf, time, startMonth);
+    % [trendm_dCEcloud_toa_t, trends_dCEcloud_toa_t, trendyr_dCEcloud_toa_t, ~, ~] = autoCalTrend(dCE_era5_t.Rcloud_toa, nlonf, nlatf, time, startMonth);
+    % [trendm_dCEcloud_sfc_c, trends_dCEcloud_sfc_c, trendyr_dCEcloud_sfc_c, ~, ~] = autoCalTrend(dCE_era5_c.Rcloud_sfc, nlonf, nlatf, time, startMonth);
+    % [trendm_dCEcloud_toa_c, trends_dCEcloud_toa_c, trendyr_dCEcloud_toa_c, ~, ~] = autoCalTrend(dCE_era5_c.Rcloud_toa, nlonf, nlatf, time, startMonth);
 
-    [trendm_dCEres_sfc_t, trends_dCEres_sfc_t, trendyr_dCEres_sfc_t, ~, ~] = autoCalTrend(dCE_era5_t.residual_sfc, nlonf, nlatf, time, startMonth);
-    [trendm_dCEres_toa_t, trends_dCEres_toa_t, trendyr_dCEres_toa_t, ~, ~] = autoCalTrend(dCE_era5_t.residual_toa, nlonf, nlatf, time, startMonth);
-    [trendm_dCEres_sfc_c, trends_dCEres_sfc_c, trendyr_dCEres_sfc_c, ~, ~] = autoCalTrend(dCE_era5_c.residual_sfc, nlonf, nlatf, time, startMonth);
-    [trendm_dCEres_toa_c, trends_dCEres_toa_c, trendyr_dCEres_toa_c, ~, ~] = autoCalTrend(dCE_era5_c.residual_toa, nlonf, nlatf, time, startMonth);
+    % [trendm_dCEres_sfc_t, trends_dCEres_sfc_t, trendyr_dCEres_sfc_t, ~, ~] = autoCalTrend(dCE_era5_t.residual_sfc, nlonf, nlatf, time, startMonth);
+    % [trendm_dCEres_toa_t, trends_dCEres_toa_t, trendyr_dCEres_toa_t, ~, ~] = autoCalTrend(dCE_era5_t.residual_toa, nlonf, nlatf, time, startMonth);
+    % [trendm_dCEres_sfc_c, trends_dCEres_sfc_c, trendyr_dCEres_sfc_c, ~, ~] = autoCalTrend(dCE_era5_c.residual_sfc, nlonf, nlatf, time, startMonth);
+    % [trendm_dCEres_toa_c, trends_dCEres_toa_c, trendyr_dCEres_toa_c, ~, ~] = autoCalTrend(dCE_era5_c.residual_toa, nlonf, nlatf, time, startMonth);
 
-    [trendm_dCEmainEff_sfc_t, trends_dCEmainEff_sfc_t, trendyr_dCEmainEff_sfc_t, ~, ~] = autoCalTrend(dCE_era5_t.mainEffect_sfc, nlonf, nlatf, time, startMonth);
-    [trendm_dCEmainEff_toa_t, trends_dCEmainEff_toa_t, trendyr_dCEmainEff_toa_t, ~, ~] = autoCalTrend(dCE_era5_t.mainEffect_toa, nlonf, nlatf, time, startMonth);
-    [trendm_dCEmainEff_sfc_c, trends_dCEmainEff_sfc_c, trendyr_dCEmainEff_sfc_c, ~, ~] = autoCalTrend(dCE_era5_c.mainEffect_sfc, nlonf, nlatf, time, startMonth);
-    [trendm_dCEmainEff_toa_c, trends_dCEmainEff_toa_c, trendyr_dCEmainEff_toa_c, ~, ~] = autoCalTrend(dCE_era5_c.mainEffect_toa, nlonf, nlatf, time, startMonth);
+    % [trendm_dCEmainEff_sfc_t, trends_dCEmainEff_sfc_t, trendyr_dCEmainEff_sfc_t, ~, ~] = autoCalTrend(dCE_era5_t.mainEffect_sfc, nlonf, nlatf, time, startMonth);
+    % [trendm_dCEmainEff_toa_t, trends_dCEmainEff_toa_t, trendyr_dCEmainEff_toa_t, ~, ~] = autoCalTrend(dCE_era5_t.mainEffect_toa, nlonf, nlatf, time, startMonth);
+    % [trendm_dCEmainEff_sfc_c, trends_dCEmainEff_sfc_c, trendyr_dCEmainEff_sfc_c, ~, ~] = autoCalTrend(dCE_era5_c.mainEffect_sfc, nlonf, nlatf, time, startMonth);
+    % [trendm_dCEmainEff_toa_c, trends_dCEmainEff_toa_c, trendyr_dCEmainEff_toa_c, ~, ~] = autoCalTrend(dCE_era5_c.mainEffect_toa, nlonf, nlatf, time, startMonth);
 
-    % save
-    save([anomPath, 'dCEcloud_era5.mat'], 'dCE_era5_t', 'dCE_era5_c')
-    save([anomTrendPath, 'trend_dCEcloud_era5.mat'], 'trendm_dCEcloud_sfc_t', 'trends_dCEcloud_sfc_t', 'trendyr_dCEcloud_sfc_t', ...
-        'trendm_dCEcloud_toa_t', 'trends_dCEcloud_toa_t', 'trendyr_dCEcloud_toa_t', ...
-        'trendm_dCEcloud_sfc_c', 'trends_dCEcloud_sfc_c', 'trendyr_dCEcloud_sfc_c', ...
-        'trendm_dCEcloud_toa_c', 'trends_dCEcloud_toa_c', 'trendyr_dCEcloud_toa_c');
-    save([anomTrendPath, 'trend_dCEres_era5.mat'], 'trendm_dCEres_sfc_t', 'trends_dCEres_sfc_t', 'trendyr_dCEres_sfc_t', ...
-        'trendm_dCEres_toa_t', 'trends_dCEres_toa_t', 'trendyr_dCEres_toa_t', ...
-        'trendm_dCEres_sfc_c', 'trends_dCEres_sfc_c', 'trendyr_dCEres_sfc_c', ...
-        'trendm_dCEres_toa_c', 'trends_dCEres_toa_c', 'trendyr_dCEres_toa_c');
-    save([anomTrendPath, 'trend_dCEmainEff_era5.mat'], 'trendm_dCEmainEff_sfc_t', 'trends_dCEmainEff_sfc_t', 'trendyr_dCEmainEff_sfc_t', ...
-        'trendm_dCEmainEff_toa_t', 'trends_dCEmainEff_toa_t', 'trendyr_dCEmainEff_toa_t', ...
-        'trendm_dCEmainEff_sfc_c', 'trends_dCEmainEff_sfc_c', 'trendyr_dCEmainEff_sfc_c', ...
-        'trendm_dCEmainEff_toa_c', 'trends_dCEmainEff_toa_c', 'trendyr_dCEmainEff_toa_c');
+    % % save
+    % save([anomTrendPath, 'trend_dCEcloud_era5.mat'], 'trendm_dCEcloud_sfc_t', 'trends_dCEcloud_sfc_t', 'trendyr_dCEcloud_sfc_t', ...
+    % 'trendm_dCEcloud_toa_t', 'trends_dCEcloud_toa_t', 'trendyr_dCEcloud_toa_t', ...
+    % 'trendm_dCEcloud_sfc_c', 'trends_dCEcloud_sfc_c', 'trendyr_dCEcloud_sfc_c', ...
+    % 'trendm_dCEcloud_toa_c', 'trends_dCEcloud_toa_c', 'trendyr_dCEcloud_toa_c');
+    % save([anomTrendPath, 'trend_dCEres_era5.mat'], 'trendm_dCEres_sfc_t', 'trends_dCEres_sfc_t', 'trendyr_dCEres_sfc_t', ...
+    %     'trendm_dCEres_toa_t', 'trends_dCEres_toa_t', 'trendyr_dCEres_toa_t', ...
+    %     'trendm_dCEres_sfc_c', 'trends_dCEres_sfc_c', 'trendyr_dCEres_sfc_c', ...
+    %     'trendm_dCEres_toa_c', 'trends_dCEres_toa_c', 'trendyr_dCEres_toa_c');
+    % save([anomTrendPath, 'trend_dCEmainEff_era5.mat'], 'trendm_dCEmainEff_sfc_t', 'trends_dCEmainEff_sfc_t', 'trendyr_dCEmainEff_sfc_t', ...
+    %     'trendm_dCEmainEff_toa_t', 'trends_dCEmainEff_toa_t', 'trendyr_dCEmainEff_toa_t', ...
+    %     'trendm_dCEmainEff_sfc_c', 'trends_dCEmainEff_sfc_c', 'trendyr_dCEmainEff_sfc_c', ...
+    %     'trendm_dCEmainEff_toa_c', 'trends_dCEmainEff_toa_c', 'trendyr_dCEmainEff_toa_c');
     
     %% ERAi ,  _t
     % load  ( 1sfc cld,2sfc clr,3toa cld,4toa clr)
-    load([radEfectPath_erai, 'dradEfect_union.mat']); %'dR_hus', 'dR_alb', 'dR_ts', 'dR_ta', 'dR_total', 'readme_radEfect'
+    load([radEffectPath_erai, 'dradEffect_union.mat']); %'dR_hus', 'dR_alb', 'dR_ts', 'dR_ta', 'dR_nonCloud', 'readme_radEfect'
     dCE_CRF_t(:, :, :, 1) = dR_cre_sfc_all_t;
     dCE_CRF_t(:, :, :, 2) = dR_cre_toa_all_t;
-    dvarsFeedback = dR_total(:, :, :, [2 4]) - dR_total(:, :, :, [1 3]);
+    dvarsFeedback = dR_nonCloud(:, :, :, [2 4]) - dR_nonCloud(:, :, :, [1 3]);
     dRCE_cloud = dCE_CRF_t + dvarsFeedback;
     dRCE_clr(:, :, :, 1) = dR_tot_sfc_clr_t;
     dRCE_clr(:, :, :, 2) = dR_tot_toa_clr_t;
-    dRCE_residual = dRCE_clr - dR_total(:, :, :, [2 4]);
+    dRCE_residual = dRCE_clr - dR_nonCloud(:, :, :, [2 4]);
     dR_main = dR_hus + dR_alb + dR_ta; % dR exclude ts
     dR_mainEffect_sfc = squeeze(dRCE_cloud(:, :, :, 1)) + squeeze(dR_main(:, :, :, 1));
     dR_mainEffect_toa = squeeze(dRCE_cloud(:, :, :, 2)) + squeeze(dR_main(:, :, :, 3));
@@ -251,11 +256,11 @@ for p_1 = 1:2
     % _c
     dCE_CRF_c(:, :, :, 1) = dR_cre_sfc_all_c;
     dCE_CRF_c(:, :, :, 2) = dR_cre_toa_all_c;
-    dvarsFeedback = dR_total(:, :, :, [2 4]) - dR_total(:, :, :, [1 3]);
+    dvarsFeedback = dR_nonCloud(:, :, :, [2 4]) - dR_nonCloud(:, :, :, [1 3]);
     dRCE_cloud = dCE_CRF_c + dvarsFeedback;
     dRCE_clr(:, :, :, 1) = dR_tot_sfc_clr_c;
     dRCE_clr(:, :, :, 2) = dR_tot_toa_clr_c;
-    dRCE_residual = dRCE_clr - dR_total(:, :, :, [2 4]);
+    dRCE_residual = dRCE_clr - dR_nonCloud(:, :, :, [2 4]);
     dR_main = dR_hus + dR_alb + dR_ta; % dR exclude ts
     dR_mainEffect_sfc = squeeze(dRCE_cloud(:, :, :, 1)) + squeeze(dR_main(:, :, :, 1));
     dR_mainEffect_toa = squeeze(dRCE_cloud(:, :, :, 2)) + squeeze(dR_main(:, :, :, 3));
@@ -266,36 +271,37 @@ for p_1 = 1:2
     dCE_erai_c.residual_toa = squeeze(dRCE_residual(:, :, :, 2));
     dCE_erai_c.mainEffect_sfc = dR_mainEffect_sfc;
     dCE_erai_c.mainEffect_toa = dR_mainEffect_toa;
-    
-    [trendm_dCEcloud_sfc_t, trends_dCEcloud_sfc_t, trendyr_dCEcloud_sfc_t, ~, ~] = autoCalTrend(dCE_erai_t.Rcloud_sfc, nlonf, nlatf, time, startMonth);
-    [trendm_dCEcloud_toa_t, trends_dCEcloud_toa_t, trendyr_dCEcloud_toa_t, ~, ~] = autoCalTrend(dCE_erai_t.Rcloud_toa, nlonf, nlatf, time, startMonth);
-    [trendm_dCEcloud_sfc_c, trends_dCEcloud_sfc_c, trendyr_dCEcloud_sfc_c, ~, ~] = autoCalTrend(dCE_erai_c.Rcloud_sfc, nlonf, nlatf, time, startMonth);
-    [trendm_dCEcloud_toa_c, trends_dCEcloud_toa_c, trendyr_dCEcloud_toa_c, ~, ~] = autoCalTrend(dCE_erai_c.Rcloud_toa, nlonf, nlatf, time, startMonth);
-    
-    [trendm_dCEres_sfc_t, trends_dCEres_sfc_t, trendyr_dCEres_sfc_t, ~, ~] = autoCalTrend(dCE_erai_t.residual_sfc, nlonf, nlatf, time, startMonth);
-    [trendm_dCEres_toa_t, trends_dCEres_toa_t, trendyr_dCEres_toa_t, ~, ~] = autoCalTrend(dCE_erai_t.residual_toa, nlonf, nlatf, time, startMonth);
-    [trendm_dCEres_sfc_c, trends_dCEres_sfc_c, trendyr_dCEres_sfc_c, ~, ~] = autoCalTrend(dCE_erai_c.residual_sfc, nlonf, nlatf, time, startMonth);
-    [trendm_dCEres_toa_c, trends_dCEres_toa_c, trendyr_dCEres_toa_c, ~, ~] = autoCalTrend(dCE_erai_c.residual_toa, nlonf, nlatf, time, startMonth);
-    
-    [trendm_dCEmainEff_sfc_t, trends_dCEmainEff_sfc_t, trendyr_dCEmainEff_sfc_t, ~, ~] = autoCalTrend(dCE_erai_t.mainEffect_sfc, nlonf, nlatf, time, startMonth);
-    [trendm_dCEmainEff_toa_t, trends_dCEmainEff_toa_t, trendyr_dCEmainEff_toa_t, ~, ~] = autoCalTrend(dCE_erai_t.mainEffect_toa, nlonf, nlatf, time, startMonth);
-    [trendm_dCEmainEff_sfc_c, trends_dCEmainEff_sfc_c, trendyr_dCEmainEff_sfc_c, ~, ~] = autoCalTrend(dCE_erai_c.mainEffect_sfc, nlonf, nlatf, time, startMonth);
-    [trendm_dCEmainEff_toa_c, trends_dCEmainEff_toa_c, trendyr_dCEmainEff_toa_c, ~, ~] = autoCalTrend(dCE_erai_c.mainEffect_toa, nlonf, nlatf, time, startMonth);
-    
-    % save
     save([anomPath, 'dCEcloud_erai.mat'], 'dCE_erai_t', 'dCE_erai_c')
-    save([anomTrendPath, 'trend_dCEcloud_erai.mat'], 'trendm_dCEcloud_sfc_t', 'trends_dCEcloud_sfc_t', 'trendyr_dCEcloud_sfc_t', ...
-        'trendm_dCEcloud_toa_t', 'trends_dCEcloud_toa_t', 'trendyr_dCEcloud_toa_t', ...
-        'trendm_dCEcloud_sfc_c', 'trends_dCEcloud_sfc_c', 'trendyr_dCEcloud_sfc_c', ...
-        'trendm_dCEcloud_toa_c', 'trends_dCEcloud_toa_c', 'trendyr_dCEcloud_toa_c');
-    save([anomTrendPath, 'trend_dCEres_erai.mat'], 'trendm_dCEres_sfc_t', 'trends_dCEres_sfc_t', 'trendyr_dCEres_sfc_t', ...
-        'trendm_dCEres_toa_t', 'trends_dCEres_toa_t', 'trendyr_dCEres_toa_t', ...
-        'trendm_dCEres_sfc_c', 'trends_dCEres_sfc_c', 'trendyr_dCEres_sfc_c', ...
-        'trendm_dCEres_toa_c', 'trends_dCEres_toa_c', 'trendyr_dCEres_toa_c');
-    save([anomTrendPath, 'trend_dCEmainEff_erai.mat'], 'trendm_dCEmainEff_sfc_t', 'trends_dCEmainEff_sfc_t', 'trendyr_dCEmainEff_sfc_t', ...
-        'trendm_dCEmainEff_toa_t', 'trends_dCEmainEff_toa_t', 'trendyr_dCEmainEff_toa_t', ...
-        'trendm_dCEmainEff_sfc_c', 'trends_dCEmainEff_sfc_c', 'trendyr_dCEmainEff_sfc_c', ...
-        'trendm_dCEmainEff_toa_c', 'trends_dCEmainEff_toa_c', 'trendyr_dCEmainEff_toa_c');
+
+    
+    % [trendm_dCEcloud_sfc_t, trends_dCEcloud_sfc_t, trendyr_dCEcloud_sfc_t, ~, ~] = autoCalTrend(dCE_erai_t.Rcloud_sfc, nlonf, nlatf, time, startMonth);
+    % [trendm_dCEcloud_toa_t, trends_dCEcloud_toa_t, trendyr_dCEcloud_toa_t, ~, ~] = autoCalTrend(dCE_erai_t.Rcloud_toa, nlonf, nlatf, time, startMonth);
+    % [trendm_dCEcloud_sfc_c, trends_dCEcloud_sfc_c, trendyr_dCEcloud_sfc_c, ~, ~] = autoCalTrend(dCE_erai_c.Rcloud_sfc, nlonf, nlatf, time, startMonth);
+    % [trendm_dCEcloud_toa_c, trends_dCEcloud_toa_c, trendyr_dCEcloud_toa_c, ~, ~] = autoCalTrend(dCE_erai_c.Rcloud_toa, nlonf, nlatf, time, startMonth);
+    
+    % [trendm_dCEres_sfc_t, trends_dCEres_sfc_t, trendyr_dCEres_sfc_t, ~, ~] = autoCalTrend(dCE_erai_t.residual_sfc, nlonf, nlatf, time, startMonth);
+    % [trendm_dCEres_toa_t, trends_dCEres_toa_t, trendyr_dCEres_toa_t, ~, ~] = autoCalTrend(dCE_erai_t.residual_toa, nlonf, nlatf, time, startMonth);
+    % [trendm_dCEres_sfc_c, trends_dCEres_sfc_c, trendyr_dCEres_sfc_c, ~, ~] = autoCalTrend(dCE_erai_c.residual_sfc, nlonf, nlatf, time, startMonth);
+    % [trendm_dCEres_toa_c, trends_dCEres_toa_c, trendyr_dCEres_toa_c, ~, ~] = autoCalTrend(dCE_erai_c.residual_toa, nlonf, nlatf, time, startMonth);
+    
+    % [trendm_dCEmainEff_sfc_t, trends_dCEmainEff_sfc_t, trendyr_dCEmainEff_sfc_t, ~, ~] = autoCalTrend(dCE_erai_t.mainEffect_sfc, nlonf, nlatf, time, startMonth);
+    % [trendm_dCEmainEff_toa_t, trends_dCEmainEff_toa_t, trendyr_dCEmainEff_toa_t, ~, ~] = autoCalTrend(dCE_erai_t.mainEffect_toa, nlonf, nlatf, time, startMonth);
+    % [trendm_dCEmainEff_sfc_c, trends_dCEmainEff_sfc_c, trendyr_dCEmainEff_sfc_c, ~, ~] = autoCalTrend(dCE_erai_c.mainEffect_sfc, nlonf, nlatf, time, startMonth);
+    % [trendm_dCEmainEff_toa_c, trends_dCEmainEff_toa_c, trendyr_dCEmainEff_toa_c, ~, ~] = autoCalTrend(dCE_erai_c.mainEffect_toa, nlonf, nlatf, time, startMonth);
+    
+    % % save
+    % save([anomTrendPath, 'trend_dCEcloud_erai.mat'], 'trendm_dCEcloud_sfc_t', 'trends_dCEcloud_sfc_t', 'trendyr_dCEcloud_sfc_t', ...
+    %     'trendm_dCEcloud_toa_t', 'trends_dCEcloud_toa_t', 'trendyr_dCEcloud_toa_t', ...
+    %     'trendm_dCEcloud_sfc_c', 'trends_dCEcloud_sfc_c', 'trendyr_dCEcloud_sfc_c', ...
+    %     'trendm_dCEcloud_toa_c', 'trends_dCEcloud_toa_c', 'trendyr_dCEcloud_toa_c');
+    % save([anomTrendPath, 'trend_dCEres_erai.mat'], 'trendm_dCEres_sfc_t', 'trends_dCEres_sfc_t', 'trendyr_dCEres_sfc_t', ...
+    %     'trendm_dCEres_toa_t', 'trends_dCEres_toa_t', 'trendyr_dCEres_toa_t', ...
+    %     'trendm_dCEres_sfc_c', 'trends_dCEres_sfc_c', 'trendyr_dCEres_sfc_c', ...
+    %     'trendm_dCEres_toa_c', 'trends_dCEres_toa_c', 'trendyr_dCEres_toa_c');
+    % save([anomTrendPath, 'trend_dCEmainEff_erai.mat'], 'trendm_dCEmainEff_sfc_t', 'trends_dCEmainEff_sfc_t', 'trendyr_dCEmainEff_sfc_t', ...
+    %     'trendm_dCEmainEff_toa_t', 'trends_dCEmainEff_toa_t', 'trendyr_dCEmainEff_toa_t', ...
+    %     'trendm_dCEmainEff_sfc_c', 'trends_dCEmainEff_sfc_c', 'trendyr_dCEmainEff_sfc_c', ...
+    %     'trendm_dCEmainEff_toa_c', 'trends_dCEmainEff_toa_c', 'trendyr_dCEmainEff_toa_c');
     
     clear dCE_CRF_t dCE_CRF_c dRCE_clr dRCE_residual dRCE_cloud
 
@@ -308,3 +314,4 @@ function inputData = transfCordi(lon_ori, lat_ori, time_ori, inputData, lon_aft,
     inputData(1, :, :) = inputData(end, :, :);
     inputData = autoRegrid3(lon_ori, lat_ori, time_ori, inputData, lon_aft, lat_aft, time_aft);
 end
+

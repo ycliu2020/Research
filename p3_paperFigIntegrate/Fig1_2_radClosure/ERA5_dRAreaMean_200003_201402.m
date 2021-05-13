@@ -1,7 +1,7 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-07-08 13:09:46
-% LastEditTime : 2021-03-31 19:00:54
+% LastEditTime : 2021-04-28 19:47:46
 % LastEditors  : Please set LastEditors
 % Description  : cal china(CN) and world(UN-90-90) areamean rad and kernel cal rad 时间序列
 %                注意辐射闭合检查值只适合晴空的情况
@@ -21,13 +21,13 @@ areaLabel = {'cn', 'un'};
 Label.wave = {'net', 'lw', 'sw'};
 Label.radEf = {'wvlw', 'wvsw', 'tslw', 'albsw', 'talw', 'res'};
 [readme, level, tLin, vars] = obsParameters('ERA5');
-
+obsPath='/data2/liuyincheng/Observe-process';
 for exmNum = 1:1 % only read 2000.03-2018.02 to cut to 2000.03-2014-02
-    varsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{exmNum}, 'ERA5', level.standVarPath{1}); %rawdata
-    dvarsPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{exmNum}, 'ERA5', level.standVarPath{2}); %anomaly
-    kernelCalPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{exmNum}, 'ERA5', level.standVarPath{4}); % kernelCal
-    radEffectPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{exmNum}, 'ERA5', level.standVarPath{5}); %radEffect
-    trend_radEffectPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{exmNum}, 'ERA5', level.standVarPath{6}); %/data1/liuyincheng/cmip6-proces/aimp_2000-2014/MRI-ESM2-0/ensemble/radEffect_trend/
+    varsPath = fullfile(obsPath, tLin.time{exmNum}, 'ERA5', level.standVarPath{1}); %rawdata
+    dvarsPath = fullfile(obsPath, tLin.time{exmNum}, 'ERA5', level.standVarPath{2}); %anomaly
+    kernelCalPath = fullfile(obsPath, tLin.time{exmNum}, 'ERA5', level.standVarPath{4}); % kernelCal
+    radEffectPath = fullfile(obsPath, tLin.time{exmNum}, 'ERA5', level.standVarPath{5}); %radEffect
+    trend_radEffectPath = fullfile(obsPath, tLin.time{exmNum}, 'ERA5', level.standVarPath{6}); %/data1/liuyincheng/cmip6-proces/aimp_2000-2014/MRI-ESM2-0/ensemble/radEffect_trend/
     %% load data
     % 观测值
     load([radEffectPath, 'global_vars.mat'])% 'lon_f', 'lat_f', 'lon_k', 'lat_k', 'plev_k', 'time'
@@ -109,8 +109,6 @@ for exmNum = 1:1 % only read 2000.03-2018.02 to cut to 2000.03-2014-02
 
     end
 
-    radEffectPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{3}, 'ERA5', level.standVarPath{5}); %radEffect
-    auto_mkdir(radEffectPath);
     unFileName = fullfile(radEffectPath, 'RadMean_world.mat');
     readme='(time,  band({net, lw, sw}))';
     save(unFileName, 'lon_f', 'lat_f', 'time','readme', 'dRclrMean_sfc_un', 'dRclrMean_toa_un', ...
@@ -119,7 +117,8 @@ for exmNum = 1:1 % only read 2000.03-2018.02 to cut to 2000.03-2014-02
     clear dRclrMean_sfc_un dRclrMean_toa_un dRclrMean_sfcKern_un dRclrMean_toaKern_un dRclrMean_sfcRes_un dRclrMean_toaRes_un
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Part2: china mean rad
-    maxlat = 60; areaNum = 2;
+    maxlat = 90; areaNum = 'china';
+    dataArea=areaNum;
     dRclr_sfc_cn = zeros(nlonf, nlatf, ntime, 3);
     dRclr_toa_cn = dRclr_sfc_cn; dRclr_sfcKern_cn = dRclr_sfc_cn; dRclr_toaKern_cn = dRclr_sfc_cn; dRclr_sfcRes_cn = dRclr_sfc_cn; dRclr_toaRes_cn = dRclr_sfc_cn;
     wgt = cos(Latf ./ 180 .* pi); %纬度加权算区域平均值
@@ -154,7 +153,7 @@ for exmNum = 1:1 % only read 2000.03-2018.02 to cut to 2000.03-2014-02
 
     cnFileName = fullfile(radEffectPath, 'RadMean_china.mat');
     readme='(time,  band({net, lw, sw}))';
-    save(cnFileName, 'lon_f', 'lat_f', 'time', 'readme', 'dRclrMean_sfc_cn', 'dRclrMean_toa_cn', ...
+    save(cnFileName, 'lon_f', 'lat_f', 'time', 'readme', 'dataArea', 'dRclrMean_sfc_cn', 'dRclrMean_toa_cn', ...
         'dRclrMean_sfcKern_cn', 'dRclrMean_toaKern_cn', ...
         'dRclrMean_sfcRes_cn', 'dRclrMean_toaRes_cn')
     clear dRclrMean_sfc_cn dRclrMean_toa_cn dRclrMean_sfcKern_cn dRclrMean_toaKern_cn dRclrMean_sfcRes_cn dRclrMean_toaRes_cn

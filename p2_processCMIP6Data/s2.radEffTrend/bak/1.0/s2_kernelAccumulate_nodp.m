@@ -83,7 +83,6 @@ for p_1 = 5:5%1 mean amip 2000; 2 mean amip 1980;3 means ssp245, 4 means ssp370;
             alb_swkernel = alb_swkernel_copy{ii};
             ts_lwkernel = ts_lwkernel_copy{ii};
             t_lwkernel = t_lwkernel_copy{ii};
-            t_level2_lwkernel = t_lwkernel_copy{ii}; % only contain near surface 2 levels
             wv_lwkernel = wv_swkernel_copy{ii};
             wv_swkernel = wv_lwkernel_copy{ii};
             numdp = 24;

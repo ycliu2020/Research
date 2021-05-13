@@ -1,17 +1,8 @@
 %%---------------------------------------------------------
 % Author       : LYC
-% Date         : 2020-07-07 12:51:42
-% LastEditTime : 2020-07-13 15:57:25
-% LastEditors  : LYC
-% Description  : 
-% FilePath     : /code/p1_processObserveData/ERAi/ERAi_s1_dvars.m
-%  
-%%---------------------------------------------------------
-%%---------------------------------------------------------
-% Author       : LYC
 % Date         : 2020-07-02 15:23:02
-% LastEditTime : 2020-07-08 09:27:29
-% LastEditors  : LYC
+% LastEditTime : 2021-04-22 14:55:20
+% LastEditors  : Please set LastEditors
 % Description  : process ERAi data to anomaly (includ meto vars and rad)
 %                time line: 1. 2000-03 to 2018-02(18*12) 2. 200207-201706(15*12)
 %                note that all vertical fluxes is positive downwards.
@@ -21,110 +12,68 @@
 clc; clear; tic;
 % constant
 sigma = 5.67e-8; % Stefan-Boltzmann constant: Wm-2K-4
-kernels_path = '/data1/liuyincheng/y_kernels/kernels_YiH/toa/dp.nc';
+kernels_path = '/data1/liuyincheng/y_kernels/YiH/kernels_YiH/toa/dp.nc';
 lon_k = 0:2.5:357.5; nlonk = length(lon_k); % kernel lat lon
 lat_k = 90:-2.5:-90; nlatk = length(lat_k);
 lat_f = 88.75:-2.5:-88.75; nlatf = length(lat_f); % figure lat lon
 lon_f = lon_k; nlonf = length(lon_f);
 var_state = {'d', 'clim_', 'trendm_d', 'trends_d', 'trendyr_d'};
-% modify path first
-obsPath = '/data1/liuyincheng/Observe-rawdata/ERA/ERAi';
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% modify path first
+dataSetName='ERAi'; % set which data to compute
+% s0_preHandle data
+ERAPath = '/data2/liuyincheng/Observe-process';
+rawdataPath = fullfile(ERAPath, 'rawdata', dataSetName,'/');
+rawdataRegridPath = fullfile(ERAPath, 'rawdata_regrid', dataSetName,'/');
+
+% origan data
+obsPath = '/data2/liuyincheng/Observe-rawdata/ERA/ERAi';
 metoVarsPath = fullfile(obsPath, 'meto_vars/');
 sfc_radVarsPath = fullfile(obsPath, 'rad_vars/SFC/');
 toa_radVarsPath = fullfile(obsPath, 'rad_vars/TOA/');
-[readme, level, tLin, vars] = obsParameters('ERAi');
+
+% pre set parameters
+[readme, level, tLin, vars] = obsParameters(dataSetName);
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% read raw data from 2000-2018 for futher process to 200003-201802,,,,
-% 1.1 连续时间的变量
-alb_Path = fullfile(metoVarsPath, 'alb_1979-2018.nc');
-ps_Path = fullfile(metoVarsPath, 'ps_1979-2018.nc');
-ts_Path = fullfile(metoVarsPath, 'ts_1979-2018.nc');
 % read time
+alb_Path = fullfile(metoVarsPath, 'alb_1979-2018.nc');
 % locate first year
 formatOut = 'yyyy-mm';
-temp_dir = dir(alb_Path);
-startT = cdftime2loc(temp_dir, formatOut, '2000-01');
+layerSfc_dir = dir(alb_Path);
+startT = cdftime2loc(layerSfc_dir, formatOut, '1979-01');
 % read time and transfor mat time
-startLoc = startT; count = 19 * 12; stride = 1;
+yearTotal=2018-1979+1;
+startLoc = startT; count = yearTotal * 12; stride = 1;
 time0 = cmipTimeRead(alb_Path, startLoc, count, stride); %time.date, Units, Calendar, length
 ntime0 = length(time0.date);
 time1 = 1:ntime0;
-% read original lat and lon
-lat_ori = double(ncread(alb_Path, 'latitude'));
-lon_ori = double(ncread(alb_Path, 'longitude'));
-% read vars
-startLoc = [1, 1, startT]; count = [inf, inf, 19 * 12]; stride = [1, 1, 1];
-alb0 = squeeze(ncread(alb_Path, 'fal', startLoc, count, stride));
-ps0 = squeeze(ncread(ps_Path, 'sp', startLoc, count, stride));
-ts0 = squeeze(ncread(ts_Path, 'skt', startLoc, count, stride));
-% Regrid to 2.5*2.5
-% 3D meto vars
-ps0 = autoRegrid3(lon_ori, lat_ori, time1, ps0, lon_k, lat_k, time1);
-alb0 = autoRegrid3(lon_ori, lat_ori, time1, alb0, lon_k, lat_k, time1);
-ts0 = autoRegrid3(lon_ori, lat_ori, time1, ts0, lon_k, lat_k, time1);
 
-% 1.2 按时间划分文件的变量
-for yearNum = 0:18% (read raw range: 2000-2018)
-    % meto data
-    TQ_Path = strcat(metoVarsPath, 'tq', num2str((yearNum + 2000), '%04i'), '.nc');
-    ta0(:, :, :, yearNum * 12 + 1:(yearNum + 1) * 12) = ncread(TQ_Path, 't');
-    hus0(:, :, :, yearNum * 12 + 1:(yearNum + 1) * 12) = ncread(TQ_Path, 'q');
-
-    % rad data({'tsr', 'ttr', 'tsrcs', 'ttrcs', 'slhf', 'sshf', 'ssr', 'str', 'strd', 'ssrd', 'ssrc', 'strc', 'strdc', 'ssrdc'};)
-    sfcRad_Path = strcat(sfc_radVarsPath, 'rad_sfc', num2str((yearNum + 2000), '%04i'), '.nc');
-    toaRad_Path = strcat(toa_radVarsPath, 'rad_toa', num2str((yearNum + 2000), '%04i'), '.nc');
-
-    for radVarNum = 1:length(vars.sfcRad)
-        rad_sfc_ori(:, :, yearNum * 12 + 1:(yearNum + 1) * 12, radVarNum) = ncread(sfcRad_Path, vars.sfcRad{radVarNum});
-    end
-
-    for radVarNum = 1:length(vars.toaRad)
-        rad_toa_ori(:, :, yearNum * 12 + 1:(yearNum + 1) * 12, radVarNum) = ncread(toaRad_Path, vars.toaRad{radVarNum});
-    end
-
-end
-
-% read level
-plev_ori = ncread(TQ_Path, 'level');
-plev_ori = double(plev_ori);
-plev_ori=plev_ori(end:-1:1);
-plev_k = ncread('/data1/liuyincheng/y_kernels/kernels_YiH/toa/dp.nc', 'player'); % player 最大1000符合条件pay attention to plev_k's range must smaller than plev_ori's
-nplevk = length(plev_k);
-
-% transform plev direction
-hus0=hus0(:,:,end:-1:1,:);
-ta0=ta0(:,:,end:-1:1,:);
-
-% Regrid to 2.5*2.5
-% 4D meto vars
-hus0 = autoRegrid4(lon_ori, lat_ori, plev_ori, time1, hus0, lon_k, lat_k, plev_k, time1);
-ta0 = autoRegrid4(lon_ori, lat_ori, plev_ori, time1, ta0, lon_k, lat_k, plev_k, time1);
+% read 3D vars
+load([rawdataRegridPath, 'global_vars.mat']) 
+load([rawdataRegridPath, 'alb_regrid.mat']) 
+load([rawdataRegridPath, 'ps_regrid.mat']) 
+load([rawdataRegridPath, 'ts_regrid.mat'])
+nplevk=length(plev_k);
+% 4D vars 
+load([rawdataRegridPath, 'hus_regrid.mat']) 
+load([rawdataRegridPath, 'ta_regrid.mat']) 
 
 % rad vars
-rad_sfc0 = zeros(nlonk, nlatk, ntime0, length(vars.sfcRad));
-rad_toa0 = zeros(nlonk, nlatk, ntime0, length(vars.toaRad));
+load([rawdataRegridPath, 'rad_sfc_regrid.mat']) 
+load([rawdataRegridPath, 'rad_toa_regrid.mat']) 
 
-for radVarNum = 1:length(vars.toaRad)
-    rad_toa0(:, :, :, radVarNum) = autoRegrid3(lon_ori, lat_ori, time1, rad_toa_ori(:, :, :, radVarNum), lon_k, lat_k, time1);
-end
-
-clear rad_toa_ori
-
-for radVarNum = 1:length(vars.sfcRad)
-    rad_sfc0(:, :, :, radVarNum) = autoRegrid3(lon_ori, lat_ori, time1, rad_sfc_ori(:, :, :, radVarNum), lon_k, lat_k, time1);
-end
-
-clear rad_sfc_ori
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% start to process
-for p_1 = 1:2% 1 mean 200003-201802
-    regridPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{1});
-    anomPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{2});
-    anomTrendPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{3});
-    kernelCalPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{4});
-    radEffectPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{5});
-    radEffectTrendPath = fullfile('/data1/liuyincheng/Observe-process', tLin.time{p_1}, 'ERAi', level.standVarPath{6});
+for p_1 = 1:5% 1 mean 200003-201802
+    regridPath = fullfile(ERAPath, tLin.time{p_1}, dataSetName, level.standVarPath{1});
+    anomPath = fullfile(ERAPath, tLin.time{p_1}, dataSetName, level.standVarPath{2});
+    anomTrendPath = fullfile(ERAPath, tLin.time{p_1}, dataSetName, level.standVarPath{3});
+    kernelCalPath = fullfile(ERAPath, tLin.time{p_1}, dataSetName, level.standVarPath{4});
+    radEffectPath = fullfile(ERAPath, tLin.time{p_1}, dataSetName, level.standVarPath{5});
+    radEffectTrendPath = fullfile(ERAPath, tLin.time{p_1}, dataSetName, level.standVarPath{6});
     auto_mkdir(regridPath); auto_mkdir(anomPath); auto_mkdir(anomTrendPath);
     auto_mkdir(kernelCalPath); auto_mkdir(radEffectPath); auto_mkdir(radEffectTrendPath);
     % find start and end month
@@ -135,15 +84,15 @@ for p_1 = 1:2% 1 mean 200003-201802
     endMon = startMon + tLin.inter{p_1} - 1;
 
     % read specific time series
-    ps = ps0(:, :, startMon:endMon);
-    alb = alb0(:, :, startMon:endMon);
-    ts = ts0(:, :, startMon:endMon);
-    hus = hus0(:, :, :, startMon:endMon);
-    ta = ta0(:, :, :, startMon:endMon);
+    ps = ps_regrid(:, :, startMon:endMon);
+    alb = alb_regrid(:, :, startMon:endMon);
+    ts = ts_regrid(:, :, startMon:endMon);
+    hus = hus_regrid(:, :, :, startMon:endMon);
+    ta = ta_regrid(:, :, :, startMon:endMon);
     time = time0.date(startMon:endMon, 1);
     ntime = length(time);
-    rad_sfc = rad_sfc0(:, :, startMon:endMon, :);
-    rad_toa = rad_toa0(:, :, startMon:endMon, :);
+    rad_sfc = rad_sfc_regrid(:, :, startMon:endMon, :);
+    rad_toa = rad_toa_regrid(:, :, startMon:endMon, :);
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Part1: handle ps
@@ -164,6 +113,7 @@ for p_1 = 1:2% 1 mean 200003-201802
     dp_raw = ncread(kernels_path, 'dp');
     dp = zeros(nlonk, nlatk, 24, 12); %revise dp in all layers, under the lowest layer are zeros
     dp_level2 = zeros(nlonk, nlatk, 24, 12); % only contain the near sfc
+    dp_level1 = zeros(nlonk, nlatk, 24, 12); % only contain the near sfc
     dps = zeros(nlonk, nlatk, 12);
 
     for i = 1:nlonk
@@ -171,14 +121,17 @@ for p_1 = 1:2% 1 mean 200003-201802
         for j = 1:nlatk
 
             for nt = 1:12
-                temp = find(player < ps_m(i, j, nt), 1, 'first');
-                dps(i, j, nt) = ps_m(i, j, nt) - plevel(temp + 1);
+                layerSfc = find(player < ps_m(i, j, nt), 1, 'first');
+                dps(i, j, nt) = ps_m(i, j, nt) - plevel(layerSfc + 1);
                 % dps(i, j, nt) = dp_bottom(i,j)123;
-                dp(i, j, temp, nt) = dps(i, j, nt);
-                dp(i, j, temp + 1:24, nt) = dp_raw(temp + 1:24);
+                dp(i, j, layerSfc, nt) = dps(i, j, nt);
+                dp(i, j, layerSfc + 1:24, nt) = dp_raw(layerSfc + 1:24);
                 % near surface level2
-                dp_level2(i, j, temp, nt) = dps(i, j, nt);
-                dp_level2(i, j, temp + 1, nt) = dp_raw(temp + 1);
+                dp_level2(i, j, layerSfc, nt) = dps(i, j, nt);
+                dp_level2(i, j, layerSfc + 1, nt) = dp_raw(layerSfc + 1);
+                % near surface level1
+                dp_level1(i, j, layerSfc, nt) = dps(i, j, nt);
+
             end
 
         end
@@ -191,10 +144,10 @@ for p_1 = 1:2% 1 mean 200003-201802
     readme_ps_m.longName = 'Surface Pressure(monthly mean of mutiple years)';
     save([kernelCalPath, 'global_vars.mat'], 'lon_k', 'lat_k', 'time', 'plev_k')
     save([kernelCalPath, 'kernel_ps_m.mat'], 'ps_m', 'readme_ps_m')
-    save([kernelCalPath, 'kernel_dp.mat'], 'dps', 'dp', 'dp_level2');
+    save([kernelCalPath, 'kernel_dp.mat'], 'dps', 'dp', 'dp_level2', 'dp_level1');
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Part2: deseasonlize vars
-    % meto vars
+    %% meto vars
     startMonth = tLin.startMonth{p_1};
     [dalb, clim_alb] = monthlyAnomaly3D(nlonk, nlatk, time, alb, startMonth);
     [dts, clim_ts] = monthlyAnomaly3D(nlonk, nlatk, time, ts, startMonth);
@@ -207,7 +160,7 @@ for p_1 = 1:2% 1 mean 200003-201802
 
     save([regridPath, 'global_vars.mat'], 'lon_k', 'lat_k', 'time', 'plev_k')
     save([regridPath, 'meto_vars.mat'], 'alb', 'ts', 'hus', 'ta')
-    % rad vars
+    %% rad vars
     % transform unite: W/m2
     rad_sfc = rad_sfc ./ (3600 * 24);
     rad_toa = rad_toa ./ (3600 * 24);
@@ -216,16 +169,16 @@ for p_1 = 1:2% 1 mean 200003-201802
     dvars.toaRad = strcat(var_state{1}, vars.toaRad); clim_vars.toaRad = strcat(var_state{2}, vars.toaRad);
 
     for radVarNum = 1:length(vars.sfcRad)
-        eval([vars.sfcRad{radVarNum},'=squeeze(rad_sfc(:,:,:,radVarNum));']); %
+        eval([vars.sfcRad{radVarNum}, '=squeeze(rad_sfc(:,:,:,radVarNum));']); %
         save([regridPath, vars.sfcRad{radVarNum}], vars.sfcRad{radVarNum});
 
         eval(['[', dvars.sfcRad{radVarNum}, ', ', clim_vars.sfcRad{radVarNum}, ']=monthlyAnomaly3D(nlonk, nlatk, time, squeeze(rad_sfc(:,:,:,radVarNum)), startMonth);']); %
         save([anomPath, dvars.sfcRad{radVarNum}], dvars.sfcRad{radVarNum}, clim_vars.sfcRad{radVarNum});
-        
+
     end
 
     for radVarNum = 1:length(vars.toaRad)
-        eval([vars.toaRad{radVarNum},'=squeeze(rad_toa(:,:,:,radVarNum));']); %
+        eval([vars.toaRad{radVarNum}, '=squeeze(rad_toa(:,:,:,radVarNum));']); %
         save([regridPath, vars.toaRad{radVarNum}], vars.toaRad{radVarNum});
 
         eval(['[', dvars.toaRad{radVarNum}, ', ', clim_vars.toaRad{radVarNum}, ']=monthlyAnomaly3D(nlonk, nlatk, time, squeeze(rad_toa(:,:,:,radVarNum)), startMonth);']); %
