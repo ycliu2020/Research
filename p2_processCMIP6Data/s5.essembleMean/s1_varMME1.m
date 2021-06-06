@@ -3,7 +3,7 @@
 % Date         : 2021-04-02 15:48:14
 % LastEditors  : Please set LastEditors
 % Description  : Multi-model ensemble (MME) mean of CMIP6
-% FilePath     : /code/p2_processCMIP6Data/s5.essembleMean/s1_variableMME_amipAndSSP370.m
+% FilePath     : /code/p2_processCMIP6Data/s5.essembleMean/s1_variableMME1.m
 %
 %%---------------------------------------------------------
 
@@ -63,21 +63,21 @@ for exmNum = [1 2 4]
     % varsOrig.fileFolder = 'anomaly/';
     % varsOrig.fileName = 'drlus.mat';
     % % main auto calculation function
-    % MME_autoCal3(varsOrig, MME_Models, exmNum);    
-    
-    %% dhfss
-    varsOrig.Name = {'dhfss'};
-    varsOrig.fileFolder = 'anomaly/';
-    varsOrig.fileName = 'dhfss.mat';
-    % main auto calculation function
-    MME_autoCal3(varsOrig, MME_Models, exmNum);
-    
-    %% dhfls
-    varsOrig.Name = {'dhfls'};
-    varsOrig.fileFolder = 'anomaly/';
-    varsOrig.fileName = 'dhfls.mat';
-    % main auto calculation function
-    MME_autoCal3(varsOrig, MME_Models, exmNum);
+    % MME_autoCal3(varsOrig, MME_Models, exmNum);
+
+    % dhfss
+    % varsOrig.Name = {'dhfss'};
+    % varsOrig.fileFolder = 'anomaly/';
+    % varsOrig.fileName = 'dhfss.mat';
+    % % main auto calculation function
+    % MME_autoCal3(varsOrig, MME_Models, exmNum);
+
+    % %% dhfls
+    % varsOrig.Name = {'dhfls'};
+    % varsOrig.fileFolder = 'anomaly/';
+    % varsOrig.fileName = 'dhfls.mat';
+    % % main auto calculation function
+    % MME_autoCal3(varsOrig, MME_Models, exmNum);
     %% trendRadEff_toa
     % varsOrig.Name = {'trendyr_dRtoa_CRF', ...
         %                 'trendyr_dRtoa_ta', ...
@@ -154,13 +154,27 @@ for exmNum = [1 2 4]
     % varsOrig.fileName = 'dR_residual_cld_sfc.mat';
     % % main auto calculation function
     % MME_autoCal3(varsOrig, MME_Models, exmNum);
-    
+
     % %% dR_residual_cld_toa
     % varsOrig.Name = {'dR_residual_cld_toa', 'lw_residual_cld_toa', 'sw_residual_cld_toa'};
     % varsOrig.fileFolder = 'radEffect/';
     % varsOrig.fileName = 'dR_residual_cld_toa.mat';
     % % main auto calculation function
     % MME_autoCal3(varsOrig, MME_Models, exmNum);
+
+    %% dts
+    varsOrig.Name = {'dts'};
+    varsOrig.fileFolder = 'anomaly/';
+    varsOrig.fileName = 'dts.mat';
+    % main auto calculation function
+    MME_autoCal3(varsOrig, MME_Models, exmNum);
+
+    %% dts
+    varsOrig.Name = {'dTs_alb', 'dTs_cloud', 'dTs_hus', 'dTs_residual', 'dTs_ta'};
+    varsOrig.fileFolder = 'vsTsEffect/';
+    varsOrig.fileName = 'dTs_x_sfc.mat';
+    % main auto calculation function
+    MME_autoCal3(varsOrig, MME_Models, exmNum);
 end
 
 eval(['cd ', nowpath]);

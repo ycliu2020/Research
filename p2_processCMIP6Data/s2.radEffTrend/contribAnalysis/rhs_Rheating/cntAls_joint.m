@@ -1,20 +1,20 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-10-14 15:3nValue:49
-% LastEditTime : 2021-05-13 15:04:05
+% LastEditTime : 2021-05-13 17:14:29
 % LastEditors  : Please set LastEditors
 % Description  :
-% FilePath     : /code/p2_processCMIP6Data/s2.radEffTrend/contribAnalysis/contribAnalysis_joint.m
+% FilePath     : /code/p2_processCMIP6Data/s2.radEffTrend/contribAnalysis/cntAls_joint.m
 %
 %%---------------------------------------------------------
 clc; clear;
 nowpath = pwd;
 
 %% loop and process
-[mlabels, areaStr] = cmipPlotParameters('atm', 'land', 'radEffect'); % plot parameters
+[mlabels, areaStr] = cmipPlotParameters('sfc', 'land', 'radEffect'); % plot parameters
 
 esm = 'r1i1p1f1';
-timeType = 'monthly'; % monthly or yearly
+timeType = 'yearly'; % monthly or yearly
 exmStart = 1; exmEnd = 2;
 
 for exmNum = exmStart:exmEnd
@@ -100,7 +100,8 @@ for exmNum = exmStart:exmEnd
             % cal Function
             latRange = 90;
             areaStr = {'world', 'china east', 'USA east', 'EUR west'};
-            outPutFile = ['/home/liuyc/Research/P02.Ts_change_research/table/Radiation_Tscontribution/radContrib_', level.time1{exmNum}(6:end - 1),'_', timeType,'.xlsx'];
+            outPutFile = ['/home/liuyc/Research/P02.Ts_change_research/table/Radiation_Tscontribution/radContrib_', level.time1{exmNum}(6:end - 1), '_', timeType, '.xlsx'];
+
             for areaNum = 1:length(areaStr)
                 [lineStart] = calCovContribution(latRange, lat_f, timeType, ntime, level.model2{mdlNum}, areaStr, areaNum, dTs_x_sfc, outPutFile, lineStart);
             end
@@ -129,7 +130,7 @@ function [lineStart] = calCovContribution(latRange, lat_f, timeType, ntime, mdlN
         [dTs_x_sfc(:, :, :, x_ind), ~, ~] = maskArea(dTs_x_sfc(:, :, :, x_ind), lat_f, latRange, -latRange, areaStr{areaNum});
     end
 
-    % cal the weight average value of east china
+    % cal the weight average value
 
     glb_dTs_x_sfc = zeros(ntime, nValue);
 
@@ -140,6 +141,7 @@ function [lineStart] = calCovContribution(latRange, lat_f, timeType, ntime, mdlN
         end
 
     end
+    glbMoth_dTs_x_sfc = glb_dTs_x_sfc;
 
     if strcmp(timeType, 'yearly')
         % cal intel annual mean
@@ -154,7 +156,6 @@ function [lineStart] = calCovContribution(latRange, lat_f, timeType, ntime, mdlN
 
     end
 
-    glbMoth_dTs_x_sfc = glb_dTs_x_sfc;
     % test sum = 0
     % for timeNum = 1:ntime
     %     glb_dTs_x_sfc_test(timeNum)=sum(glb_dTs_x_sfc(timeNum,:));
@@ -201,13 +202,12 @@ function [lineStart] = calCovContribution(latRange, lat_f, timeType, ntime, mdlN
 
 end
 
-
-            % if exmNum == 1
-            %     % cut to 2000.03-2014.02
-            %     timeStr = string(datestr(datenum(time.date), 'yyyy-mm'));
-            %     cutStart = find(timeStr == '2000-03');
-            %     cutEnd = find(timeStr == '2014-02');
-            %     time = time.date(cutStart:cutEnd);
-            %     ntime = length(time);
-            %     dTs_x_sfc = dTs_x_sfc(:, :, cutStart:cutEnd, :);
-            % end
+% if exmNum == 1
+%     % cut to 2000.03-2014.02
+%     timeStr = string(datestr(datenum(time.date), 'yyyy-mm'));
+%     cutStart = find(timeStr == '2000-03');
+%     cutEnd = find(timeStr == '2014-02');
+%     time = time.date(cutStart:cutEnd);
+%     ntime = length(time);
+%     dTs_x_sfc = dTs_x_sfc(:, :, cutStart:cutEnd, :);
+% end
