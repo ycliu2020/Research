@@ -1,8 +1,8 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-11-26 16:07:41
-% LastEditTime : 2021-02-04 01:16:12
-% LastEditors  : LYC
+% LastEditTime : 2021-06-09 15:59:44
+% LastEditors  : Please set LastEditors
 % Description  : 
 % FilePath     : /code/p3_paperFigIntegrate/Fig8_radContribAnalysis_caseLocShow_All.m
 %  
@@ -65,8 +65,8 @@ end
 % 外框线 
 linWi=1.25;
 % china east
-lonCN=[112 122];
-latCN=[22 37];
+lonCN=[110 118];
+latCN=[24 37];
 cnEast_bndry_lon=[lonCN(1) lonCN(1) lonCN(2) lonCN(2) lonCN(1)];
 cnEast_bndry_lat=[latCN(1) latCN(2) latCN(2) latCN(1) latCN(1)];
 m_line(cnEast_bndry_lon, cnEast_bndry_lat, 'linewi',linWi,'color','r')
@@ -88,8 +88,8 @@ EURwest_bndry_lat=[latEUR(1) latEUR(2) latEUR(2) latEUR(1) latEUR(1)];
 m_line(EURwest_bndry_lon, EURwest_bndry_lat, 'linewi',linWi,'color','r')
 hold on
 
-figPath='/home/liuyc/Research/P02.Ts_change_research/figure/proj3_PaperFig/v0.0/Fig8_caseShow.eps';
-export_fig(gcf,figPath,'-r600','-cmyk')
+% figPath='/home/liuyc/Research/P02.Ts_change_research/figure/proj3_PaperFig/v0.0/Fig8_caseShow.eps';
+% export_fig(gcf,figPath,'-r600','-cmyk')
 
 % save_png('/home/liuyc/Research/P02.Ts_change_research/figure/proj3_PaperFig/v0.0/Fig8_caseShow.png')%high resolution
 

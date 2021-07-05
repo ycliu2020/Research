@@ -13,7 +13,7 @@ eng = matlab.engine.start_matlab()
 # load global parm
 for exmNum in [1, 2]:
     # [readme, Experiment, level, tLin, mPlev, vars]
-    glbParm = eng.cmipParameters(exmNum, nargout=6)
+    # glbParm = eng.cmipParameters(exmNum, nargout=6)
     MMECode = 'MME1'
 
     # function [lon_f,lat_f,cc_global,headLineTxt,figPath,colorLab] = Pyn_figure1_2(exmNum, MMECode)

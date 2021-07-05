@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-10-14 15:3nValue:49
-% LastEditTime : 2021-06-29 00:41:51
+% LastEditTime : 2021-06-29 17:29:00
 % LastEditors  : Please set LastEditors
 % Description  :
-% FilePath     : /code/p2_processCMIP6Data/s2.radEffTrend/contribAnalysis/rhs_Rheating/MME_cntAls_joint_directMean.m
+% FilePath     : /code/p2_processCMIP6Data/s2.radEffTrend/contribAnalysis/rhs_Rheating/MME_cntAls_joint_directMean_addSFCLay.m
 %
 %%---------------------------------------------------------
 clc; clear;
@@ -40,7 +40,7 @@ for exmNum = exmStart:exmEnd
     mdlStart = 1; mdlEnd = length(level.model2); % differnt models %length(level.model2)
     lineStart = 1; % 写入excel的起始位置
     mdlCount = 1; % 初始模式计数
-    cov_MdlSet_dTs_x_sfc = zeros(5, 5, 4, length(level.model2)); % 方差矩阵, areaNum, modlNum
+    cov_MdlSet_dTs_x_sfc = zeros(6, 6, 4, length(level.model2)); % 方差矩阵, areaNum, modlNum
 
     for mdlNum = mdlStart:mdlEnd
         % model path
@@ -102,6 +102,7 @@ for exmNum = exmStart:exmEnd
             load([dradEffectPath, 'dR_cloud.mat']) % dR_cloud_sfc
             load([dradEffectPath, 'dradEffect_sfc_cld.mat']) % albEffect, husEffect, nonCloudAndTsEffect, taEffect, taOnlyEffect, tasEffect, tasEffect1, tasEffect2, totalEffect, tsEffect, wvlwEffect, wvswEffect
             load([dradEffectPath, 'dR_residual_cld_sfc.mat']) % dR_resiual_cld_sfc
+            load([dradEffectPath, 'model_dradEffect.mat']) % 'l_rad', 's_rad', 'dR_allsky', 'dR_clr', 'readme_realradEfect'
             % load([dradEffectPath, 'model_dradEffect.mat']) % 'l_rad', 's_rad', 'dR_allsky', 'dR_clr', 'readme_realradEfect'
 
             %% Test1: Rheating variance of a sum test
@@ -111,14 +112,17 @@ for exmNum = exmStart:exmEnd
             dTs_x_sfc(:, :, :, 3) = albEffect;
             dTs_x_sfc(:, :, :, 4) = dR_cloud_sfc;
             dTs_x_sfc(:, :, :, 5) = husEffect;
-            dTs_x_sfc(:, :, :, 6) = taEffect;
+            dTs_x_sfc(:, :, :, 6) = taEffect - tasEffect1;
+            dTs_x_sfc(:, :, :, 7) = tasEffect1;
+
             % dTs_x_sfc(:,:,:,3)=dR_residual_cld_sfc;
             %
             % cal Function
             latRange = 90;
             areaStr = {'world', 'china east', 'USA east', 'EUR west'};
 
-            outPutFile = ['/home/liuyc/Research/P02.Ts_change_research/table/Radiation_Tscontribution/', MMEType, '_DirectMean_radContrib_', level.time1{exmNum}(6:end - 1), '_', timeType, '.xlsx'];
+            outPutFile = ['/home/liuyc/Research/P02.Ts_change_research/table/Radiation_Tscontribution/', MMEType, '_DirectMean_radContrib_addSFCLay', level.time1{exmNum}(6:end - 1), '_', timeType, '.xlsx'];
+
             for areaNum = 1:length(areaStr)
                 [cov_glbMoth_dTs_x_sfc] = calCovContribution(latRange, lat_f, timeType, ntime, areaStr, areaNum, dTs_x_sfc);
                 % save to excel
@@ -236,9 +240,9 @@ function [lineStart] = saveToExcl(MMEType, areaNum, areaStr, dTs_x_sfc, outPutFi
 
     % value name
     if areaNum == 1
-        outPutTxt = {MMEType; 'E1'; 'Alb'; 'Cld'; 'WV'; 'Ta'};
+        outPutTxt = {MMEType; 'E1'; 'Alb'; 'Cld'; 'WV'; 'Ta(ex.Tns)'; 'Tns'};
     else
-        outPutTxt = {''; 'E1'; 'Alb'; 'Cld'; 'WV'; 'Ta'};
+        outPutTxt = {''; 'E1'; 'Alb'; 'Cld'; 'WV'; 'Ta(ex.Tns)'; 'Tns'};
     end
 
     outPutTxt_rev = fliplr(outPutTxt');

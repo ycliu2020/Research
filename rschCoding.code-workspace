@@ -13,5 +13,7 @@
 			"path": "../../../lib/tools/matlab/plot/myMap"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"workbench.editor.wrapTabs": true
+	}
 }

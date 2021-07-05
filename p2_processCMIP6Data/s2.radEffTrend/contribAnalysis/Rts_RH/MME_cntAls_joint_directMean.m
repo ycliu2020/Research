@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-10-14 15:3nValue:49
-% LastEditTime : 2021-06-06 23:41:57
+% LastEditTime : 2021-06-28 22:37:35
 % LastEditors  : Please set LastEditors
 % Description  :
-% FilePath     : /code/p2_processCMIP6Data/s2.radEffTrend/contribAnalysis/rhs_Rts/MME_cntAls_joint_directMean.m
+% FilePath     : /code/p2_processCMIP6Data/s2.radEffTrend/contribAnalysis/Rts_RH/MME_cntAls_joint_directMean.m
 %
 %%---------------------------------------------------------
 clc; clear;
@@ -37,7 +37,7 @@ for exmNum = exmStart:exmEnd
     level.model2 = MME_Models.name;
 
     % model loop
-    mdlStart = 1; mdlEnd = 1;%length(level.model2); % differnt models %length(level.model2)
+    mdlStart = 1; mdlEnd = length(level.model2);%length(level.model2); % differnt models %length(level.model2)
     lineStart = 1; % 写入excel的起始位置
     mdlCount = 1; % 初始模式计数
     cov_MdlSet_dTs_x_sfc = zeros(3, 3, 4, length(level.model2)); % 方差矩阵, areaNum, modlNum
@@ -119,13 +119,13 @@ for exmNum = exmStart:exmEnd
             load([dradEffectPath, 'dradEffect_sfc_cld.mat']) % albEffect, husEffect, nonCloudAndTsEffect, taEffect, taOnlyEffect, tasEffect, tasEffect1, tasEffect2, totalEffect, tsEffect, wvlwEffect, wvswEffect
             load([dradEffectPath, 'dR_residual_cld_sfc.mat']) % dR_resiual_cld_sfc
             % load([dradEffectPath, 'model_dradEffect.mat']) % 'l_rad', 's_rad', 'dR_allsky', 'dR_clr', 'readme_realradEfect'
-            drhs=drlus;%-tsEffect;
+            drhs=drlus;%-tsEffect;drlus
             %% Test1: Rheating variance of a sum test
             dTs_x_sfc = zeros(nlonf, nlatf, ntime, 2);
             dTs_x_sfc(:, :, :, 1) = drhs;
-            dTs_x_sfc(:, :, :, 2) = drhs-drhting+dhFlux;
+            dTs_x_sfc(:, :, :, 2) = drhs-drhting-dhFlux;
             dTs_x_sfc(:, :, :, 3) = drhting;
-            dTs_x_sfc(:, :, :, 4) = -dhFlux;
+            dTs_x_sfc(:, :, :, 4) = dhFlux;
 
             a1=dTs_x_sfc(:, :, 1, 1);
             a2=dTs_x_sfc(:, :, 1, 2);
@@ -158,11 +158,16 @@ for exmNum = exmStart:exmEnd
             latRange = 90;
             areaStr = {'world', 'china east', 'USA east', 'EUR west'};
             
+            outPutFile = ['/home/liuyc/Research/P02.Ts_change_research/table/Radiation_Tscontribution/',MMEType,'_DirectMean_radContrib_',  level.time1{exmNum}(6:end - 1), '_', timeType, '_Rts_RH.xlsx'];
             for areaNum = 1:length(areaStr)
                 [cov_glbMoth_dTs_x_sfc] = calCovContribution(latRange, lat_f, timeType, ntime, areaStr, areaNum, dTs_x_sfc);
+                % save to excel
+                [lineStart] = saveToExcl(level.model2{mdlNum}, areaNum, areaStr, dTs_x_sfc, outPutFile, lineStart, cov_glbMoth_dTs_x_sfc);
+
                 cov_MdlSet_dTs_x_sfc(:, :, areaNum, mdlCount) = cov_glbMoth_dTs_x_sfc;
             end
 
+            lineStart = lineStart + 1; % 每个模型算完后空一行
             disp([esmName{esmNum, 1}, ' ensemble is done!'])
             mdlCount = mdlCount + 1;
 
@@ -173,8 +178,7 @@ for exmNum = exmStart:exmEnd
     end
     % cal average
     cov_MdlSetMean_dTs_x_sfc=mean(cov_MdlSet_dTs_x_sfc, 4);
-    % save to excel
-    outPutFile = ['/home/liuyc/Research/P02.Ts_change_research/table/Radiation_Tscontribution/',MMEType,'_DirectMean_radContrib_',  level.time1{exmNum}(6:end - 1), '_', timeType, '_Rts.xlsx'];
+    % save the MME mean result to excel
     for areaNum = 1:length(areaStr)
         [lineStart] = saveToExcl(MMEType, areaNum, areaStr, dTs_x_sfc, outPutFile, lineStart, cov_MdlSetMean_dTs_x_sfc(:,:,areaNum));
     end
@@ -190,6 +194,17 @@ function [cov_glbMoth_dTs_x_sfc] = calCovContribution(latRange, lat_f, timeType,
     size_dTs_x_sfc = size(dTs_x_sfc);
     nValue = size_dTs_x_sfc(4);
     % Mask Part
+    % mask global first
+    for x_ind = 1:nValue
+        [dTs_x_sfc(:, :, :, x_ind), ~, ~] = maskArea(dTs_x_sfc(:, :, :, x_ind), lat_f, latRange, -latRange, areaStr{1});
+    end
+
+    % mask coast second
+    for x_ind = 1:nValue
+        dTs_x_sfc(:, :, :, x_ind)= maskArea_coast(dTs_x_sfc(:, :, :, x_ind), lat_f, latRange, -latRange, areaStr{1});
+    end
+
+    % mask region last
     for x_ind = 1:nValue
         [dTs_x_sfc(:, :, :, x_ind), ~, ~] = maskArea(dTs_x_sfc(:, :, :, x_ind), lat_f, latRange, -latRange, areaStr{areaNum});
     end
@@ -261,9 +276,9 @@ function [lineStart] = saveToExcl(MMEType, areaNum, areaStr, dTs_x_sfc, outPutFi
 
     % value name
     if areaNum == 1
-        outPutTxt = {MMEType; 'E1'; 'SH+LH'; 'Alb'; 'Cld'; 'WV'; 'Ta'};
+        outPutTxt = {MMEType; 'Res'; 'RH'; 'THF'};
     else
-        outPutTxt = {''; 'E1'; 'SH+LH'; 'Alb'; 'Cld'; 'WV'; 'Ta'};
+        outPutTxt = {''; 'Res'; 'RH'; 'THF'};
     end
 
     outPutTxt_rev = fliplr(outPutTxt');
@@ -275,7 +290,7 @@ function [lineStart] = saveToExcl(MMEType, areaNum, areaStr, dTs_x_sfc, outPutFi
     regionTxt = areaStr{areaNum};
     writematrix(regionTxt, outPutFile, 'Sheet', 1, 'Range', ['B', num2str(lineStart), ':B', num2str(lineStart)])
 
-    lineStart = lineStart + 8;
+    lineStart = lineStart + length(outPutTxt)+1;
 
 end
 

@@ -1,10 +1,10 @@
 %%---------------------------------------------------------
 % Author       : LYC
 % Date         : 2020-10-14 15:3nValue:49
-% LastEditTime : 2021-06-29 00:41:51
+% LastEditTime : 2021-06-28 21:36:57
 % LastEditors  : Please set LastEditors
-% Description  :
-% FilePath     : /code/p2_processCMIP6Data/s2.radEffTrend/contribAnalysis/rhs_Rheating/MME_cntAls_joint_directMean.m
+% Description  : 此为将全部气象分量展开的测试
+% FilePath     : /code/p2_processCMIP6Data/s2.radEffTrend/contribAnalysis/Rts_RH/MME_cntAls_joint_directMean_testFullPortion.m
 %
 %%---------------------------------------------------------
 clc; clear;
@@ -37,10 +37,10 @@ for exmNum = exmStart:exmEnd
     level.model2 = MME_Models.name;
 
     % model loop
-    mdlStart = 1; mdlEnd = length(level.model2); % differnt models %length(level.model2)
+    mdlStart = 1; mdlEnd = 1;%length(level.model2);%length(level.model2); % differnt models %length(level.model2)
     lineStart = 1; % 写入excel的起始位置
     mdlCount = 1; % 初始模式计数
-    cov_MdlSet_dTs_x_sfc = zeros(5, 5, 4, length(level.model2)); % 方差矩阵, areaNum, modlNum
+    cov_MdlSet_dTs_x_sfc = zeros(6, 6, 4, length(level.model2)); % 方差矩阵, areaNum, modlNum
 
     for mdlNum = mdlStart:mdlEnd
         % model path
@@ -74,6 +74,7 @@ for exmNum = exmStart:exmEnd
             dradTrendPath = fullfile(esmPath, level.process3{7}); %/data1/liuyincheng/cmip6-process/amip_1980-2014/CESM2/Effect_trend
             dvarsPath = fullfile(esmPath, level.process3{2}); %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/anomaly
             vsTsEffectPath = fullfile(esmPath, level.process3{9}); %/data1/liuyincheng/cmip6-process/amip_1980-2014/CESM2/vsTsEffect
+            rawVarPath =  fullfile(esmPath, level.process3{1}); %/data1/liuyincheng/cmip6-process/amip_1980-2014/CESM2/vsTsEffect
             load([dradTrendPath, 'global_vars.mat']) % lat_f lon_f time plevf readme
             load([dvarsPath, 'global_vars.mat']) % lat_k lon_k time plevk readme
             % load([dvarsPath, 'dts.mat']) % dts clim_ts
@@ -83,11 +84,16 @@ for exmNum = exmStart:exmEnd
 
             % cal rhs(RHeating)
             load([dvarsPath, 'drlds.mat']) % surface_downwelling_longwave_flux_in_air
+            load([dvarsPath, 'drlus.mat']) % surface_downwelling_longwave_flux_in_air
             load([dvarsPath, 'drsds.mat']) % surface_downwelling_shortwave_flux_in_air
             load([dvarsPath, 'drsus.mat']) % surface_upwelling_shortwave_flux_in_air
+            drlds = autoRegrid3(lon_k, lat_k, time.date, drlds, lon_f, lat_f, time.date);
+            drsds = autoRegrid3(lon_k, lat_k, time.date, drsds, lon_f, lat_f, time.date);
+            drsus = autoRegrid3(lon_k, lat_k, time.date, drsus, lon_f, lat_f, time.date);
+            drlus = autoRegrid3(lon_k, lat_k, time.date, drlus, lon_f, lat_f, time.date);
+
             dR_swnet = drsds - drsus; % sfc net shortwave flux
-            drhs = drlds + dR_swnet; % equilibrium equation's RHS, nearly equal to sfc upward rad
-            drhs = autoRegrid3(lon_k, lat_k, time.date, drhs, lon_f, lat_f, time.date);
+            drhting = drlds + dR_swnet; % equilibrium equation's RHS, nearly equal to sfc upward rad
             % load LH and SH
             load([dvarsPath, 'dhfls.mat']) % Surface Upward Latent Heat Flux
             load([dvarsPath, 'dhfss.mat']) % Surface Upward Sensible Heat Flux
@@ -96,6 +102,16 @@ for exmNum = exmStart:exmEnd
             dhfss = autoRegrid3(lon_k, lat_k, time.date, dhfss, lon_f, lat_f, time.date);
             dhFlux = -dhfls - dhfss; % LH+SH
 
+            % read raw hfls hfss
+            load([rawVarPath, 'hfls.mat']) % Surface Upward Latent Heat Flux
+            load([rawVarPath, 'hfss.mat']) % Surface Upward Sensible Heat Flux
+
+            load([rawVarPath, 'rlds.mat']) % surface_downwelling_longwave_flux_in_air
+            load([rawVarPath, 'rlus.mat']) % surface_downwelling_longwave_flux_in_air
+            load([rawVarPath, 'rsds.mat']) % surface_downwelling_shortwave_flux_in_air
+            load([rawVarPath, 'rsus.mat']) % surface_upwelling_shortwave_flux_in_air
+
+
             %% test
             % read sfc values
             dradEffectPath = fullfile(esmPath, level.process3{6}); %/data1/liuyincheng/cmip6-process/2000-2014/MRI-ESM2-0/radEffect/
@@ -103,27 +119,48 @@ for exmNum = exmStart:exmEnd
             load([dradEffectPath, 'dradEffect_sfc_cld.mat']) % albEffect, husEffect, nonCloudAndTsEffect, taEffect, taOnlyEffect, tasEffect, tasEffect1, tasEffect2, totalEffect, tsEffect, wvlwEffect, wvswEffect
             load([dradEffectPath, 'dR_residual_cld_sfc.mat']) % dR_resiual_cld_sfc
             % load([dradEffectPath, 'model_dradEffect.mat']) % 'l_rad', 's_rad', 'dR_allsky', 'dR_clr', 'readme_realradEfect'
-
+            drhs=drlus;%-tsEffect;drlus
             %% Test1: Rheating variance of a sum test
             dTs_x_sfc = zeros(nlonf, nlatf, ntime, 2);
             dTs_x_sfc(:, :, :, 1) = drhs;
-            dTs_x_sfc(:, :, :, 2) = drhs - (nonCloudAndTsEffect + dR_cloud_sfc); % or -squeeze(dR_allsky(:,:,:,1))+dR_residual_cld_sfc;
-            dTs_x_sfc(:, :, :, 3) = albEffect;
-            dTs_x_sfc(:, :, :, 4) = dR_cloud_sfc;
-            dTs_x_sfc(:, :, :, 5) = husEffect;
-            dTs_x_sfc(:, :, :, 6) = taEffect;
+            dTs_x_sfc(:, :, :, 2) = drhs-drhting-dhFlux;
+            dTs_x_sfc(:, :, :, 3) = drhting;
+            dTs_x_sfc(:, :, :, 4) = dhFlux;
+
+            a1=dTs_x_sfc(:, :, 1, 1);
+            a2=dTs_x_sfc(:, :, 1, 2);
+            a3=dTs_x_sfc(:, :, 1, 3);
+            a4=dTs_x_sfc(:, :, 1, 4);
+
+            ac_hfls=clim_hfls(:,:,1);
+            ac_hfss=clim_hfss(:,:,1);
+            
+            ah_hfls=dhfls(:,:,1);
+            ah_hfss=dhfss(:,:,1);
+
+            aRaw_hfls=hfls(:,:,1);
+            aRaw_hfss=hfss(:,:,1);
+
+            RawBalance= rsds - rsus+rlds - rlus + hfls + hfss;
+            dvarBalance= drsds - drsus + drlds - drlus + dhfls + dhfss;
+            aD1=dvarBalance(:,:,1);
+            aR1=RawBalance(:,:,1);
+
+            dTs_x_sfc(:, :, :, 1) = drhs;
+            dTs_x_sfc(:, :, :, 2) = drhs - (nonCloudAndTsEffect + dR_cloud_sfc)- dhFlux; % or -squeeze(dR_allsky(:,:,:,1))+dR_residual_cld_sfc;
+            dTs_x_sfc(:, :, :, 3) = dhFlux; % or -squeeze(dR_allsky(:,:,:,1))+dR_residual_cld_sfc;
+            dTs_x_sfc(:, :, :, 4) = albEffect;
+            dTs_x_sfc(:, :, :, 5) = dR_cloud_sfc;
+            dTs_x_sfc(:, :, :, 6) = husEffect;
+            dTs_x_sfc(:, :, :, 7) = taEffect;
             % dTs_x_sfc(:,:,:,3)=dR_residual_cld_sfc;
             %
             % cal Function
             latRange = 90;
             areaStr = {'world', 'china east', 'USA east', 'EUR west'};
-
-            outPutFile = ['/home/liuyc/Research/P02.Ts_change_research/table/Radiation_Tscontribution/', MMEType, '_DirectMean_radContrib_', level.time1{exmNum}(6:end - 1), '_', timeType, '.xlsx'];
+            
             for areaNum = 1:length(areaStr)
                 [cov_glbMoth_dTs_x_sfc] = calCovContribution(latRange, lat_f, timeType, ntime, areaStr, areaNum, dTs_x_sfc);
-                % save to excel
-                [lineStart] = saveToExcl(level.model2{mdlNum}, areaNum, areaStr, dTs_x_sfc, outPutFile, lineStart, cov_glbMoth_dTs_x_sfc);
-
                 cov_MdlSet_dTs_x_sfc(:, :, areaNum, mdlCount) = cov_glbMoth_dTs_x_sfc;
             end
 
@@ -135,13 +172,13 @@ for exmNum = exmStart:exmEnd
         disp([level.model2{mdlNum}, ' model is done!'])
         disp(' ')
     end
-
     % cal average
-    cov_MdlSetMean_dTs_x_sfc = mean(cov_MdlSet_dTs_x_sfc, 4);
-    % save to excel
-    for areaNum = 1:length(areaStr)
-        [lineStart] = saveToExcl(MMEType, areaNum, areaStr, dTs_x_sfc, outPutFile, lineStart, cov_MdlSetMean_dTs_x_sfc(:, :, areaNum));
-    end
+    cov_MdlSetMean_dTs_x_sfc=mean(cov_MdlSet_dTs_x_sfc, 4);
+    % % save to excel
+    % outPutFile = ['/home/liuyc/Research/P02.Ts_change_research/table/Radiation_Tscontribution/',MMEType,'_DirectMean_radContrib_',  level.time1{exmNum}(6:end - 1), '_', timeType, '_Rts.xlsx'];
+    % for areaNum = 1:length(areaStr)
+    %     [lineStart] = saveToExcl(MMEType, areaNum, areaStr, dTs_x_sfc, outPutFile, lineStart, cov_MdlSetMean_dTs_x_sfc(:,:,areaNum));
+    % end
 
     disp([level.time1{exmNum}, ' era is done!'])
     disp(' ')
@@ -161,7 +198,7 @@ function [cov_glbMoth_dTs_x_sfc] = calCovContribution(latRange, lat_f, timeType,
 
     % mask coast second
     for x_ind = 1:nValue
-        dTs_x_sfc(:, :, :, x_ind) = maskArea_coast(dTs_x_sfc(:, :, :, x_ind), lat_f, latRange, -latRange, areaStr{1});
+        dTs_x_sfc(:, :, :, x_ind)= maskArea_coast(dTs_x_sfc(:, :, :, x_ind), lat_f, latRange, -latRange, areaStr{1});
     end
 
     % mask region last
@@ -226,7 +263,7 @@ function [lineStart] = saveToExcl(MMEType, areaNum, areaStr, dTs_x_sfc, outPutFi
     check_sum = sum(sum(cov_glbMoth_dTs_x_sfc));
     disp('check sum: ')
     disp(check_sum)
-
+    
     size_dTs_x_sfc = size(dTs_x_sfc);
     nValue = size_dTs_x_sfc(4);
 
@@ -236,9 +273,9 @@ function [lineStart] = saveToExcl(MMEType, areaNum, areaStr, dTs_x_sfc, outPutFi
 
     % value name
     if areaNum == 1
-        outPutTxt = {MMEType; 'E1'; 'Alb'; 'Cld'; 'WV'; 'Ta'};
+        outPutTxt = {MMEType; 'E1'; 'SH+LH'; 'Alb'; 'Cld'; 'WV'; 'Ta'};
     else
-        outPutTxt = {''; 'E1'; 'Alb'; 'Cld'; 'WV'; 'Ta'};
+        outPutTxt = {''; 'E1'; 'SH+LH'; 'Alb'; 'Cld'; 'WV'; 'Ta'};
     end
 
     outPutTxt_rev = fliplr(outPutTxt');
@@ -250,7 +287,7 @@ function [lineStart] = saveToExcl(MMEType, areaNum, areaStr, dTs_x_sfc, outPutFi
     regionTxt = areaStr{areaNum};
     writematrix(regionTxt, outPutFile, 'Sheet', 1, 'Range', ['B', num2str(lineStart), ':B', num2str(lineStart)])
 
-    lineStart = lineStart + length(outPutTxt) + 1;
+    lineStart = lineStart + 8;
 
 end
 

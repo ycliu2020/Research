@@ -43,9 +43,9 @@ for exmNum in [4]:  # [1,2,3,4]:
     colormap = np.array(figData[5])
 
     # ---Values to use for contour labelbar
-    if plotType==4:
+    if plotType==6:
         varMin = -0.5     # Data mins
-    elif plotType==6:        
+    elif plotType==4:        
         varMin = -1.5     # Data mins
 
     varMax = 4     # Data maxs
